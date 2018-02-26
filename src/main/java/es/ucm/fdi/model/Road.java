@@ -8,13 +8,13 @@ public class Road extends SimObject {
 	private int size;
 	private int maxVel;
 	private int velBase;
-	private int numVehicle = 0;
+	private int numVehicles = 0;
 	private Junction start; //¿Atributo necesario?
 	private Junction end;
 	private MultiTreeMap<Integer, Vehicle> street;
 	
-	public Road(int size, int maxVel, MultiTreeMap<Integer, Vehicle> street, Junction start, Junction end) {
-		super();
+	public Road(String id, int size, int maxVel, MultiTreeMap<Integer, Vehicle> street, Junction start, Junction end) {
+		super(id);
 		this.size = size;
 		this.maxVel = maxVel;
 		this.street = street;
@@ -36,7 +36,7 @@ public class Road extends SimObject {
 		street.removeValue(v.getLocation(), v);
 		/*ArrayList<Vehicle> aux = street.get(v.getLocation());
 		aux.add(v);*/
-		numVehicle++;
+		numVehicles++;
 		//street.set(v.getLocation(), aux); Se supone que las referencias son iguales y deberia modificarlo sin necesitar el set
 		
 	}
@@ -45,7 +45,7 @@ public class Road extends SimObject {
 		street.putValue(v.getLocation(), v);
 		/*ArrayList<Vehicle> aux = street.get(v.getLocation());
 		aux.remove(v);*/
-		numVehicle--;
+		numVehicles--;
 	}
 	
 	public void avanza() {
@@ -84,10 +84,10 @@ public class Road extends SimObject {
 	}
 	
 	public void decreaseNumVehicle(){
-		numVehicle--;
+		numVehicles--;
 	}
 	
 	public void modificarVelBase(){
-		velBase = Math.min(maxVel, (maxVel / Math.max(numVehicle, 1)) + 1);
+		velBase = Math.min(maxVel, (maxVel / Math.max(numVehicles, 1)) + 1);
 	}
 }

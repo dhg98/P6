@@ -38,7 +38,8 @@ public class Vehicle extends SimObject {
 		this.location = location;
 	}
 	
-	public Vehicle(int velMaxima, int velActual, Road road, int location, int averia, ArrayList<Junction> itinerario){
+	public Vehicle(String id, int velMaxima, int velActual, Road road, int location, int averia, ArrayList<Junction> itinerario){
+		super(id);
 		this.velMax = velMaxima;
 		this.velAct = velActual;
 		this.location = location;
@@ -85,7 +86,7 @@ public class Vehicle extends SimObject {
 	public void avanza() {
 		if(tiempoAveria > 0) {
 			tiempoAveria--;
-		} else{
+		} else {
 			int locationAux = location + velAct;
 			if(locationAux >= road.getSize()) {
 				kilometrage += road.getSize() - location;

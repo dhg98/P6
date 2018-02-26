@@ -8,8 +8,8 @@ public class Junction extends SimObject {
 	private Map<Road, IncomingRoads> junctionMap;
 	private int trafficLight = 0;
 	
-	public Junction() {
-		super();
+	public Junction(String id) {
+		super(id);
 		junctionDeque = new ArrayList<>();
 		outgoingRoadsList = new ArrayList<>();
 		junctionMap = new HashMap<>() ;

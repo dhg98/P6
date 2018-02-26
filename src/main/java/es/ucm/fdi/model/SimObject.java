@@ -5,6 +5,10 @@ import java.util.Map;
 public abstract class SimObject {
 	private String id;
 		
+	public SimObject(String id) {
+		this.id = id;
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -44,11 +48,11 @@ public abstract class SimObject {
 		fillReportDetails(out);
 	}
 	
-	public String toString(){ //copiado de pizarra
+	/*public String toString(){ //copiado de pizarra
 		StringBuilder sb= new StringBuilder("   ");
-		for(Map.Entry<String,String> e : m){
+		for(Map.Entry<String,String> e : m) {
 			sb.append(e.getKey() + ":" + e.getValue() + "\n\t");
 		}
 		return sb.toString();
-	}
+	}*/
 }
