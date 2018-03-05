@@ -8,8 +8,22 @@ import es.ucm.fdi.model.Event;
 public interface EventBuilder {
 	
 	EventBuilder[] avaliableParsers = new EventBuilder[]{new NewRoadEventBuilder(), new NewVehicleEventBuilder(), new NewJunctionEventBuilder(), new MakeVehicleFaultyEventBuilder()};
+	
 	public Event parse(IniSection sec);
 	//public String template(); no sabemos que es 
+	
+	public default EventBuilder BuilderParser (IniSection sec) {
+		try {
+			for (EventBuilder e : avaliableParsers) {
+				if (e.parse(sec) != null) {
+					return e;
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException("There was an error while trying to parse an IniSection", e);
+		}
+		throw new IllegalArgumentException("There is no such event.");
+	}
 	
 	public default boolean isValidId(String id){
 		for (int i = 0; i < id.length(); ++i) {
