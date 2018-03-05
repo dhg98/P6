@@ -11,16 +11,14 @@ public class Road extends SimObject {
 	private int numVehicles = 0;
 	private Junction start; //¿Atributo necesario?
 	private Junction end;
-	private MultiTreeMap<Integer, Vehicle> street;
+	private MultiTreeMap<Integer, Vehicle> street  = new MultiTreeMap<>((a,b) -> a-b);;
 	
-	public Road(String id, int size, int maxVel, MultiTreeMap<Integer, Vehicle> street, Junction start, Junction end) {
+	public Road(String id, int size, int maxVel, Junction start, Junction end) {
 		super(id);
 		this.size = size;
 		this.maxVel = maxVel;
-		this.street = street;
 		this.start = start;
 		this.end = end;
-		street = new MultiTreeMap<>((a,b) -> a-b);
 	}
 	
 	public int getSize() {

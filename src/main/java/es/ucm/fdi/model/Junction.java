@@ -14,6 +14,12 @@ public class Junction extends SimObject {
 		outgoingRoadsList = new ArrayList<>();
 		junctionMap = new HashMap<>() ;
 	}
+	
+	public ArrayList<IncomingRoads> getJunctionDeque() {
+		return junctionDeque;
+	}
+
+
 
 	public ArrayList<Road> getOutgoingRoadsList() {
 		return outgoingRoadsList;
@@ -27,7 +33,7 @@ public class Junction extends SimObject {
 		trafficLight = (trafficLight + 1) % junctionDeque.size();
 	}
 	
-	private class IncomingRoads {
+	class IncomingRoads {
 		 //boolean
 		private ArrayDeque<Vehicle> roadDeque;
 		private Road road;
