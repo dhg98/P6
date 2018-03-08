@@ -16,12 +16,21 @@ public class TrafficSimulator {
 		timeCounter = 0;
 	}
 	
-	public void execute(OutputStream out) throws IOException{
+	public void insertaEvento(Event e) {
+		Events.putValue(e.getTime(), e);
+	}
+	
+	public void execute(OutputStream out, int pasosSimulacion) throws IOException{
 		Map <String, String> report = new HashMap<>();
-		eventProcess();
-		advance();
-		writeReport(report, out);
-		++timeCounter;
+		int limiteTiempo = timeCounter + pasosSimulacion - 1;
+		while (timeCounter <= limiteTiempo) {
+			eventProcess();
+			advance();
+			++timeCounter;
+			if (out != null) {
+				writeReport(report, out);
+			}
+		}
 	}
 	
 	public void eventProcess() throws IllegalArgumentException {
@@ -51,14 +60,15 @@ public class TrafficSimulator {
 		}
 	}
 	
-	
 	public void writeReport(Map<String, String> report, OutputStream out) throws IOException {
-		for (SimObject e : r.getSimObjects().values()) {
-			e.fillReportDetails(report);
+		for (Junction j : r.getJunctions()) {
+			j.report(timeCounter, report);
 		}
-		IniSection ini = new IniSection();
-		for (String e : report.values()) {
-			store(out);
+		for (Road ro: r.getRoads()) {
+			ro.report(timeCounter, report);
+		}
+		for (Vehicle v: r.getVehicles()) {
+			v.report(timeCounter, report);
 		}
 	}
 }
