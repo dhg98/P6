@@ -17,8 +17,18 @@ public class NewVehicleEvent extends Event {
 	
 	@Override
 	public void execute(RoadMap r) {
-		//Vehicle v = Vehicle(id, maxSpeed, 0, , 0, 0, itinerary);
-		
+		ArrayList <Junction> its = new ArrayList<>();
+		for (String i : itinerary) {
+			its.add(r.getJunction(i));
+		}
+		for (Road ro : r.getJunction(itinerary.get(0)).getOutgoingRoadsList()) {
+			if (ro.getEnd().getId().equals(r.getJunction(itinerary.get(1)))) {
+				Vehicle v = new Vehicle(id, maxSpeed, 0, ro, 0, 0, its);
+				r.addVehicle(v);
+				ro.entraVehiculo(v);
+				break;
+			}
+		}		
 	}
 
 }

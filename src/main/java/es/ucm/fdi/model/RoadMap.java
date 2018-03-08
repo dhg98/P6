@@ -11,6 +11,11 @@ public class RoadMap {
 	private List<Road> roadsRO;
 	private List<Vehicle> vehiclesRO; 
 	
+	
+	public Map<String, SimObject> getSimObjects() {
+		return simObjects;
+	}
+	
 	public RoadMap() {
 		junctionsRO = Collections.unmodifiableList(junctions);
 		roadsRO = Collections.unmodifiableList(roads);

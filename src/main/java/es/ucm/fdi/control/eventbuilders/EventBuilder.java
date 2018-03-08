@@ -12,7 +12,7 @@ public interface EventBuilder {
 	public Event parse(IniSection sec);
 	//public String template(); no sabemos que es 
 	
-	public default EventBuilder BuilderParser (IniSection sec) {
+	public default EventBuilder parseSection (IniSection sec) {
 		try {
 			for (EventBuilder e : avaliableParsers) {
 				if (e.parse(sec) != null) {

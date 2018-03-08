@@ -31,7 +31,7 @@ public class Road extends SimObject {
 
 	//Preguntar por entraVehiculo y saleVehiculo (cual es la posicion en la que se inserta y de cual es de la que se elimina)
 	public void entraVehiculo(Vehicle v) {
-		street.removeValue(v.getLocation(), v);
+		street.putValue(v.getLocation(), v);
 		/*ArrayList<Vehicle> aux = street.get(v.getLocation());
 		aux.add(v);*/
 		numVehicles++;
@@ -40,7 +40,7 @@ public class Road extends SimObject {
 	}
 	
 	public void saleVehiculo(Vehicle v){
-		street.putValue(v.getLocation(), v);
+		street.removeValue(v.getLocation(), v);
 		/*ArrayList<Vehicle> aux = street.get(v.getLocation());
 		aux.remove(v);*/
 		numVehicles--;
