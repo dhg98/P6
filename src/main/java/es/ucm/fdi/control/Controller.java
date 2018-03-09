@@ -17,12 +17,6 @@ public class Controller {
 	private InputStream in;
 	private OutputStream out;
 	
-	public Controller(TrafficSimulator simulator, OutputStream out) {
-		this.simulator = simulator;
-		this.out = out;
-		ticks = TICKS_POR_DEFECTO;
-	}
-
 	public Controller(TrafficSimulator simulator, int ticks, InputStream in, OutputStream out) {
 		this.simulator = simulator;
 		this.ticks = ticks;
