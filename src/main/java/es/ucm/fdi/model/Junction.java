@@ -33,7 +33,7 @@ public class Junction extends SimObject {
 		trafficLight = (trafficLight + 1) % junctionDeque.size();
 	}
 	
-	class IncomingRoads {
+	public static class IncomingRoads {
 		 //boolean
 		private ArrayDeque<Vehicle> roadDeque;
 		private Road road;
@@ -67,7 +67,7 @@ public class Junction extends SimObject {
 				aux += "])";
 			}
 		}
-		out.put("state", aux);
+		out.put("queues", aux);
 	}
 	
 	protected String getReportHeader() {

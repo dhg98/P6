@@ -3,7 +3,10 @@ package es.ucm.fdi.model;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.Map.Entry;
 
+import es.ucm.fdi.ini.Ini;
+import es.ucm.fdi.ini.IniSection;
 import es.ucm.fdi.util.MultiTreeMap;
 
 public class TrafficSimulator {
@@ -17,7 +20,11 @@ public class TrafficSimulator {
 	}
 	
 	public void insertaEvento(Event e) {
-		Events.putValue(e.getTime(), e);
+		if (e.getTime() > timeCounter) {
+			throw new RuntimeException("The time you have given for this event is previous than the current time");
+		} else {
+			Events.putValue(e.getTime(), e);
+		}
 	}
 	
 	public void execute(OutputStream out, int pasosSimulacion) throws IOException{
@@ -60,15 +67,28 @@ public class TrafficSimulator {
 		}
 	}
 	
+	IniSection createIniSection(Map<String, String> report) {
+		IniSection ini = new IniSection(report.get(""));
+		for (Entry<String, String> e : report.entrySet()) {
+			ini.setValue(e.getKey(), e.getValue());
+		}
+		return ini;
+	}
+	
 	public void writeReport(Map<String, String> report, OutputStream out) throws IOException {
+		Ini file = new Ini();
 		for (Junction j : r.getJunctions()) {
 			j.report(timeCounter, report);
+			file.addsection(createIniSection(report));
 		}
 		for (Road ro: r.getRoads()) {
 			ro.report(timeCounter, report);
+			file.addsection(createIniSection(report));
 		}
 		for (Vehicle v: r.getVehicles()) {
 			v.report(timeCounter, report);
+			file.addsection(createIniSection(report));
 		}
+		file.store(out);
 	}
 }

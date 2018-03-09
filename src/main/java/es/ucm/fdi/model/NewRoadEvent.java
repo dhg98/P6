@@ -23,7 +23,7 @@ public class NewRoadEvent extends Event {
 		Road road = new Road(id, length, maxSpeed, start, end);
 		r.addRoad(road);
 		start.getOutgoingRoadsList().add(road);
-		//Junction.IncomingRoads ir = new Junction.IncomingRoads(road); //¿Como se hace esto?
+		Junction.IncomingRoads ir = new Junction.IncomingRoads(road);
 		end.getJunctionDeque().add(ir);
 	}
 }
