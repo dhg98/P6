@@ -14,6 +14,22 @@ public class Vehicle extends SimObject {
 	private int tiempoAveria;
 	private boolean haLlegado;
 	
+	public Vehicle(String id, int velMaxima, Road road, List<Junction> itinerario){
+		super(id);
+		this.velMax = velMaxima;
+		velAct = 0;
+		location = 0;
+		tiempoAveria = 0;
+		this.itinerario = itinerario;
+		haLlegado = itinerario.size() == 0;
+		this.road = road;
+		contadorCruce = 0;
+	}
+	
+	public int getKilometrage() {
+		return kilometrage;
+	}
+
 	public Road getRoad() {
 		return road;
 	}
@@ -36,18 +52,6 @@ public class Vehicle extends SimObject {
 
 	public void setLocation(int location) {
 		this.location = location;
-	}
-	
-	public Vehicle(String id, int velMaxima, int velActual, Road road, int location, int averia, List<Junction> itinerario){
-		super(id);
-		this.velMax = velMaxima;
-		this.velAct = velActual;
-		this.location = location;
-		this.tiempoAveria = averia;
-		this.itinerario = itinerario;
-		haLlegado = itinerario.size() == 0;
-		this.road = road;
-		contadorCruce = 0;
 	}
 	
 	protected void fillReportDetails(Map<String, String> out) {

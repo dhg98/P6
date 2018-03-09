@@ -23,7 +23,7 @@ public class NewVehicleEvent extends Event {
 		}
 		for (Road ro : r.getJunction(itinerary.get(0)).getOutgoingRoadsList()) {
 			if (ro.getEnd().getId().equals(r.getJunction(itinerary.get(1)))) {
-				Vehicle v = new Vehicle(id, maxSpeed, 0, ro, 0, 0, its);
+				Vehicle v = new Vehicle(id, maxSpeed, ro, its);
 				r.addVehicle(v);
 				ro.entraVehiculo(v);
 				break;

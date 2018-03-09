@@ -27,7 +27,7 @@ public class RoadTest {
 		Road r = new Road("r1", 100, 5, j1, j2);
 		List it = new ArrayList<>();
 		it.add(j1); it.add(j2);
-		Vehicle v = new Vehicle("v1" , 5, 5, r, 0, 0, it);
+		Vehicle v = new Vehicle("v1" , 5, r, it);
 		r.avanza();
 		assertEquals(5, v.getLocation());
 	}
