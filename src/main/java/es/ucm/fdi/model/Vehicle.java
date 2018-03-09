@@ -26,6 +26,14 @@ public class Vehicle extends SimObject {
 		contadorCruce = 0;
 	}
 	
+	public int getVelMax() {
+		return velMax;
+	}
+
+	public int getVelAct() {
+		return velAct;
+	}
+
 	public int getKilometrage() {
 		return kilometrage;
 	}
