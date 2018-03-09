@@ -1,12 +1,12 @@
 package es.ucm.fdi.model;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class MakeVehicleFaultyEvent extends Event {
 	private int tiempoAveria;
-	private ArrayList<String> itCoches; 
+	private List<String> itCoches; 
 	
-	public MakeVehicleFaultyEvent(int time, ArrayList<String> a, int duration) {
+	public MakeVehicleFaultyEvent(int time, List<String> a, int duration) {
 		super(time);
 		tiempoAveria = duration;
 		itCoches = a;

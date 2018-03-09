@@ -1,9 +1,7 @@
 package es.ucm.fdi.control.eventbuilders;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.Event;
-import es.ucm.fdi.model.NewJunctionEvent;
-import es.ucm.fdi.model.NewRoadEvent;
+import es.ucm.fdi.model.*;
 
 public class NewRoadEventBuilder implements EventBuilder {
 

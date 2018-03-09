@@ -1,6 +1,7 @@
 package es.ucm.fdi.control.eventbuilders;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import es.ucm.fdi.ini.IniSection;
 import es.ucm.fdi.model.Event;
@@ -18,7 +19,7 @@ public class NewVehicleEventBuilder implements EventBuilder {
 			try {
 				int time = this.parseInt(sec, "time", 0);
 				int maxspeed = parseInt(sec, "max_speed", 1);
-				ArrayList<String> a = parseIdList(sec, "itinerary");
+				List<String> a = parseIdList(sec, "itinerary");
 				if (isValidId(sec.getValue("id"))){
 					return new NewVehicleEvent(time, sec.getValue("id"), maxspeed, a);
 				} else {

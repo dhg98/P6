@@ -3,8 +3,8 @@ package es.ucm.fdi.model;
 import java.util.*;
 
 public class Junction extends SimObject {
-	private ArrayList<IncomingRoads> junctionDeque;
-	private ArrayList<Road> outgoingRoadsList;
+	private List<IncomingRoads> junctionDeque;
+	private List<Road> outgoingRoadsList;
 	private Map<Road, IncomingRoads> junctionMap;
 	private int trafficLight = 0;
 	
@@ -15,13 +15,13 @@ public class Junction extends SimObject {
 		junctionMap = new HashMap<>() ;
 	}
 	
-	public ArrayList<IncomingRoads> getJunctionDeque() {
+	public List<IncomingRoads> getJunctionDeque() {
 		return junctionDeque;
 	}
 
 
 
-	public ArrayList<Road> getOutgoingRoadsList() {
+	public List<Road> getOutgoingRoadsList() {
 		return outgoingRoadsList;
 	}
 
@@ -35,7 +35,7 @@ public class Junction extends SimObject {
 	
 	public static class IncomingRoads {
 		 //boolean
-		private ArrayDeque<Vehicle> roadDeque;
+		private Deque<Vehicle> roadDeque;
 		private Road road;
 		
 		public IncomingRoads(Road road) {

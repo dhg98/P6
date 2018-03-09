@@ -42,7 +42,7 @@ public class TrafficSimulator {
 	
 	public void eventProcess() throws IllegalArgumentException {
 		try {
-			ArrayList<Event> arrayEvent = Events.get(timeCounter);
+			List<Event> arrayEvent = Events.get(timeCounter);
 			int i = 0;
 			while (i < arrayEvent.size()) {
 				Event e = arrayEvent.get(i);

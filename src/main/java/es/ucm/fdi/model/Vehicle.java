@@ -9,7 +9,7 @@ public class Vehicle extends SimObject {
 	private Road road;
 	private int location;
 	private int kilometrage = 0;
-	private ArrayList<Junction> itinerario; 
+	private List<Junction> itinerario; 
 	private int contadorCruce;
 	private int tiempoAveria;
 	private boolean haLlegado;
@@ -38,7 +38,7 @@ public class Vehicle extends SimObject {
 		this.location = location;
 	}
 	
-	public Vehicle(String id, int velMaxima, int velActual, Road road, int location, int averia, ArrayList<Junction> itinerario){
+	public Vehicle(String id, int velMaxima, int velActual, Road road, int location, int averia, List<Junction> itinerario){
 		super(id);
 		this.velMax = velMaxima;
 		this.velAct = velActual;

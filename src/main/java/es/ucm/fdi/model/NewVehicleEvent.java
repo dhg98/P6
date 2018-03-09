@@ -1,14 +1,14 @@
 package es.ucm.fdi.model;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class NewVehicleEvent extends Event {
 
 	private String id;
 	private int maxSpeed;
-	private ArrayList<String> itinerary;
+	private List<String> itinerary;
 	
-	public NewVehicleEvent(int time, String id, int maxSpeed, ArrayList<String> itinerary) {
+	public NewVehicleEvent(int time, String id, int maxSpeed, List<String> itinerary) {
 		super(time);
 		this.id = id;
 		this.maxSpeed = maxSpeed;
@@ -17,7 +17,7 @@ public class NewVehicleEvent extends Event {
 	
 	@Override
 	public void execute(RoadMap r) {
-		ArrayList <Junction> its = new ArrayList<>();
+		List <Junction> its = new ArrayList<>();
 		for (String i : itinerary) {
 			its.add(r.getJunction(i));
 		}
