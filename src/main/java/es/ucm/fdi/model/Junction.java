@@ -28,7 +28,11 @@ public class Junction extends SimObject {
 	}
 	
 	public void advanceLight(){ 
-		trafficLight = (trafficLight + 1) % junctionDeque.size();
+		try {
+			trafficLight = (trafficLight + 1) % junctionDeque.size();
+		} catch (ArithmeticException e) {
+			trafficLight = 0; //si el numero de carreteras entrantes es 0, se mantiene a 0 el semaforo.
+		}
 	}
 	
 	public static class IncomingRoads {
@@ -74,7 +78,8 @@ public class Junction extends SimObject {
 	
 	public void avanza() {
 		
-		if(!junctionDeque.get(trafficLight).roadDeque.isEmpty()) {
+		if(!junctionDeque.isEmpty() && !junctionDeque.get(trafficLight).roadDeque.isEmpty()) { //comprobamos que el array de incomingRoads no este vacio y la
+			//cola que indica el semaforo tampoco
 			junctionDeque.get(trafficLight).roadDeque.getFirst().moverASiguienteCarretera(); //movemos el vehiculo a la carretera en funcion de su itinerario
 			junctionDeque.get(trafficLight).roadDeque.removeFirst(); //eliminar vehiculo de la cola
 		}
