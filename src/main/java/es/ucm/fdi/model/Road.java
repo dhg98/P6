@@ -21,6 +21,10 @@ public class Road extends SimObject {
 		this.end = end;
 	}
 	
+	public int getNumVehicles() {
+		return numVehicles;
+	}
+
 	public int getSize() {
 		return size;
 	}
@@ -71,8 +75,10 @@ public class Road extends SimObject {
 	protected void fillReportDetails(Map<String, String> out) {
 		
 		String aux = "";
-		for(Vehicle v: street.innerValues()) {
-			aux += "(" + v.getId() + "," + Integer.toString(v.getLocation()) + ")";
+		if(numVehicles > 0) {
+			for(Vehicle v: street.innerValues()) {
+				aux += "(" + v.getId() + "," + Integer.toString(v.getLocation()) + ")";
+			}
 		}
 		out.put("state", aux);
 	}

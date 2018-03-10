@@ -20,7 +20,7 @@ public class TrafficSimulator {
 	}
 	
 	public void insertaEvento(Event e) {
-		if (e.getTime() > timeCounter) {
+		if (e.getTime() < timeCounter) {
 			throw new RuntimeException("The time you have given for this event is previous than the current time");
 		} else {
 			Events.putValue(e.getTime(), e);
@@ -28,7 +28,7 @@ public class TrafficSimulator {
 	}
 	
 	public void execute(OutputStream out, int pasosSimulacion) throws IOException{
-		Map <String, String> report = new HashMap<>();
+		Map <String, String> report = new LinkedHashMap<>();
 		int limiteTiempo = timeCounter + pasosSimulacion - 1;
 		while (timeCounter <= limiteTiempo) {
 			eventProcess();
@@ -43,12 +43,15 @@ public class TrafficSimulator {
 	public void eventProcess() throws IllegalArgumentException {
 		try {
 			List<Event> arrayEvent = Events.get(timeCounter);
-			int i = 0;
-			while (i < arrayEvent.size()) {
-				Event e = arrayEvent.get(i);
-				e.execute(r);
-				++i;
+			if(arrayEvent != null) {
+				int i = 0;
+				while (i < arrayEvent.size()) {
+					Event e = arrayEvent.get(i);
+					e.execute(r);
+					++i;
+				}
 			}
+			
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException("There was an error while processing the events", e);
 		}
@@ -60,7 +63,9 @@ public class TrafficSimulator {
 				j.avanza();
 			}
 			for (Road ro: r.getRoads()) {
-				ro.avanza();
+				if(ro.getNumVehicles() > 0) {
+					ro.avanza();
+				}
 			}
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException("There was an error while advancing the objects", e);
@@ -69,6 +74,7 @@ public class TrafficSimulator {
 	
 	IniSection createIniSection(Map<String, String> report) {
 		IniSection ini = new IniSection(report.get(""));
+		report.remove("");
 		for (Entry<String, String> e : report.entrySet()) {
 			ini.setValue(e.getKey(), e.getValue());
 		}
@@ -80,14 +86,17 @@ public class TrafficSimulator {
 		for (Junction j : r.getJunctions()) {
 			j.report(timeCounter, report);
 			file.addsection(createIniSection(report));
+			report.clear(); //Al estar reutilizando el mismo mapa es necesario eliminar todas las claves antes de sobreescribir.
 		}
 		for (Road ro: r.getRoads()) {
 			ro.report(timeCounter, report);
 			file.addsection(createIniSection(report));
+			report.clear(); 
 		}
 		for (Vehicle v: r.getVehicles()) {
 			v.report(timeCounter, report);
 			file.addsection(createIniSection(report));
+			report.clear(); 
 		}
 		file.store(out);
 	}

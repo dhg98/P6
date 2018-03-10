@@ -25,5 +25,6 @@ public class NewRoadEvent extends Event {
 		start.getOutgoingRoadsList().add(road);
 		Junction.IncomingRoads ir = new Junction.IncomingRoads(road);
 		end.getJunctionDeque().add(ir);
+		end.getJunctionMap().put(road, ir);
 	}
 }

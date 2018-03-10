@@ -9,7 +9,7 @@ public class MakeVehicleFaultyEventBuilder implements EventBuilder {
 
 	@Override
 	public Event parse(IniSection sec) {
-		if(!sec.getTag().equals("new_vehicle")){
+		if(!sec.getTag().equals("make_vehicle_faulty")){
 			return null;
 		} else {
 			try {

@@ -23,7 +23,7 @@ public class Vehicle extends SimObject {
 		this.itinerario = itinerario;
 		haLlegado = itinerario.size() == 0;
 		this.road = road;
-		contadorCruce = 0;
+		contadorCruce = 1;
 	}
 	
 	public int getVelMax() {
@@ -113,7 +113,7 @@ public class Vehicle extends SimObject {
 	
 	public void moverASiguienteCarretera(){
 		road.saleVehiculo(this);
-		if(contadorCruce + 1 == itinerario.size() - 1) {
+		if(contadorCruce + 1 == itinerario.size()) {
 			haLlegado = true;
 		}
 		else{

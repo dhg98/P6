@@ -19,6 +19,10 @@ public class Junction extends SimObject {
 		return junctionDeque;
 	}
 
+	public Map<Road, IncomingRoads> getJunctionMap() {
+		return junctionMap;
+	}
+
 	public List<Road> getOutgoingRoadsList() {
 		return outgoingRoadsList;
 	}
