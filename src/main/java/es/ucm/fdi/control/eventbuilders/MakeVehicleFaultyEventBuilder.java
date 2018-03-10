@@ -3,10 +3,7 @@ package es.ucm.fdi.control.eventbuilders;
 import java.util.ArrayList;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.Event;
-import es.ucm.fdi.model.MakeVehicleFaultyEvent;
-import es.ucm.fdi.model.NewJunctionEvent;
-import es.ucm.fdi.model.NewVehicleEvent;
+import es.ucm.fdi.model.*;
 
 public class MakeVehicleFaultyEventBuilder implements EventBuilder {
 

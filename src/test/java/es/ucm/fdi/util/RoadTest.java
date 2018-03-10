@@ -25,7 +25,7 @@ public class RoadTest {
 		Junction j1 = new Junction("j1");
 		Junction j2 = new Junction("j2");
 		Road r = new Road("r1", 100, 5, j1, j2);
-		List it = new ArrayList<>();
+		List<Junction> it = new ArrayList<>();
 		it.add(j1); it.add(j2);
 		Vehicle v = new Vehicle("v1" , 5, r, it);
 		r.avanza();
