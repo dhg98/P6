@@ -11,7 +11,7 @@ public class Road extends SimObject {
 	private int numVehicles = 0;
 	private Junction start; //¿Atributo necesario?
 	private Junction end;
-	private MultiTreeMap<Integer, Vehicle> street  = new MultiTreeMap<>((a,b) -> a-b);;
+	private MultiTreeMap<Integer, Vehicle> street  = new MultiTreeMap<>((a,b) -> a-b);
 	
 	public Road(String id, int size, int maxVel, Junction start, Junction end) {
 		super(id);
@@ -61,10 +61,10 @@ public class Road extends SimObject {
 				if(v.getTiempoAveria() > 0) {
 					averiado = true;
 				} else {
-					v.setVelAct(velBase);
+					v.setVelocidadActual(velBase);
 				}
 			} else {
-				v.setVelAct(velBase / 2);
+				v.setVelocidadActual(velBase / 2);
 			}
 			v.avanza();
 			actualizado.putValue(v.getLocation(), v);

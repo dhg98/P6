@@ -33,10 +33,10 @@ public class TrafficSimulator {
 		while (timeCounter <= limiteTiempo) {
 			eventProcess();
 			advance();
-			++timeCounter;
 			if (out != null) {
 				writeReport(report, out);
 			}
+			++timeCounter;
 		}
 	}
 	

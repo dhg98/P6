@@ -10,16 +10,7 @@ import es.ucm.fdi.model.*;
 
 public class RoadTest {
 
-	@Test
-	public void testEntraVehiculo() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSaleVehiculo() {
-		fail("Not yet implemented");
-	}
-
+	
 	@Test
 	public void testAvanza() {
 		Junction j1 = new Junction("j1");
@@ -28,6 +19,7 @@ public class RoadTest {
 		List<Junction> it = new ArrayList<>();
 		it.add(j1); it.add(j2);
 		Vehicle v = new Vehicle("v1" , 5, r, it);
+		r.entraVehiculo(v);
 		r.avanza();
 		assertEquals(5, v.getLocation());
 	}
