@@ -16,16 +16,33 @@ public class NewRoadEvent extends Event {
 		this.dest = dest;
 	}
 	
+	public int getMaxSpeed() {
+		return maxSpeed;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public String getSrc() {
+		return src;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getDest() {
+		return dest;
+	}
+
 	@Override
 	public void execute(RoadMap roadMap) {
 		Junction start = roadMap.getJunction(src);
 		Junction end = roadMap.getJunction(dest);
 		Road road = new Road(id, length, maxSpeed, start, end);
 		roadMap.addRoad(road);
-		
 		start.getOutgoingRoadsList().add(road);
-		Junction.IncomingRoads ir = new Junction.IncomingRoads(road);
-		end.getJunctionDeque().add(ir);
-		end.getJunctionMap().put(road, ir);
+		end.addIncomingRoad(road);
 	}
 }

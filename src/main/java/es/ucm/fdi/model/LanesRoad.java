@@ -15,6 +15,6 @@ public class LanesRoad extends Road{
 	
 	@Override
 	public void modificarVelBase() {
-		setVelBase();
+		//setVelBase();
 	}
 }

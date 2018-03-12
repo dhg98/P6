@@ -96,4 +96,10 @@ public class Junction extends SimObject {
 		}
 		advanceLight();
 	}
+	
+	public void addIncomingRoad(Road r) {
+		IncomingRoads ir = new IncomingRoads(r);
+		junctionDeque.add(ir);
+		junctionMap.put(r, ir);
+	}
 }

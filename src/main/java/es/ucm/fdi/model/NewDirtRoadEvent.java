@@ -1,11 +1,19 @@
 package es.ucm.fdi.model;
 
-public class NewDirtRoadEvent extends Event {
+public class NewDirtRoadEvent extends NewRoadEvent {
 
+	public NewDirtRoadEvent(int time, String id, String src, String dest, int maxSpeed, int length) {
+		super(time, id, src, dest, maxSpeed, length);
+	}
+	
 	@Override
-	public void execute(RoadMap r) {
-		// TODO Auto-generated method stub
-
+	public void execute(RoadMap roadMap) {
+		Junction start = roadMap.getJunction(getSrc());
+		Junction end = roadMap.getJunction(getDest());
+		DirtRoad road = new DirtRoad(getId(), getLength(), getMaxSpeed(), start, end);
+		roadMap.addRoad(road);
+		start.getOutgoingRoadsList().add(road);
+		end.addIncomingRoad(road);
 	}
 
 }
