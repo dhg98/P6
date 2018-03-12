@@ -17,11 +17,12 @@ public class NewRoadEvent extends Event {
 	}
 	
 	@Override
-	public void execute(RoadMap r) {
-		Junction start = r.getJunction(src);
-		Junction end = r.getJunction(dest);
+	public void execute(RoadMap roadMap) {
+		Junction start = roadMap.getJunction(src);
+		Junction end = roadMap.getJunction(dest);
 		Road road = new Road(id, length, maxSpeed, start, end);
-		r.addRoad(road);
+		roadMap.addRoad(road);
+		
 		start.getOutgoingRoadsList().add(road);
 		Junction.IncomingRoads ir = new Junction.IncomingRoads(road);
 		end.getJunctionDeque().add(ir);

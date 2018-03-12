@@ -33,6 +33,33 @@ public interface EventBuilder {
 		}
 	}
 
+	public default double parseDouble(IniSection sec, String key, int def) throws IllegalArgumentException {
+		double res;
+		try {
+			res = Double.parseDouble(sec.getValue(key));
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("There was an error while parsing the key " + key , e);
+		}
+		if (res < def) {
+			throw new IllegalArgumentException("There was an error while parsing the key " + key + " because one of the numbers is less than " + def);
+		} else {
+			return res;
+		}
+	}
+
+	public default long parseLong(IniSection sec, String key, int def) throws IllegalArgumentException {
+		long res;
+		try {
+			res = Long.parseLong(sec.getValue(key));
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("There was an error while parsing the key " + key , e);
+		}
+		if (res < def) {
+			throw new IllegalArgumentException("There was an error while parsing the key " + key + " because one of the numbers is less than " + def);
+		} else {
+			return res;
+		}
+	}
 	public default ArrayList<String> parseIdList(IniSection sec, String key) {
 		String[] it = sec.getValue(key).split(",");
 		ArrayList<String> iti = new ArrayList<>();

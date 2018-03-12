@@ -172,11 +172,12 @@ public class ExampleMain {
 			if(_timeLimit != null) {
 				c = new Controller(t, _timeLimit, in, out);
 			} else {
-				c = new Controller(t, _timeLimitDefaultValue, in, out);
+				c = new Controller(t, _timeLimitDefaultValue, in, out); 
 			}
 		}
 		c.run();
-		test(_inFile, _outFile, "08_simpleJunction.ini.eout", 10);
+		test(_inFile, _outFile, "10_crossRoadMultipleVehicles.ini.eout", 10);
+		//test(_inFile, _outFile, "09_crossRoadTwoVehicles.ini.eout", 10);
 	}
 
 	private static void start(String[] args) throws IOException {

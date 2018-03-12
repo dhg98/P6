@@ -6,7 +6,7 @@ public class Junction extends SimObject {
 	private List<IncomingRoads> junctionDeque;
 	private List<Road> outgoingRoadsList;
 	private Map<Road, IncomingRoads> junctionMap;
-	private int trafficLight = 0;
+	private int trafficLight = -1;
 	
 	public Junction(String id) {
 		super(id);
@@ -28,14 +28,16 @@ public class Junction extends SimObject {
 	}
 
 	public void entraVehiculo(Vehicle v){
+		if (!junctionMap.get(v.getRoad()).roadDeque.contains(v)) {
 		junctionMap.get(v.getRoad()).roadDeque.offerLast(v); //Metemos el vehiculo en la cola
+		}
 	}
 	
 	public void advanceLight(){ 
 		try {
 			trafficLight = (trafficLight + 1) % junctionDeque.size();
 		} catch (ArithmeticException e) {
-			trafficLight = 0; //si el numero de carreteras entrantes es 0, se mantiene a 0 el semaforo.
+			trafficLight = -1; //si el numero de carreteras entrantes es 0, se mantiene a -1 el semaforo.
 		}
 	}
 	
@@ -49,6 +51,11 @@ public class Junction extends SimObject {
 			this.roadDeque = new ArrayDeque<>();
 			this.road = road;
 		}
+
+		public Deque<Vehicle> getRoadDeque() {
+			return roadDeque;
+		}
+		
 	}
 	
 	protected void fillReportDetails(Map<String, String> out) {
@@ -81,9 +88,9 @@ public class Junction extends SimObject {
 	}
 	
 	public void avanza() {
-		
-		if(!junctionDeque.isEmpty() && !junctionDeque.get(trafficLight).roadDeque.isEmpty()) { //comprobamos que el array de incomingRoads no este vacio y la
-			//cola que indica el semaforo tampoco
+		if(trafficLight != -1 && !junctionDeque.isEmpty() &&
+				!junctionDeque.get(trafficLight ).roadDeque.isEmpty()) {
+			//el array de incomingRoads no este vacio y la cola que indica el semaforo tampoco
 			junctionDeque.get(trafficLight).roadDeque.getFirst().moverASiguienteCarretera(); //movemos el vehiculo a la carretera en funcion de su itinerario
 			junctionDeque.get(trafficLight).roadDeque.removeFirst(); //eliminar vehiculo de la cola
 		}

@@ -89,12 +89,6 @@ public class Vehicle extends SimObject {
 		}
 	}
 	
-	//public String generaInforme(int time){
-		//public IniSection writeReport() 
-		//protected abstract void prepareReport(Map<String, String> report)
-		//return "[vehicle_report]\nid = " + identificador + "\ntime = " + time + "\nspeed = " + velAct + ;
-	//}
-	
 	public void avanza() {
 		if(tiempoAveria > 0) {
 			tiempoAveria--;

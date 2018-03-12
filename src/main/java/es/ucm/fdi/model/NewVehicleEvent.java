@@ -15,6 +15,18 @@ public class NewVehicleEvent extends Event {
 		this.itinerary = itinerary;
 	}
 	
+	public String getId() {
+		return id;
+	}
+
+	public int getMaxSpeed() {
+		return maxSpeed;
+	}
+
+	public List<String> getItinerary() {
+		return itinerary;
+	}
+
 	@Override
 	public void execute(RoadMap r) {
 		List <Junction> its = new ArrayList<>();
