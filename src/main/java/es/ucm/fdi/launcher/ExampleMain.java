@@ -172,7 +172,7 @@ public class ExampleMain {
 			if(_timeLimit != null) {
 				c = new Controller(t, _timeLimit, in, out);
 			} else {
-				c = new Controller(t, _timeLimitDefaultValue, in, out); 
+				c = new Controller(t, _timeLimitDefaultValue, in, out);
 			}
 		}
 		c.run();

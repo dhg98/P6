@@ -1,13 +1,14 @@
 package es.ucm.fdi.control.eventbuilders;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.*;
+import es.ucm.fdi.model.Event;
+import es.ucm.fdi.model.NewRoadEvent;
 
-public class NewRoadEventBuilder implements EventBuilder {
+public class NewLanesRoadEventBuilder implements EventBuilder {
 
 	@Override
 	public Event parse(IniSection sec) {
-		if(!"new_road".equals(sec.getTag())){
+		if(!sec.getTag().equals("new_road")){
 			return null;
 		} else {
 			try {
@@ -24,5 +25,4 @@ public class NewRoadEventBuilder implements EventBuilder {
 			}
 		}
 	}
-
 }

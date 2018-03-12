@@ -11,6 +11,7 @@ public class Road extends SimObject {
 	private int numVehicles = 0;
 	private Junction start; //¿Atributo necesario?
 	private Junction end;
+	private int numFaultyVehicles;
 	private MultiTreeMap<Integer, Vehicle> street  = new MultiTreeMap<>(Comparator.comparing(Integer::intValue).reversed())/*Collections.reverseOrder()*/;
 	
 	public Road(String id, int size, int maxVel, Junction start, Junction end) {
@@ -19,14 +20,27 @@ public class Road extends SimObject {
 		this.maxVel = maxVel;
 		this.start = start;
 		this.end = end;
+		numFaultyVehicles = 0;
+	}
+	
+	public int getNumFaultyVehicles() {
+		return numFaultyVehicles;
 	}
 	
 	public int getNumVehicles() {
 		return numVehicles;
 	}
 
+	public void setNumFaultyVehicles(int numFaultyVehicles) {
+		this.numFaultyVehicles = numFaultyVehicles;
+	}
+
 	public int getSize() {
 		return size;
+	}
+	
+	public void setVelBase(int velBase) {
+		this.velBase = velBase;
 	}
 
 	public Junction getEnd() {

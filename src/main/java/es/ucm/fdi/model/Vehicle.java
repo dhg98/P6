@@ -92,6 +92,9 @@ public class Vehicle extends SimObject {
 	public void avanza() {
 		if(tiempoAveria > 0) {
 			tiempoAveria--;
+			if(tiempoAveria == 0) {
+				getRoad().setNumFaultyVehicles(getRoad().getNumFaultyVehicles() - 1);
+			}
 		} else {
 			int locationAux = location + velAct;
 			if(locationAux >= road.getSize()) {
