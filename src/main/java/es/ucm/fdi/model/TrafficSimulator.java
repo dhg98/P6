@@ -33,10 +33,10 @@ public class TrafficSimulator {
 		while (timeCounter <= limiteTiempo) {
 			eventProcess();
 			advance();
+			++timeCounter;
 			if (out != null) {
 				writeReport(report, out);
 			}
-			++timeCounter;
 		}
 	}
 	
@@ -59,13 +59,13 @@ public class TrafficSimulator {
 	
 	public void advance() throws IllegalArgumentException {
 		try {
-			for (Junction j : r.getJunctions()) {
-				j.avanza();
-			}
 			for (Road ro: r.getRoads()) {
 				if(ro.getNumVehicles() > 0) {
 					ro.avanza();
 				}
+			}
+			for (Junction j : r.getJunctions()) {
+				j.avanza();
 			}
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException("There was an error while advancing the objects", e);

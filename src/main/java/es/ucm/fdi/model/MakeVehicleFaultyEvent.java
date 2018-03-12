@@ -17,6 +17,7 @@ public class MakeVehicleFaultyEvent extends Event {
 		try{
 			for (int i = 0; i < itCoches.size(); ++i) {
 				r.getVehicle(itCoches.get(i)).setTiempoAveria(tiempoAveria);
+				r.getVehicle(itCoches.get(i)).setVelAct(0);
 			}
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException ("The MakeVehicleFaultyEvent is incorrect", e);

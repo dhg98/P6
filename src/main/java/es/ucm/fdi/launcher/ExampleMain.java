@@ -140,7 +140,7 @@ public class ExampleMain {
 		_outFile = outFile;
 		_inFile = inFile;
 		_timeLimit = timeLimit;
-		startBatchMode();
+		//startBatchMode();
 		boolean equalOutput = (new Ini(_outFile)).equals(new Ini(expectedOutFile));
 		System.out.println("Result for: '" + _inFile + "' : "
 				+ (equalOutput ? "OK!" : ("not equal to expected output +'" + expectedOutFile + "'")));
@@ -176,6 +176,7 @@ public class ExampleMain {
 			}
 		}
 		c.run();
+		test(_inFile, _outFile, "08_simpleJunction.ini.eout", 10);
 	}
 
 	private static void start(String[] args) throws IOException {

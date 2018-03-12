@@ -11,7 +11,7 @@ public class Road extends SimObject {
 	private int numVehicles = 0;
 	private Junction start; //¿Atributo necesario?
 	private Junction end;
-	private MultiTreeMap<Integer, Vehicle> street  = new MultiTreeMap<>((a,b) -> a-b);
+	private MultiTreeMap<Integer, Vehicle> street  = new MultiTreeMap<>(Collections.reverseOrder());
 	
 	public Road(String id, int size, int maxVel, Junction start, Junction end) {
 		super(id);
@@ -53,7 +53,7 @@ public class Road extends SimObject {
 	public void avanza() {
 		
 		modificarVelBase();
-		MultiTreeMap<Integer, Vehicle> actualizado = new MultiTreeMap<>((a,b) -> a-b);
+		MultiTreeMap<Integer, Vehicle> actualizado = new MultiTreeMap<>(Collections.reverseOrder());
 		boolean averiado = false;
 		
 		for(Vehicle v: street.innerValues()){
@@ -64,7 +64,11 @@ public class Road extends SimObject {
 					v.setVelocidadActual(velBase);
 				}
 			} else {
-				v.setVelocidadActual(velBase / 2);
+				if (v.getTiempoAveria() > 0) {
+					v.setVelAct(0);
+				} else {
+					v.setVelocidadActual(velBase / 2);
+				}
 			}
 			v.avanza();
 			actualizado.putValue(v.getLocation(), v);
@@ -76,8 +80,13 @@ public class Road extends SimObject {
 		
 		String aux = "";
 		if(numVehicles > 0) {
+			int contador = 0;
 			for(Vehicle v: street.innerValues()) {
 				aux += "(" + v.getId() + "," + Integer.toString(v.getLocation()) + ")";
+				if(contador < numVehicles - 1) {
+					aux += ",";
+				}
+				contador++;
 			}
 		}
 		out.put("state", aux);

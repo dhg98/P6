@@ -104,6 +104,7 @@ public class Vehicle extends SimObject {
 				kilometrage += road.getSize() - location;
 				location = road.getSize();
 				road.getEnd().entraVehiculo(this); //El vehiculo se introduce en la cola del cruce del final de la carretera.
+				velAct = 0;
 			} else {
 				location = locationAux;
 				kilometrage += velAct;
@@ -113,6 +114,7 @@ public class Vehicle extends SimObject {
 	
 	public void moverASiguienteCarretera(){
 		road.saleVehiculo(this);
+		velAct = 0;
 		if(contadorCruce + 1 == itinerario.size()) {
 			haLlegado = true;
 		}
