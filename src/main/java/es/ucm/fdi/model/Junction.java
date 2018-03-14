@@ -90,7 +90,7 @@ public class Junction extends SimObject {
 	public void avanza() {
 		if(trafficLight != -1 && !junctionDeque.isEmpty() &&
 				!junctionDeque.get(trafficLight ).roadDeque.isEmpty()) {
-			//el array de incomingRoads no este vacio y la cola que indica el semaforo tampoco
+			//el array de incomingRoads no esta vacio y la cola que indica el semaforo tampoco
 			junctionDeque.get(trafficLight).roadDeque.getFirst().moverASiguienteCarretera(); //movemos el vehiculo a la carretera en funcion de su itinerario
 			junctionDeque.get(trafficLight).roadDeque.removeFirst(); //eliminar vehiculo de la cola
 		}

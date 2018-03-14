@@ -19,7 +19,6 @@ public class MakeVehicleFaultyEvent extends Event {
 				Vehicle v = r.getVehicle(itCoches.get(i));
 				v.setTiempoAveria(tiempoAveria);
 				v.setVelAct(0);
-				v.getRoad().setNumFaultyVehicles(v.getRoad().getNumFaultyVehicles() + 1);
 			}
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException ("The MakeVehicleFaultyEvent is incorrect", e);

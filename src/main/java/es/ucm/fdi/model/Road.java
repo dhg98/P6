@@ -10,8 +10,7 @@ public class Road extends SimObject {
 	private int numVehicles = 0;
 	private Junction start; //¿Atributo necesario?
 	private Junction end;
-	private int numFaultyVehicles;
-	private MultiTreeMap<Integer, Vehicle> street  = new MultiTreeMap<>(Comparator.comparing(Integer::intValue).reversed())/*Collections.reverseOrder()*/;
+	private MultiTreeMap<Integer, Vehicle> street  = new MultiTreeMap<>(Collections.reverseOrder());
 	
 	public Road(String id, int size, int maxVel, Junction start, Junction end) {
 		super(id);
@@ -19,7 +18,6 @@ public class Road extends SimObject {
 		this.maxVel = maxVel;
 		this.start = start;
 		this.end = end;
-		numFaultyVehicles = 0;
 	}
 	
 	public MultiTreeMap<Integer, Vehicle> getStreet() {
@@ -34,16 +32,8 @@ public class Road extends SimObject {
 		return maxVel;
 	}
 
-	public int getNumFaultyVehicles() {
-		return numFaultyVehicles;
-	}
-	
 	public int getNumVehicles() {
 		return numVehicles;
-	}
-
-	public void setNumFaultyVehicles(int numFaultyVehicles) {
-		this.numFaultyVehicles = numFaultyVehicles;
 	}
 
 	public int getSize() {
@@ -66,9 +56,8 @@ public class Road extends SimObject {
 	}
 	
 	public void avanza() {
-		
 		modificarVelBase();
-		MultiTreeMap<Integer, Vehicle> actualizado = new MultiTreeMap<>(Comparator.comparing(Integer::intValue).reversed());
+		MultiTreeMap<Integer, Vehicle> actualizado = new MultiTreeMap<>(Collections.reverseOrder());
 		boolean averiado = false;
 		int velBase = modificarVelBase();
 		for(Vehicle v: street.innerValues()){
@@ -92,19 +81,13 @@ public class Road extends SimObject {
 	}
 	
 	protected void fillReportDetails(Map<String, String> out) {
-		
-		String aux = "";
+		List <String> vehicleList = new ArrayList<>();
 		if(numVehicles > 0) {
-			int contador = 0;
 			for(Vehicle v: street.innerValues()) {
-				aux += "(" + v.getId() + "," + Integer.toString(v.getLocation()) + ")";
-				if(contador < numVehicles - 1) {
-					aux += ",";
-				}
-				contador++;
+				vehicleList.add("(" + v.getId() + "," + Integer.toString(v.getLocation()) + ")");
 			}
 		}
-		out.put("state", aux);
+		out.put("state", String.join(",", vehicleList));
 	}
 	
 	protected String getReportHeader() {
