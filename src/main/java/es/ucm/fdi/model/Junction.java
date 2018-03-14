@@ -3,16 +3,13 @@ package es.ucm.fdi.model;
 import java.util.*;
 
 public class Junction extends SimObject {
-	private List<IncomingRoads> junctionDeque;
-	private List<Road> outgoingRoadsList;
-	private Map<Road, IncomingRoads> junctionMap;
-	private int trafficLight = -1;
+	private List<IncomingRoads> junctionDeque = new ArrayList<>();
+	private List<Road> outgoingRoadsList = new ArrayList<>();
+	private Map<Road, IncomingRoads> junctionMap = new HashMap<>();
+	private int trafficLight = 0;
 	
 	public Junction(String id) {
 		super(id);
-		junctionDeque = new ArrayList<>();
-		outgoingRoadsList = new ArrayList<>();
-		junctionMap = new HashMap<>() ;
 	}
 	
 	public List<IncomingRoads> getJunctionDeque() {
@@ -29,7 +26,7 @@ public class Junction extends SimObject {
 
 	public void entraVehiculo(Vehicle v){
 		if (!junctionMap.get(v.getRoad()).roadDeque.contains(v)) {
-		junctionMap.get(v.getRoad()).roadDeque.offerLast(v); //Metemos el vehiculo en la cola
+			junctionMap.get(v.getRoad()).roadDeque.offerLast(v); //Metemos el vehiculo en la cola siempre que no este ya.
 		}
 	}
 	
@@ -37,11 +34,11 @@ public class Junction extends SimObject {
 		try {
 			trafficLight = (trafficLight + 1) % junctionDeque.size();
 		} catch (ArithmeticException e) {
-			trafficLight = -1; //si el numero de carreteras entrantes es 0, se mantiene a -1 el semaforo.
+			trafficLight = 0; //Desde donde se realiza esta llamada esta excepcion no se va a dar nunca, porque se comprueba que junctionDeque.size() != 0.
 		}
 	}
 	
-	public static class IncomingRoads {
+	private static class IncomingRoads {
 		 //boolean
 		private Deque<Vehicle> roadDeque;
 		private Road road;
@@ -88,18 +85,21 @@ public class Junction extends SimObject {
 	}
 	
 	public void avanza() {
-		if(trafficLight != -1 && !junctionDeque.isEmpty() &&
-				!junctionDeque.get(trafficLight ).roadDeque.isEmpty()) {
-			//el array de incomingRoads no este vacio y la cola que indica el semaforo tampoco
-			junctionDeque.get(trafficLight).roadDeque.getFirst().moverASiguienteCarretera(); //movemos el vehiculo a la carretera en funcion de su itinerario
-			junctionDeque.get(trafficLight).roadDeque.removeFirst(); //eliminar vehiculo de la cola
+		if(!junctionDeque.isEmpty()) {
+			if (!junctionDeque.get(trafficLight ).roadDeque.isEmpty()) {
+				//el array de incomingRoads no este vacio y la cola que indica el semaforo tampoco
+				junctionDeque.get(trafficLight).roadDeque.getFirst().moverASiguienteCarretera(); //movemos el vehiculo a la carretera en funcion de su itinerario
+				junctionDeque.get(trafficLight).roadDeque.removeFirst(); //eliminar vehiculo de la cola
+			}
+			advanceLight();
 		}
-		advanceLight();
 	}
 	
 	public void addIncomingRoad(Road r) {
 		IncomingRoads ir = new IncomingRoads(r);
 		junctionDeque.add(ir);
 		junctionMap.put(r, ir);
+		trafficLight = junctionDeque.size() - 1; //al introducir una nueva carretera, se modifica el semaforo para que en el siguiente tick, al aumentar su valor
+		//se aumente de forma correcta y se ponga a 0, dejando pasar a la carretera que se agrego primero.
 	}
 }
