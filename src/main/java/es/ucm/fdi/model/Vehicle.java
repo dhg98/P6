@@ -114,19 +114,19 @@ public class Vehicle extends SimObject {
 		velAct = 0;
 		if(contadorCruce + 1 == itinerario.size()) {
 			haLlegado = true;
-		}
-		else{
+		} else {
 			int i;
 			List<Road> out = itinerario.get(contadorCruce).getOutgoingRoadsList();
 			for(i = 0; i < out.size(); ++i) {
-				if(out.get(i).getEnd() == itinerario.get(contadorCruce +1)){
+				if(out.get(i).getEnd() == itinerario.get(contadorCruce + 1)) {
 					out.get(i).entraVehiculo(this); //Mete el this en la carretera siguiente de acuerdo a su itinerario
 					road = out.get(i); //Cambia el atributo road a la nueva carretera en la que se encuentra
 					location = 0; //Establece su posicion a cero
 					contadorCruce++;
+					break;
 				}
 			}
-			if(i == itinerario.get(contadorCruce).getOutgoingRoadsList().size()) {
+			if(i == out.size()) {
 				throw new RuntimeException("The itinerary followed by the vehicle whose id is " + getId()
 						+ " is incorrect after the junction " + itinerario.get(contadorCruce).getId());
 				}
