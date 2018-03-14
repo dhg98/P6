@@ -117,10 +117,11 @@ public class Vehicle extends SimObject {
 		}
 		else{
 			int i;
-			for(i = 0; i < itinerario.get(contadorCruce).getOutgoingRoadsList().size(); ++i) {
-				if(itinerario.get(contadorCruce).getOutgoingRoadsList().get(i).getEnd() == itinerario.get(contadorCruce +1)){
-					itinerario.get(contadorCruce).getOutgoingRoadsList().get(i).entraVehiculo(this); //Mete el this en la carretera siguiente de acuerdo a su itinerario
-					road = itinerario.get(contadorCruce).getOutgoingRoadsList().get(i); //Cambia el atributo road a la nueva carretera en la que se encuentra
+			List<Road> out = itinerario.get(contadorCruce).getOutgoingRoadsList();
+			for(i = 0; i < out.size(); ++i) {
+				if(out.get(i).getEnd() == itinerario.get(contadorCruce +1)){
+					out.get(i).entraVehiculo(this); //Mete el this en la carretera siguiente de acuerdo a su itinerario
+					road = out.get(i); //Cambia el atributo road a la nueva carretera en la que se encuentra
 					location = 0; //Establece su posicion a cero
 					contadorCruce++;
 				}

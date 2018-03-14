@@ -1,15 +1,13 @@
 package es.ucm.fdi.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class NewCarEvent extends NewVehicleEvent {
 
 	private int resistanceKm;
 	private double faultProbability;
 	private int maxFaultDuration;
-	private long seed ;
+	private long seed;
 	
 	public NewCarEvent(int time, String id, int maxSpeed,
 			List<String> itinerary, int resistanceKm, double faultProbability,
@@ -29,7 +27,7 @@ public class NewCarEvent extends NewVehicleEvent {
 		}
 		for (Road ro : r.getJunction(getItinerary().get(0)).getOutgoingRoadsList()) {
 			if (ro.getEnd().getId().equals(r.getJunction(getItinerary().get(1)).getId())) {
-				Car v = new Car(getId(), getMaxSpeed(), ro, its, resistanceKm, faultProbability, maxFaultDuration);
+				Car v = new Car(getId(), getMaxSpeed(), ro, its, resistanceKm, faultProbability, maxFaultDuration, seed);
 				r.addVehicle(v);
 				ro.entraVehiculo(v);
 				break;

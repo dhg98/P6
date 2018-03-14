@@ -7,7 +7,7 @@ public class NewDirtRoadEventBuilder implements EventBuilder {
 
 	@Override
 	public Event parse(IniSection sec) {
-		if(!"new_road".equals(sec.getTag()) && "dirt".equals(sec.getValue("type"))){
+		if(!"new_road".equals(sec.getTag()) || !"dirt".equals(sec.getValue("type"))){
 			return null;
 		} else {
 			try {
@@ -20,7 +20,7 @@ public class NewDirtRoadEventBuilder implements EventBuilder {
 					throw new IllegalArgumentException("One of the ids you´ve tried to parse contains invalid characters.");
 				}
 			} catch (IllegalArgumentException e) {
-				throw new IllegalArgumentException("One of the numbers you've given is negative", e);
+				throw new IllegalArgumentException("One of the numbers you've given is out of range", e);
 			}
 		}
 	}

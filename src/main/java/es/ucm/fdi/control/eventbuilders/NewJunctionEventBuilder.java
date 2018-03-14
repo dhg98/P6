@@ -7,7 +7,7 @@ public class NewJunctionEventBuilder implements EventBuilder {
 
 	@Override
 	public Event parse(IniSection sec) throws IllegalArgumentException {
-		if(!sec.getTag().equals("new_junction")){
+		if(!"new_junction".equals(sec.getTag())){
 			return null;
 		} else {
 			try {

@@ -1,13 +1,6 @@
 package es.ucm.fdi.launcher;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.cli.CommandLine;
@@ -157,31 +150,33 @@ public class ExampleMain {
 		// corresponding fields.
 		
 		TrafficSimulator t = new TrafficSimulator();
-		Controller c = null;
+		Controller c;
 		if(_outFile != null) {
-			OutputStream out = new PrintStream(_outFile);
+			OutputStream out = new FileOutputStream(_outFile);
 			InputStream in = new FileInputStream(_inFile);
-			if(_timeLimit != null) {
-				c = new Controller(t, _timeLimit, in , out);
-			} else {
-				c = new Controller(t, _timeLimitDefaultValue, in, out);
-			}
+			c = new Controller(t, _timeLimit, in, out);
 		} else {
 			OutputStream out = System.out;
 			InputStream in = new FileInputStream(_inFile);
-			if(_timeLimit != null) {
-				c = new Controller(t, _timeLimit, in, out);
-			} else {
-				c = new Controller(t, _timeLimitDefaultValue, in, out);
-			}
+			c = new Controller(t, _timeLimit, in, out);
 		}
-		c.run();
-		test(_inFile, _outFile, "10_crossRoadMultipleVehicles.ini.eout", 10);
+		try {
+			c.run();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		//test(_inFile, _outFile, "10_crossRoadMultipleVehicles.ini.eout", 10);
 		//test(_inFile, _outFile, "09_crossRoadTwoVehicles.ini.eout", 10);
 	}
 
 	private static void start(String[] args) throws IOException {
 		parseArgs(args);
+		if (_inFile == null) {
+			throw new IllegalArgumentException ("The input file is missing");
+		}
+		if (_timeLimit == null) {
+			_timeLimit = _timeLimitDefaultValue;
+		}
 		startBatchMode();
 	}
 

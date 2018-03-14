@@ -7,10 +7,9 @@ import es.ucm.fdi.ini.*;
 import es.ucm.fdi.model.*;
 
 
-public class Controller {
-	public static final int TICKS_POR_DEFECTO = 10;
-	
-	EventBuilder[] avaliableParsers = new EventBuilder[]{new NewRoadEventBuilder(), new NewVehicleEventBuilder(), new NewJunctionEventBuilder(), new MakeVehicleFaultyEventBuilder()};
+public class Controller {	
+	EventBuilder[] avaliableParsers = new EventBuilder[]{new NewDirtRoadEventBuilder(), new NewLanesRoadEventBuilder(), new NewRoadEventBuilder(),
+			new NewCarEventBuilder(), new NewBikeEventBuilder(), new NewVehicleEventBuilder(), new NewJunctionEventBuilder(), new MakeVehicleFaultyEventBuilder()};
 	
 	private TrafficSimulator simulator;
 	private int ticks;

@@ -7,7 +7,6 @@ import es.ucm.fdi.util.MultiTreeMap;
 public class Road extends SimObject {
 	private int size;
 	private int maxVel;
-	private int velBase;
 	private int numVehicles = 0;
 	private Junction start; //¿Atributo necesario?
 	private Junction end;
@@ -23,6 +22,18 @@ public class Road extends SimObject {
 		numFaultyVehicles = 0;
 	}
 	
+	public MultiTreeMap<Integer, Vehicle> getStreet() {
+		return street;
+	}
+
+	public void setStreet(MultiTreeMap<Integer, Vehicle> street) {
+		this.street = street;
+	}
+
+	public int getMaxVel() {
+		return maxVel;
+	}
+
 	public int getNumFaultyVehicles() {
 		return numFaultyVehicles;
 	}
@@ -38,29 +49,19 @@ public class Road extends SimObject {
 	public int getSize() {
 		return size;
 	}
-	
-	public void setVelBase(int velBase) {
-		this.velBase = velBase;
-	}
 
 	public Junction getEnd() {
 		return end;
 	}
 
-	//Preguntar por entraVehiculo y saleVehiculo (cual es la posicion en la que se inserta y de cual es de la que se elimina)
 	public void entraVehiculo(Vehicle v) {
 		street.putValue(v.getLocation(), v);
-		/*ArrayList<Vehicle> aux = street.get(v.getLocation());
-		aux.add(v);*/
 		numVehicles++;
-		//street.set(v.getLocation(), aux); Se supone que las referencias son iguales y deberia modificarlo sin necesitar el set
 		
 	}
 	
 	public void saleVehiculo(Vehicle v) {
 		street.removeValue(v.getLocation(), v);
-		/*ArrayList<Vehicle> aux = street.get(v.getLocation());
-		aux.remove(v);*/
 		numVehicles--;
 	}
 	
@@ -69,7 +70,7 @@ public class Road extends SimObject {
 		modificarVelBase();
 		MultiTreeMap<Integer, Vehicle> actualizado = new MultiTreeMap<>(Comparator.comparing(Integer::intValue).reversed());
 		boolean averiado = false;
-		
+		int velBase = modificarVelBase();
 		for(Vehicle v: street.innerValues()){
 			if(!averiado) {
 				if(v.getTiempoAveria() > 0) {
@@ -114,7 +115,7 @@ public class Road extends SimObject {
 		numVehicles--;
 	}
 	
-	public void modificarVelBase(){
-		velBase = Math.min(maxVel, (maxVel / Math.max(numVehicles, 1)) + 1);
+	public int modificarVelBase(){
+		return Math.min(maxVel, (maxVel / Math.max(numVehicles, 1)) + 1);
 	}
 }

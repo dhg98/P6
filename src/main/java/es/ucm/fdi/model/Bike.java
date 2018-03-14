@@ -19,8 +19,8 @@ public class Bike extends Vehicle {
 
 	@Override
 	protected void fillReportDetails(Map<String, String> out) {
-		super.fillReportDetails(out);
 		out.put("type", "bike");
+		super.fillReportDetails(out);	
 	}
 	
 	

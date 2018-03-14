@@ -7,7 +7,7 @@ public class NewLanesRoadEventBuilder implements EventBuilder {
 
 	@Override
 	public Event parse(IniSection sec) {
-		if(!"new_road".equals(sec.getTag()) && "lanes".equals(sec.getValue("type"))){
+		if(!"new_road".equals(sec.getTag()) || !"lanes".equals(sec.getValue("type"))){
 			return null;
 		} else {
 			try {
