@@ -6,6 +6,9 @@ public class NewDirtRoadEvent extends NewRoadEvent {
 		super(time, id, src, dest, maxSpeed, length);
 	}
 	
+	/**
+	 * Executes a NewDirtRoadEvent and adds the NewBike to the RoadMap
+	 */
 	@Override
 	public void execute(RoadMap roadMap) {
 		Junction start = roadMap.getJunction(getSrc());

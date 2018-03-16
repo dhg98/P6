@@ -2,7 +2,14 @@ package es.ucm.fdi.model;
 
 import java.util.*;
 
+/**
+ * Represents a Road in the Simulator
+ * @author Daniel Herranz
+ *
+ */
 public class Junction extends SimObject {
+	public static final String REPORT_HEADER = "junction_report";
+	
 	private List<IncomingRoads> junctionDeque = new ArrayList<>();
 	private List<Road> outgoingRoadsList = new ArrayList<>();
 	private Map<Road, IncomingRoads> junctionMap = new HashMap<>();
@@ -24,12 +31,19 @@ public class Junction extends SimObject {
 		return outgoingRoadsList;
 	}
 
+	/**
+	 * Push a Vehicle in the Queue of the Road
+	 * @param v
+	 */
 	public void entraVehiculo(Vehicle v){
 		if (!junctionMap.get(v.getRoad()).roadDeque.contains(v)) {
 			junctionMap.get(v.getRoad()).roadDeque.offerLast(v); //Metemos el vehiculo en la cola siempre que no este ya.
 		}
 	}
 	
+	/**
+	 * Modifies the traffic Light
+	 */
 	public void advanceLight(){ 
 		try {
 			trafficLight = (trafficLight + 1) % junctionDeque.size();
@@ -52,9 +66,11 @@ public class Junction extends SimObject {
 		public Deque<Vehicle> getRoadDeque() {
 			return roadDeque;
 		}
-		
 	}
 	
+	/**
+	 * Report a Junction given the statement of the project
+	 */
 	protected void fillReportDetails(Map<String, String> out) {
 		
 		String aux = "";
@@ -81,9 +97,12 @@ public class Junction extends SimObject {
 	}
 	
 	protected String getReportHeader() {
-		return "junction_report";
+		return REPORT_HEADER;
 	}
 	
+	/**
+	 * Advance a Junction. It moves only the first car of the queue and advances the Traffic Light
+	 */
 	public void avanza() {
 		if(!junctionDeque.isEmpty()) {
 			if (!junctionDeque.get(trafficLight ).roadDeque.isEmpty()) {
@@ -95,6 +114,10 @@ public class Junction extends SimObject {
 		}
 	}
 	
+	/**
+	 * Adds a Incoming Road to the Junction
+	 * @param r
+	 */
 	public void addIncomingRoad(Road r) {
 		IncomingRoads ir = new IncomingRoads(r);
 		junctionDeque.add(ir);

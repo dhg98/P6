@@ -5,6 +5,11 @@ import java.util.Map;
 
 import es.ucm.fdi.util.MultiTreeMap;
 
+/**
+ * Represents a Dirt Road given the statement of the project
+ * @author Daniel Herranz
+ *
+ */
 public class LanesRoad extends Road{
 
 	private int lanes;
@@ -17,19 +22,26 @@ public class LanesRoad extends Road{
 	public int getLanes() {
 		return lanes;
 	}
-	
-	
-	
+
+	/**
+	 * Modify the BaseSpeed of the Lanes Road given the statement of the practice
+	 */
 	@Override
 	public int modificarVelBase() {
 		return Math.min(getMaxVel(), (getMaxVel() * lanes)/(Math.max(1, getNumVehicles())) + 1);
 	}
 	
+	/**
+	 * Reports a Lanes Road given the statement of the project
+	 */
 	protected void fillReportDetails(Map<String, String> out) {
 		out.put("type", "lanes");
 		super.fillReportDetails(out);
 	}
 	
+	/**
+	 * Advances a Lanes Road given the statement of the project
+	 */
 	@Override
 	public void avanza() {
 		modificarVelBase();

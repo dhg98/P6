@@ -8,6 +8,9 @@ public class NewJunctionEvent extends Event {
 		this.id = id;
 	}
 	
+	/**
+	 * Executes a NewJunctionEvent and adds the NewBike to the RoadMap
+	 */
 	@Override
 	public void execute(RoadMap r) {
 		Junction j = new Junction (id);

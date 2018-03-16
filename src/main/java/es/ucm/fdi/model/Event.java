@@ -1,5 +1,10 @@
 package es.ucm.fdi.model;
 
+/**
+ * Represents a Event of simulation
+ * @author Daniel Herranz
+ *
+ */
 public abstract class Event {
 	private int time;
 

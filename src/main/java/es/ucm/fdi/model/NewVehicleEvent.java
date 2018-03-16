@@ -27,6 +27,9 @@ public class NewVehicleEvent extends Event {
 		return itinerary;
 	}
 
+	/**
+	 * Executes a NewVehicleEvent and adds the NewBike to the RoadMap
+	 */
 	@Override
 	public void execute(RoadMap r) {
 		List <Junction> its = new ArrayList<>();

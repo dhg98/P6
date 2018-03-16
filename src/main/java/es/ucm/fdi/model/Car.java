@@ -2,6 +2,11 @@ package es.ucm.fdi.model;
 
 import java.util.*;
 
+/**
+ * Represents a Car given the statement of the project
+ * @author Daniel Herranz
+ *
+ */
 public class Car extends Vehicle {
 
 	private int resistanceKm;
@@ -24,6 +29,10 @@ public class Car extends Vehicle {
 		this.rand = new Random(this.seed);
 	}
 
+	
+	/**
+	 * Advances the car given the statement of the project
+	 */
 	@Override
 	public void avanza() {
 		if (getTiempoAveria() > 0) {
@@ -41,6 +50,9 @@ public class Car extends Vehicle {
 		}
 	}
 	
+	/**
+	 * Reports a car given the statement of the project
+	 */
 	@Override
 	protected void fillReportDetails(Map<String, String> out) {
 		out.put("type", "car");

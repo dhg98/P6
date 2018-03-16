@@ -19,6 +19,9 @@ public class NewCarEvent extends NewVehicleEvent {
 		this.seed = seed;
 	}
 	
+	/**
+	 * Executes a NewCarEvent and adds the NewBike to the RoadMap
+	 */
 	@Override
 	public void execute(RoadMap r) {
 		List <Junction> its = new ArrayList<>();
