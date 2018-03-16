@@ -8,6 +8,14 @@ public class Junction extends SimObject {
 	private Map<Road, IncomingRoads> junctionMap = new HashMap<>();
 	private int trafficLight = 0;
 	
+	public int getTrafficLight() {
+		return trafficLight;
+	}
+
+	public void setTrafficLight(int trafficLight) {
+		this.trafficLight = trafficLight;
+	}
+
 	public Junction(String id) {
 		super(id);
 	}
@@ -38,8 +46,7 @@ public class Junction extends SimObject {
 		}
 	}
 	
-	private static class IncomingRoads {
-		 //boolean
+	public static class IncomingRoads {
 		private Deque<Vehicle> roadDeque;
 		private Road road;
 		
