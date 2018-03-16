@@ -32,6 +32,12 @@ public class Vehicle extends SimObject {
 		contadorCruce = 1;
 	}
 	
+	
+	public boolean getHaLlegado() {
+		return haLlegado;
+	}
+
+
 	public int getVelMax() {
 		return velMax;
 	}

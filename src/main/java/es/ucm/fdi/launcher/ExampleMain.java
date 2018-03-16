@@ -165,7 +165,7 @@ public class ExampleMain {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		}
-		test(_inFile, _outFile, "03_parsingError.ini.eout", 10);
+		test(_inFile, _outFile, "15_misc.ini.eout", 10);
 		//test(_inFile, _outFile, "09_crossRoadTwoVehicles.ini.eout", 10);
 	}
 

@@ -15,7 +15,8 @@ import es.ucm.fdi.model.*;
 public class Controller {	
 	//Array for parsing the events
 	EventBuilder[] avaliableParsers = new EventBuilder[]{new NewDirtRoadEventBuilder(), new NewLanesRoadEventBuilder(), new NewRoadEventBuilder(),
-			new NewCarEventBuilder(), new NewBikeEventBuilder(), new NewVehicleEventBuilder(), new NewJunctionEventBuilder(), new MakeVehicleFaultyEventBuilder()};
+			new NewCarEventBuilder(), new NewBikeEventBuilder(), new NewVehicleEventBuilder(), new NewRoundRobinJunctionEventBuilder(),
+			new NewMostCrowdedJunctionEventBuilder(), new NewJunctionEventBuilder(), new MakeVehicleFaultyEventBuilder()};
 	
 	private TrafficSimulator simulator;
 	private int ticks;

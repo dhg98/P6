@@ -26,14 +26,6 @@ public class Junction extends SimObject {
 	public Junction(String id) {
 		super(id);
 	}
-	
-	public int getTrafficLight() {
-		return trafficLight;
-	}
-
-	public void setTrafficLight(int trafficLight) {
-		this.trafficLight = trafficLight;
-	}
 
 	public List<IncomingRoads> getJunctionDeque() {
 		return junctionDeque;
@@ -76,6 +68,10 @@ public class Junction extends SimObject {
 			super();
 			this.roadDeque = new ArrayDeque<>();
 			this.road = road;
+		}
+		
+		public Road getRoad() {
+			return road;
 		}
 
 		public Deque<Vehicle> getRoadDeque() {
