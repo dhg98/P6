@@ -3,7 +3,7 @@ package es.ucm.fdi.model;
 import java.util.*;
 
 /**
- * Represents a Road in the Simulator
+ * Represents a Junction in the Simulator
  * @author Daniel Herranz
  *
  */
@@ -19,6 +19,14 @@ public class Junction extends SimObject {
 		super(id);
 	}
 	
+	public int getTrafficLight() {
+		return trafficLight;
+	}
+
+	public void setTrafficLight(int trafficLight) {
+		this.trafficLight = trafficLight;
+	}
+
 	public List<IncomingRoads> getJunctionDeque() {
 		return junctionDeque;
 	}
