@@ -45,7 +45,7 @@ public class Road extends SimObject {
 	}
 
 	public void entraVehiculo(Vehicle v) {
-		street.putValue(v.getLocation(), v);
+		street.putValue(0, v);
 		numVehicles++;
 		
 	}
