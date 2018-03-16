@@ -7,7 +7,11 @@ public class NewJunctionEvent extends Event {
 		super(time);
 		this.id = id;
 	}
-	
+
+	public String getId() {
+		return id;
+	}
+
 	/**
 	 * Executes a NewJunctionEvent and adds the NewBike to the RoadMap
 	 */
@@ -16,5 +20,4 @@ public class NewJunctionEvent extends Event {
 		Junction j = new Junction (id);
 		r.addJunction(j);
 	}
-
 }
