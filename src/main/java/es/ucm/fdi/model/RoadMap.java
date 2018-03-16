@@ -23,7 +23,13 @@ public class RoadMap {
 		simObjects = new HashMap<>();
 	}
 	
-	public Vehicle getVehicle(String id) throws IllegalArgumentException {
+	/**
+	 * Get a Vehicle from the RoadMap
+	 * @param id
+	 * @return a vehicle if the id exists in the RoadMap or throws an Exception
+	 * @throws IllegalArgumentException
+	 */
+	public Vehicle getVehicle(String id) {
 		SimObject o = simObjects.get(id);
 		if (o != null && o instanceof Vehicle) {
 			return (Vehicle) o;
@@ -33,7 +39,13 @@ public class RoadMap {
 		}
 	}
 
-	public Junction getJunction(String id) throws IllegalArgumentException {
+	/**
+	 * Get a Junction from the RoadMap
+	 * @param id
+	 * @return a junction if the id exists in the RoadMap or throws an Exception
+	 * @throws IllegalArgumentException
+	 */
+	public Junction getJunction(String id) {
 		SimObject o = simObjects.get(id);
 		if (o != null && o instanceof Junction) {
 			return (Junction) o;
@@ -43,7 +55,13 @@ public class RoadMap {
 		}
 	}
 	
-	public Road getRoad(String id){
+	/**
+	 * Get a Road from the RoadMap
+	 * @param id
+	 * @return a road if the id exists in the RoadMap or throws an Exception
+	 * @throws IllegalArgumentException
+	 */
+	public Road getRoad(String id) {
 		SimObject o = simObjects.get(id);
 		if (o != null && o instanceof Road) {
 			return (Road) o;
@@ -65,9 +83,14 @@ public class RoadMap {
 		return roads;
 	}
 	
-	public void addJunction(Junction j) throws IllegalArgumentException {
+	/**
+	 * Adds a Junction if the the id does not exist
+	 * @param j
+	 * @throws IllegalArgumentException
+	 */
+	public void addJunction(Junction j) {
 		if (simObjects.containsKey(j.getId())) {
-			throw new IllegalArgumentException("Ya existe un objeto con este id");
+			throw new IllegalArgumentException("There is an object with this id.");
 		}
 		else {
 			simObjects.put(j.getId(), j);
@@ -75,9 +98,14 @@ public class RoadMap {
 		}		
 	}
 	
-	public void addRoad(Road r) throws IllegalArgumentException {
+	/**
+	 * Adds a Road if the the id does not exist
+	 * @param j
+	 * @throws IllegalArgumentException
+	 */
+	public void addRoad(Road r) {
 		if (simObjects.containsKey(r.getId())) {
-			throw new IllegalArgumentException("Ya existe un objeto con este id");
+			throw new IllegalArgumentException("There is an object with this id.");
 		}
 		else {
 			simObjects.put(r.getId(), r);
@@ -85,9 +113,14 @@ public class RoadMap {
 		}	
 	}
 	
-	public void addVehicle(Vehicle v) throws IllegalArgumentException {
+	/**
+	 * Adds a Vehicle if the the id does not exist
+	 * @param j
+	 * @throws IllegalArgumentException
+	 */
+	public void addVehicle(Vehicle v) {
 		if (simObjects.containsKey(v.getId())) {
-			throw new IllegalArgumentException("Ya existe un objeto con este id");
+			throw new IllegalArgumentException("There is an object with this id.");
 		}
 		else {
 			simObjects.put(v.getId(), v);

@@ -2,6 +2,11 @@ package es.ucm.fdi.model;
 
 import java.util.Map;
 
+/**
+ * Superclass of the Objects in the simulation
+ * @author Daniel Herranz
+ *
+ */
 public abstract class SimObject {
 	private String id;
 		
@@ -41,18 +46,15 @@ public abstract class SimObject {
 	protected abstract void fillReportDetails(Map<String, String> out);
 	protected abstract String getReportHeader();
 	
+	/**
+	 * Reports a SimObject given the statement of the project
+	 * @param time
+	 * @param out
+	 */
 	public void report(int time, Map<String, String> out) {
 		out.put("", getReportHeader());
 		out.put("id", id);
 		out.put("time", Integer.toString(time));
 		fillReportDetails(out);
 	}
-	
-	/*public String toString(){ //copiado de pizarra
-		StringBuilder sb= new StringBuilder("   ");
-		for(Map.Entry<String,String> e : m) {
-			sb.append(e.getKey() + ":" + e.getValue() + "\n\t");
-		}
-		return sb.toString();
-	}*/
 }

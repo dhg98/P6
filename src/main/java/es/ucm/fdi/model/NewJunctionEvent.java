@@ -12,10 +12,12 @@ public class NewJunctionEvent extends Event {
 		return id;
 	}
 
+	/**
+	 * Executes a NewJunctionEvent and adds the NewBike to the RoadMap
+	 */
 	@Override
 	public void execute(RoadMap r) {
 		Junction j = new Junction (id);
 		r.addJunction(j);
 	}
-
 }

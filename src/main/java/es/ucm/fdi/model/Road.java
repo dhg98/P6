@@ -4,7 +4,14 @@ import java.util.*;
 
 import es.ucm.fdi.util.MultiTreeMap;
 
+/**
+ * Represents a Road in the Simulator
+ * @author Daniel Herranz
+ *
+ */
 public class Road extends SimObject {
+	public static final String REPORT_HEADER = "road_report";
+	
 	private int size;
 	private int maxVel;
 	private int numVehicles = 0;
@@ -44,17 +51,28 @@ public class Road extends SimObject {
 		return end;
 	}
 
+	/**
+	 * Puts a vehicle int the Road at the position number 0.
+	 * @param v
+	 */
 	public void entraVehiculo(Vehicle v) {
 		street.putValue(0, v);
 		numVehicles++;
 		
 	}
 	
+	/**
+	 * Removes a vehicle from the Road
+	 * @param v
+	 */
 	public void saleVehiculo(Vehicle v) {
 		street.removeValue(v.getLocation(), v);
 		numVehicles--;
 	}
 	
+	/**
+	 * Advances a Road given the statement of the project
+	 */
 	public void avanza() {
 		modificarVelBase();
 		MultiTreeMap<Integer, Vehicle> actualizado = new MultiTreeMap<>(Collections.reverseOrder());
@@ -80,6 +98,9 @@ public class Road extends SimObject {
 		street = actualizado;
 	}
 	
+	/**
+	 * Reports a Road given the statement of the project
+	 */
 	protected void fillReportDetails(Map<String, String> out) {
 		List <String> vehicleList = new ArrayList<>();
 		if(numVehicles > 0) {
@@ -91,13 +112,13 @@ public class Road extends SimObject {
 	}
 	
 	protected String getReportHeader() {
-		return "road_report";
+		return REPORT_HEADER;
 	}
 	
-	public void decreaseNumVehicle(){
-		numVehicles--;
-	}
-	
+	/**
+	 * Modifies the Base velocity of the Road given the statement of the project
+	 * @return
+	 */
 	public int modificarVelBase(){
 		return Math.min(maxVel, (maxVel / Math.max(numVehicles, 1)) + 1);
 	}

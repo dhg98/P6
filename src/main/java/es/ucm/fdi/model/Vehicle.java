@@ -2,8 +2,14 @@ package es.ucm.fdi.model;
 
 import java.util.*;
 
+/**
+ * Represents a Vehicle in the Simulator
+ * @author Daniel Herranz
+ *
+ */
 public class Vehicle extends SimObject {
-
+	public static final String REPORT_HEADER = "vehicle_report";
+	
 	private int velMax;
 	private int velAct;
 	private Road road;
@@ -62,6 +68,9 @@ public class Vehicle extends SimObject {
 		this.location = location;
 	}
 	
+	/**
+	 * Report of a Vehicle given the statement of the project
+	 */
 	protected void fillReportDetails(Map<String, String> out) {
 		out.put("speed", Integer.toString(velAct));
 		out.put("kilometrage", Integer.toString(kilometrage));
@@ -74,13 +83,21 @@ public class Vehicle extends SimObject {
 	}
 	
 	protected String getReportHeader() {
-		return "vehicle_report";
+		return REPORT_HEADER;
 	}
 	
+	/**
+	 * Adds n to the atribute tiempoAveria.
+	 * @param n
+	 */
 	public void setTiempoAveria(int n){
 		tiempoAveria += n;
 	}
 
+	/**
+	 * Modifies the speed of the car if it is less than the maxSpeed.
+	 * @param velA
+	 */
 	public void setVelocidadActual(int velA) {
 		if(velA >= velMax){
 			velAct = velMax;
@@ -89,6 +106,9 @@ public class Vehicle extends SimObject {
 		}
 	}
 	
+	/**
+	 * Advance a vehicle given the statement of the project.
+	 */
 	public void avanza() {
 		if(tiempoAveria > 0) {
 			tiempoAveria--;
@@ -107,6 +127,9 @@ public class Vehicle extends SimObject {
 		}
 	}
 	
+	/**
+	 * Move a vehicle to the next road given his itinerary.
+	 */
 	public void moverASiguienteCarretera(){
 		road.saleVehiculo(this);
 		velAct = 0;

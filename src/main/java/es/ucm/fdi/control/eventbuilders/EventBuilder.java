@@ -7,9 +7,18 @@ import es.ucm.fdi.model.Event;
 
 public interface EventBuilder {
 	
+	/**
+	 * Parser given the statement of the project
+	 * @param sec
+	 * @return
+	 */
 	public Event parse(IniSection sec);
-	//public String template(); no sabemos que es 
 	
+	/**
+	 * Determines if an id is valid given the statement of the project.
+	 * @param id
+	 * @return true if it is and false if it is not.
+	 */
 	public default boolean isValidId(String id){
 		for (int i = 0; i < id.length(); ++i) {
 			if (!Character.isLetterOrDigit(id.charAt(i)) && id.charAt(i) != '_') {
@@ -19,7 +28,15 @@ public interface EventBuilder {
 		return true;
 	}
 	
-	public default int parseInt(IniSection sec, String key, int def) throws IllegalArgumentException {
+	/**
+	 * Parser of an Integer number given the lower bound
+	 * @param sec
+	 * @param key
+	 * @param def
+	 * @return The number that matches the key in the IniSection if it is greater or equal than def
+	 * @throws IllegalArgumentException
+	 */
+	public default int parseInt(IniSection sec, String key, int def) {
 		int res;
 		try {
 			res = Integer.parseInt(sec.getValue(key));
@@ -33,7 +50,15 @@ public interface EventBuilder {
 		}
 	}
 
-	public default double parseDouble(IniSection sec, String key, int def) throws IllegalArgumentException {
+	/**
+	 * Parser of a Dobule number given the lower bound
+	 * @param sec
+	 * @param key
+	 * @param def
+	 * @return The number that matches the key in the IniSection if it is greater or equal than def
+	 * @throws IllegalArgumentException
+	 */
+	public default double parseDouble(IniSection sec, String key, int def) {
 		double res;
 		try {
 			res = Double.parseDouble(sec.getValue(key));
@@ -47,6 +72,14 @@ public interface EventBuilder {
 		}
 	}
 
+	/**
+	 * Parser of a Long number given the lower bound
+	 * @param sec
+	 * @param key
+	 * @param def
+	 * @return The number that matches the key in the IniSection if it is greater or equal than def
+	 * @throws IllegalArgumentException
+	 */
 	public default long parseLong(IniSection sec, String key, int def) throws IllegalArgumentException {
 		long res;
 		try {
@@ -60,6 +93,15 @@ public interface EventBuilder {
 			return res;
 		}
 	}
+	
+	/**
+	 * Parser of a List
+	 * @param sec
+	 * @param key
+	 * @param def
+	 * @return the list of ids if they are valid or throws an Exception
+	 * @throws IllegalArgumentException
+	 */
 	public default ArrayList<String> parseIdList(IniSection sec, String key) {
 		String[] it = sec.getValue(key).split(",");
 		ArrayList<String> iti = new ArrayList<>();

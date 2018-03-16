@@ -8,7 +8,10 @@ public class NewBikeEvent extends NewVehicleEvent {
 	public NewBikeEvent(int time, String id, int maxSpeed, List<String> itinerary) {
 		super(time, id, maxSpeed, itinerary);
 	}
-
+	
+	/**
+	 * Executes a NewBikeEvent and adds the NewBike to the RoadMap
+	 */
 	@Override
 	public void execute(RoadMap r) {
 		List <Junction> its = new ArrayList<>();

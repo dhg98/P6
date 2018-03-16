@@ -12,6 +12,9 @@ public class MakeVehicleFaultyEvent extends Event {
 		itCoches = a;
 	}
 	
+	/**
+	 * Executes a NewMakeVehicleFaultyEvent faults a vehicle
+	 */
 	@Override
 	public void execute(RoadMap r) {
 		try{

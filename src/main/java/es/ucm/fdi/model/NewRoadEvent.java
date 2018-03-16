@@ -36,6 +36,9 @@ public class NewRoadEvent extends Event {
 		return dest;
 	}
 
+	/**
+	 * Executes a NewRoadEvent and adds the NewBike to the RoadMap
+	 */
 	@Override
 	public void execute(RoadMap roadMap) {
 		Junction start = roadMap.getJunction(src);

@@ -9,6 +9,9 @@ public class NewLanesRoadEvent extends NewRoadEvent {
 		this.lanes = lanes;
 	}
 	
+	/**
+	 * Executes a NewLanesRoadEvent and adds the NewBike to the RoadMap
+	 */
 	@Override
 	public void execute(RoadMap roadMap) {
 		Junction start = roadMap.getJunction(getSrc());
