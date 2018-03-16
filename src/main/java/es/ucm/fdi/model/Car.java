@@ -29,7 +29,7 @@ public class Car extends Vehicle {
 		if (getTiempoAveria() > 0) {
 			kilometrageFaulty = 0;
 			super.avanza();
-		} else if (getTiempoAveria() == 0 && kilometrageFaulty >= resistanceKm && rand.nextDouble() < faultProbability) {
+		} else if (getTiempoAveria() == 0 && kilometrageFaulty > resistanceKm && rand.nextDouble() < faultProbability) {
 			setTiempoAveria(rand.nextInt(maxFaultDuration) + 1);
 			kilometrageFaulty = 0;
 			super.avanza();
