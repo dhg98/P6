@@ -29,7 +29,10 @@ public class Car extends Vehicle {
 		this.rand = new Random(this.seed);
 	}
 
-	
+	public int getMaxFaultDuration() {
+		return maxFaultDuration;
+	}
+
 	/**
 	 * Advances the car given the statement of the project
 	 */

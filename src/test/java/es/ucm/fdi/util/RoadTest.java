@@ -9,7 +9,6 @@ import org.junit.Test;
 import es.ucm.fdi.model.*;
 
 public class RoadTest {
-
 	
 	@Test
 	public void testAvanza() {
@@ -19,9 +18,10 @@ public class RoadTest {
 		List<Junction> it = new ArrayList<>();
 		it.add(j1); it.add(j2);
 		Vehicle v = new Vehicle("v1" , 5, r, it);
+		
 		r.entraVehiculo(v);
 		r.avanza();
+		
 		assertEquals(5, v.getLocation());
 	}
-
 }
