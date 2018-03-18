@@ -22,20 +22,37 @@ public class ReportTest {
 		it.add(j1); 
 		it.add(j2);
 		Vehicle v = new Vehicle("v1" , 5, r, it);
+		Vehicle v2 = new Vehicle("v2", 8, r, it);
 		r.entraVehiculo(v);
+		r.entraVehiculo(v2);
 		r.avanza();
 		
 		Map<String, String> rep = new LinkedHashMap<>();
 		rep.put("", "road_report");
 		rep.put("id", "r1");
 		rep.put("time", "1");
-		rep.put("state", "(v1,5)");
+		rep.put("state", "(v1,3),(v2,3)");
 		
 		Map<String, String> test = new LinkedHashMap<>();
 		
 		r.report(1, test);
 		
 		assertEquals(rep, test);
+		
+		v.setTiempoAveria(2);
+		r.avanza();
+		
+		Map<String, String> pr = new LinkedHashMap<>();
+		pr.put("", "road_report");
+		pr.put("id", "r1");
+		pr.put("time", "2");
+		pr.put("state", "(v2,4),(v1,3)");
+		
+		Map<String, String> exp = new LinkedHashMap<>();
+		
+		r.report(2, exp);
+		
+		assertEquals(pr, exp);
 	}
 	
 	@Test
@@ -47,7 +64,6 @@ public class ReportTest {
 		it.add(j1); 
 		it.add(j2);
 		Road r1 = new Road("r1", 50, 20, j1, j2);
-		Junction.IncomingRoads r = new Junction.IncomingRoads(r1);
 		j2.addIncomingRoad(r1);
 		Vehicle v1 = new Vehicle("v1", 15, r1, it);
 		r1.entraVehiculo(v1);

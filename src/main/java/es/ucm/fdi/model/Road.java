@@ -74,7 +74,6 @@ public class Road extends SimObject {
 	 * Advances a Road given the statement of the project
 	 */
 	public void avanza() {
-		modificarVelBase();
 		MultiTreeMap<Integer, Vehicle> actualizado = new MultiTreeMap<>(Collections.reverseOrder());
 		boolean averiado = false;
 		int velBase = modificarVelBase();

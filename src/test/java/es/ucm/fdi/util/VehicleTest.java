@@ -61,7 +61,6 @@ public class VehicleTest {
 		it.add(j1); 
 		it.add(j2);
 		Road r1 = new Road("r1", 30, 20, j1, j2);
-		Junction.IncomingRoads r = new Junction.IncomingRoads(r1);
 		j2.addIncomingRoad(r1);
 		Vehicle v1 = new Vehicle("v1", 15, r1, it);
 		

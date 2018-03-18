@@ -108,7 +108,7 @@ public class ExampleMain {
 	 * 
 	 * @throws IOException
 	 */
-	private static void test(String path) throws IOException {
+	public static void test(String path) throws IOException { //A publica para poder llamarla desde el jUnit
 
 		File dir = new File(path);
 
@@ -124,7 +124,7 @@ public class ExampleMain {
 		});
 
 		for (File file : files) {
-			test(file.getAbsolutePath(), file.getAbsolutePath() + ".out", file.getAbsolutePath() + ".eout",100);
+			test(file.getAbsolutePath(), file.getAbsolutePath() + ".out", file.getAbsolutePath() + ".eout",10);
 		}
 
 	}
@@ -133,7 +133,7 @@ public class ExampleMain {
 		_outFile = outFile;
 		_inFile = inFile;
 		_timeLimit = timeLimit;
-		//startBatchMode();
+		startBatchMode();
 		boolean equalOutput = (new Ini(_outFile)).equals(new Ini(expectedOutFile));
 		System.out.println("Result for: '" + _inFile + "' : "
 				+ (equalOutput ? "OK!" : ("not equal to expected output +'" + expectedOutFile + "'")));
@@ -150,30 +150,19 @@ public class ExampleMain {
 		// corresponding fields.
 		
 		TrafficSimulator t = new TrafficSimulator();
-		Controller c;
-		if(_outFile != null) {
-			OutputStream out = new FileOutputStream(_outFile);
-			InputStream in = new FileInputStream(_inFile);
-			c = new Controller(t, _timeLimit, in, out);
-		} else {
-			OutputStream out = System.out;
-			InputStream in = new FileInputStream(_inFile);
-			c = new Controller(t, _timeLimit, in, out);
-		}
+		OutputStream out = _outFile != null ? new FileOutputStream(_outFile) : System.out;
+		//Si _outFile es null mostramos por pantalla y si no guardamos los datos de la simulacion en un fichero.
+		InputStream in = new FileInputStream(_inFile);
+		Controller c = new Controller(t, _timeLimit, in, out);
 		try {
 			c.run();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		}
-		test(_inFile, _outFile, "15_misc.ini.eout", 10);
-		//test(_inFile, _outFile, "09_crossRoadTwoVehicles.ini.eout", 10);
 	}
 
 	private static void start(String[] args) throws IOException {
 		parseArgs(args);
-		if (_inFile == null) {
-			throw new IllegalArgumentException ("The input file is missing");
-		}
 		if (_timeLimit == null) {
 			_timeLimit = _timeLimitDefaultValue;
 		}
@@ -193,7 +182,6 @@ public class ExampleMain {
 
 		// Call test in order to test the simulator on all examples in a directory.
 		//
-	    //	test("resources/examples/events/basic");
 
 		// Call start to start the simulator from command line, etc.
 		start(args);
