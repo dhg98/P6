@@ -48,4 +48,9 @@ public class NewRoadEvent extends Event {
 		start.getOutgoingRoadsList().add(road);
 		end.addIncomingRoad(road);
 	}
+
+	@Override
+	public String getType() {
+		return "New Road " + id;
+	}
 }

@@ -20,4 +20,9 @@ public class NewJunctionEvent extends Event {
 		Junction j = new Junction (id);
 		r.addJunction(j);
 	}
+
+	@Override
+	public String getType() {
+		return "New Junction " + id;
+	}
 }

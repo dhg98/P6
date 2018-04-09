@@ -88,6 +88,14 @@ public class Vehicle extends SimObject {
 		}
 	}
 	
+	public String toStringItinerary() {
+		List <String> itinerary = new ArrayList<>();
+		for(Junction j: itinerario) {
+			itinerary.add(j.getId());
+		}
+		return "[" + String.join(",", itinerary) + "]";
+	}
+	
 	protected String getReportHeader() {
 		return REPORT_HEADER;
 	}

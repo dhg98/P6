@@ -107,6 +107,10 @@ public class Junction extends SimObject {
 		out.put("queues", aux);
 	}
 	
+	public void getColorLights(String red, String green) {
+		
+	}
+	
 	protected String getReportHeader() {
 		return REPORT_HEADER;
 	}

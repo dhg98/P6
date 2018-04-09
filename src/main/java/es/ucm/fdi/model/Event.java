@@ -20,4 +20,6 @@ public abstract class Event {
 	}
 	
 	public abstract void execute(RoadMap r);
+	
+	public abstract String getType();
 }

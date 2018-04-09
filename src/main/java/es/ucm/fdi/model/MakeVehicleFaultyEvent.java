@@ -27,4 +27,13 @@ public class MakeVehicleFaultyEvent extends Event {
 			throw new IllegalArgumentException ("The MakeVehicleFaultyEvent is incorrect", e);
 		}
 	}
+
+	@Override
+	public String getType() {
+		List <String> idsList = new ArrayList<>();
+		for (String id : itCoches) {
+			idsList.add(id);
+		}
+		return "Break Vehicles [" + String.join(",", idsList) + "]";
+	}
 }

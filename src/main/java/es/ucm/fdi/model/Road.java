@@ -51,6 +51,10 @@ public class Road extends SimObject {
 		return end;
 	}
 
+	public Junction getStart() {
+		return start;
+	}
+
 	/**
 	 * Puts a vehicle int the Road at the position number 0.
 	 * @param v
@@ -101,13 +105,17 @@ public class Road extends SimObject {
 	 * Reports a Road given the statement of the project
 	 */
 	protected void fillReportDetails(Map<String, String> out) {
+		out.put("state", toString());
+	}
+	
+	public String toStringVehicles() {
 		List <String> vehicleList = new ArrayList<>();
 		if(numVehicles > 0) {
 			for(Vehicle v: street.innerValues()) {
 				vehicleList.add("(" + v.getId() + "," + Integer.toString(v.getLocation()) + ")");
 			}
 		}
-		out.put("state", String.join(",", vehicleList));
+		return String.join(",", vehicleList);
 	}
 	
 	protected String getReportHeader() {

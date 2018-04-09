@@ -46,4 +46,9 @@ public class NewVehicleEvent extends Event {
 		}		
 	}
 
+	@Override
+	public String getType() {
+		return "New Vehicle " + id;
+	}
+
 }
