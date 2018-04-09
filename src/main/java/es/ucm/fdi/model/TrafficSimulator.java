@@ -17,7 +17,7 @@ import es.ucm.fdi.util.MultiTreeMap;
 public class TrafficSimulator {
 	private RoadMap r;
 	private int timeCounter;
-	private MultiTreeMap<Integer, Event> Events = new MultiTreeMap <>();
+	private MultiTreeMap<Integer, Event> events = new MultiTreeMap <>();
 	
 	public TrafficSimulator() {
 		r = new RoadMap();
@@ -33,7 +33,7 @@ public class TrafficSimulator {
 		if (e.getTime() < timeCounter) {
 			throw new RuntimeException("The time you have given for this event is previous than the current time");
 		} else {
-			Events.putValue(e.getTime(), e);
+			events.putValue(e.getTime(), e);
 		}
 	}
 	
@@ -60,7 +60,7 @@ public class TrafficSimulator {
 	 */
 	public void eventProcess() {
 		try {
-			List<Event> arrayEvent = Events.get(timeCounter);
+			List<Event> arrayEvent = events.get(timeCounter);
 			if(arrayEvent != null) {
 				int i = 0;
 				while (i < arrayEvent.size()) {
@@ -132,5 +132,33 @@ public class TrafficSimulator {
 			report.clear(); 
 		}
 		file.store(out);
+	}
+	
+	public interface Listener {
+		void update(UpdateEvent ue, String error);
+	}
+	
+	public enum EventType {
+		REGISTERED, RESET, NEW_EVENT, ADVANCED, ERROR;
+	}
+	
+	public class UpdateEvent {
+		private EventType eventType;
+		
+		public EventType getEvent() {
+			return eventType;
+		}
+		
+		public RoadMap getRoadMap() {
+			return r;
+		}
+		
+		public List<Event> getEventQueue() {
+			return events.valuesList();			
+		}
+		
+		public int getCurrentTime() {
+			return timeCounter;
+		}
 	}
 }
