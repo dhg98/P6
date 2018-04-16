@@ -1,11 +1,15 @@
-package es.ucm.fdi.control;
+package es.ucm.fdi.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -14,10 +18,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-
-import es.ucm.fdi.view.JunctionTable;
-import es.ucm.fdi.view.RoadTable;
-import es.ucm.fdi.view.VehicleTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * Esto es sólo para empezar a jugar con las interfaces
@@ -30,6 +31,8 @@ import es.ucm.fdi.view.VehicleTable;
 
 public class SimWindow extends JFrame {
 	private static final Object[] COLUMN_NAME = {"ID", "Source", "Target", "Lenght", "Max Speed", "Vehicles"};
+	
+	private TextSection textSection;
 	
 	public SimWindow() {
 		super("Traffic Simulator");
@@ -47,6 +50,49 @@ public class SimWindow extends JFrame {
 		return panel;
 	}
 	
+	public void readIni() {
+		JFileChooser chooser = new JFileChooser();
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+	        "Ini files", "ini");
+	    chooser.setFileFilter(filter);
+	    int returnVal = chooser.showOpenDialog(chooser.getParent());
+	    if(returnVal == JFileChooser.APPROVE_OPTION) {
+	       File f = chooser.getSelectedFile();
+	       System.out.println("You chose to open this file: " +
+	            f.getName());
+	       
+	       try {
+	    	   String st = new String(Files.readAllBytes(f.toPath()), "UTF-8");
+	    	   
+	    	   
+	       } catch (IOException e) {
+	    	   
+	       }
+	       
+	    }		
+	}
+	
+	public void saveIni() {
+		JFileChooser chooser = new JFileChooser();
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+	        "Ini files", "ini");
+	    chooser.setFileFilter(filter);
+	    int returnVal = chooser.showSaveDialog(chooser.getParent());
+	    if(returnVal == JFileChooser.APPROVE_OPTION) {
+	    	File f = chooser.getSelectedFile();
+	    	System.out.println("You chose to open this file: " +
+	           f.getName());
+	    	try {
+	    		String s = textSection.textArea.getText();
+	    		Files.write(f.toPath(), textSection.textArea.getText().getBytes("UTF-8"));
+	    		
+	    	} catch (IOException e) {
+	    	}	   
+	    }
+	}
+	
+	
+	
 	private void addBars() {
 		// instantiate actions
 		SimulatorAction salir = new SimulatorAction(
@@ -58,7 +104,7 @@ public class SimWindow extends JFrame {
 				KeyEvent.VK_S, "control S", 
 				()-> System.err.println("guardando..."));
 		SimulatorAction cargar = new SimulatorAction(
-				"Cargar", "open.png", "Cargar un fichero en formato .ini", KeyEvent.VK_L, "control L", ()->System.out.println("cargando..."));
+				"Cargar", "open.png", "Cargar un fichero en formato .ini", KeyEvent.VK_L, "control L", ()->readIni());
 		SimulatorAction saveReport = new SimulatorAction("Save Report", "save_report.png", "Save a report", KeyEvent.VK_R, "control R", ()->System.out.println("salvando..."));
 		
 		// add actions to toolbar, and bar to window

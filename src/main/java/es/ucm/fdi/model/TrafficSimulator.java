@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.util.*;
 import java.util.Map.Entry;
 
+import javax.swing.SwingUtilities;
+
 import es.ucm.fdi.ini.Ini;
 import es.ucm.fdi.ini.IniSection;
 import es.ucm.fdi.util.MultiTreeMap;
@@ -16,6 +18,7 @@ import es.ucm.fdi.util.MultiTreeMap;
  */
 public class TrafficSimulator {
 	private RoadMap r;
+	private List<Listener> listeners = new ArrayList<>();
 	private int timeCounter;
 	private MultiTreeMap<Integer, Event> events = new MultiTreeMap <>();
 	
@@ -35,6 +38,23 @@ public class TrafficSimulator {
 		} else {
 			events.putValue(e.getTime(), e);
 		}
+	}
+	
+	/*public void addSimulatorListener(Listener l) {
+		listeners.add(l);
+		UpdateEvent ue = new UpdateEvent(EventType.REGISTERED);
+		SwingUtilities.invokeLater(()->l.registered(ue));
+	}*/
+	
+	public void removeListener(Listener l) {
+		listeners.remove(l);
+	}
+	
+	private void fireUpdateEvent(EventType type, String error) {
+		UpdateEvent ue = new UpdateEvent(type);
+		for (Listener l : listeners) {
+			l.update(ue, error);
+		}		
 	}
 	
 	/**
@@ -145,6 +165,10 @@ public class TrafficSimulator {
 	public class UpdateEvent {
 		private EventType eventType;
 		
+		public UpdateEvent(EventType eventType) {
+			this.eventType = eventType;
+		}
+
 		public EventType getEvent() {
 			return eventType;
 		}
