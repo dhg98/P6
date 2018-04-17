@@ -1,2 +1,6 @@
 - ¿Como se pone texto en el JToolBar? ¿Como se limita el tamaño de JSpinner y JTextField?
 - ¿Como se muestra la informacion sobre los semaforos? ¿Alguna idea?
+- ¿Como se implementan las 4 tablas a partir de la interfaz Describable? ¿Hay que tener una clase ListOf...TableModel? ¿No deja meter atributos en esta clase?
+
+COSAS QUE FALTAN
+- Tablas
