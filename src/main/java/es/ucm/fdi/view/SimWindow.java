@@ -8,6 +8,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -30,9 +32,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 
 public class SimWindow extends JFrame {
-	private static final Object[] COLUMN_NAME = {"ID", "Source", "Target", "Lenght", "Max Speed", "Vehicles"};
+	
 	
 	private TextSection textSection;
+	private Map<Object, SimulatorAction> actions = new HashMap<>();
 	
 	public SimWindow() {
 		super("Traffic Simulator");
@@ -91,7 +94,44 @@ public class SimWindow extends JFrame {
 	    }
 	}
 	
-	
+	private void createAction() {
+		SimulatorAction salir = new SimulatorAction(
+				Command.Exit, "exit.png", "Exit the aplication",
+				KeyEvent.VK_C, "control shift C", 
+				()-> System.exit(0));
+		
+		SimulatorAction saveEvent = new SimulatorAction(
+				Command.Save, "save.png", "Guardar cosas",
+				KeyEvent.VK_S, "control S", 
+				()-> System.err.println("guardando..."));
+		
+		SimulatorAction cargar = new SimulatorAction(
+				Command.Load, "open.png", "Cargar un fichero en formato .ini", 
+				KeyEvent.VK_L, "control L", 
+				()->readIni());
+		
+		SimulatorAction saveReport = new SimulatorAction(
+				Command.SaveReport, "save_report.png", "Save a report", 
+				KeyEvent.VK_R, "control R", 
+				()->System.out.println("salvando..."));
+		
+		SimulatorAction flush = new SimulatorAction(
+				"Clear", "clear.png", "Clear the text",
+				KeyEvent.VK_X, "control X",
+				()->System.out.println(""));
+		
+		
+		actions.put(Command.Exit, salir);
+		actions.put(Command.Save, saveEvent);
+		actions.put(Command.Load, );
+		actions.put(Command.Run, );
+		actions.put(Command.Stop, );
+		actions.put(Command.SaveReport, );
+		actions.put(Command.Events, );
+		actions.put(Command.DeleteReport, );
+		actions.put(Command.Play, );
+		actions.put(Command.Clear, );
+	}
 	
 	private void addBars() {
 		// instantiate actions
@@ -99,18 +139,32 @@ public class SimWindow extends JFrame {
 				"Salir", "exit.png", "Salir de la aplicacion",
 				KeyEvent.VK_A, "control shift X", 
 				()-> System.exit(0));
+		
 		SimulatorAction saveEvent = new SimulatorAction(
 				"Guardar", "save.png", "Guardar cosas",
 				KeyEvent.VK_S, "control S", 
 				()-> System.err.println("guardando..."));
+		
 		SimulatorAction cargar = new SimulatorAction(
-				"Cargar", "open.png", "Cargar un fichero en formato .ini", KeyEvent.VK_L, "control L", ()->readIni());
-		SimulatorAction saveReport = new SimulatorAction("Save Report", "save_report.png", "Save a report", KeyEvent.VK_R, "control R", ()->System.out.println("salvando..."));
+				"Cargar", "open.png", "Cargar un fichero en formato .ini", 
+				KeyEvent.VK_L, "control L", 
+				()->readIni());
+		
+		SimulatorAction saveReport = new SimulatorAction(
+				"Save Report", "save_report.png", "Save a report", 
+				KeyEvent.VK_R, "control R", 
+				()->System.out.println("salvando..."));
+		
+		SimulatorAction flush = new SimulatorAction(
+				"Clear", "clear.png", "Clear the text",
+				KeyEvent.VK_X, "control X",
+				()->System.out.println(""));
 		
 		// add actions to toolbar, and bar to window
 		JToolBar bar = new JToolBar();
 		bar.add(cargar);
 		bar.add(saveEvent);
+		bar.add(flush);
 		bar.addSeparator(new Dimension(5, 5));
 		bar.add(saveReport);
 		bar.addSeparator();
@@ -129,6 +183,10 @@ public class SimWindow extends JFrame {
 		menu.add(file);
 		setJMenuBar(menu);
 		
+		JMenu reports = new JMenu("Reports");
+		reports.add(flush);
+		menu.add(reports);
+		
 		JPanel panelSup = new JPanel(new BorderLayout());
 		JPanel leftPanel = new JPanel();
 		leftPanel.setBackground(Color.BLUE);
@@ -146,7 +204,30 @@ public class SimWindow extends JFrame {
 		JPanel panelInf = new JPanel();
 	}
 	
+	public void addMenuAndToolBar() {
+		
+		
+		
+	}
+	
 	public static void main(String ... args) {
 		SwingUtilities.invokeLater(() -> new SimWindow());
+	}
+	
+	private enum Command {
+		Exit("Exit"), Clear("Clear"), Save("Save"), Load("Load"), Run("Run"), Stop("Stop"), SaveReport("Save Report"), 
+		Events("Events"), DeleteReport("Delete report"), Play("Play");
+		
+		private String text;
+		
+		Command(String text) {
+			this.text = text;
+		}
+		
+		@Override
+		public String toString() {
+			return text;
+		}
+		
 	}
 }
