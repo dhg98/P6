@@ -11,14 +11,20 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -34,13 +40,17 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class SimWindow extends JFrame {
 	
 	
-	private TextSection textSection;
+	private TextSection textSection = new TextSection("");
+	private JSpinner stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1)); //new SpinnerNumberModel(CurrentValue, min, max, steps)
+	private JTextField timeViewer = new JTextField("1");
 	private Map<Object, SimulatorAction> actions = new HashMap<>();
 	
 	public SimWindow() {
 		super("Traffic Simulator");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		createActions();
+		addToolBar();
+		addMenuBar();
 		addBars();
 		
 		setSize(1000, 1000);		
@@ -66,7 +76,7 @@ public class SimWindow extends JFrame {
 	       
 	       try {
 	    	   String st = new String(Files.readAllBytes(f.toPath()), "UTF-8");
-	    	   
+	    	   textSection.textArea.setText(st);
 	    	   
 	       } catch (IOException e) {
 	    	   
@@ -94,19 +104,21 @@ public class SimWindow extends JFrame {
 	    }
 	}
 	
-	private void createAction() {
-		SimulatorAction salir = new SimulatorAction(
+	private void createActions() {
+		// instantiate actions
+		
+		SimulatorAction exit = new SimulatorAction(
 				Command.Exit, "exit.png", "Exit the aplication",
 				KeyEvent.VK_C, "control shift C", 
 				()-> System.exit(0));
 		
 		SimulatorAction saveEvent = new SimulatorAction(
-				Command.Save, "save.png", "Guardar cosas",
+				Command.Save, "save.png", "Save an Event",
 				KeyEvent.VK_S, "control S", 
-				()-> System.err.println("guardando..."));
+				()-> saveIni());
 		
-		SimulatorAction cargar = new SimulatorAction(
-				Command.Load, "open.png", "Cargar un fichero en formato .ini", 
+		SimulatorAction open = new SimulatorAction(
+				Command.Open, "open.png", "Load an ini file", 
 				KeyEvent.VK_L, "control L", 
 				()->readIni());
 		
@@ -115,99 +127,134 @@ public class SimWindow extends JFrame {
 				KeyEvent.VK_R, "control R", 
 				()->System.out.println("salvando..."));
 		
-		SimulatorAction flush = new SimulatorAction(
-				"Clear", "clear.png", "Clear the text",
+		SimulatorAction clear = new SimulatorAction(
+				Command.Clear, "clear.png", "Clear the text",
 				KeyEvent.VK_X, "control X",
 				()->System.out.println(""));
 		
+		SimulatorAction play = new SimulatorAction(
+				Command.Play, "play.png", "Play the simulation",
+				KeyEvent.VK_P, "control P",
+				()->System.out.println(""));
 		
-		actions.put(Command.Exit, salir);
+		SimulatorAction events = new SimulatorAction(
+				Command.Events, "events.png", "Add events to the simulation",
+				KeyEvent.VK_A, "control A",
+				()->System.out.println(""));
+		
+		SimulatorAction deleteReport = new SimulatorAction(
+				Command.DeleteReport, "delete_report.png", "Delete a report",
+				KeyEvent.VK_B, "control B",
+				()->System.out.println(""));
+		
+		SimulatorAction stop = new SimulatorAction(
+				Command.Stop, "stop.png", "Stop the simulation",
+				KeyEvent.VK_K, "control K",
+				()->System.out.println(""));
+		
+		SimulatorAction report = new SimulatorAction(
+				Command.Report, "report.png", "Report the simulation",
+				KeyEvent.VK_M, "control M",
+				()->System.out.println(""));
+		
+		SimulatorAction reset = new SimulatorAction(
+				Command.Reset, "reset.png", "Reset the simulation",
+				KeyEvent.VK_Z, "control Z",
+				()->System.out.println(""));
+		
+		actions.put(Command.Exit, exit);
+		actions.put(Command.Clear, clear);
+		actions.put(Command.Open, open);
+		actions.put(Command.SaveReport, saveReport);
 		actions.put(Command.Save, saveEvent);
-		actions.put(Command.Load, );
-		actions.put(Command.Run, );
-		actions.put(Command.Stop, );
-		actions.put(Command.SaveReport, );
-		actions.put(Command.Events, );
-		actions.put(Command.DeleteReport, );
-		actions.put(Command.Play, );
-		actions.put(Command.Clear, );
+		actions.put(Command.Stop, stop);
+		actions.put(Command.Events, events);
+		actions.put(Command.DeleteReport, deleteReport);
+		actions.put(Command.Play, play);
+		actions.put(Command.Report, report);
+		actions.put(Command.Reset, reset);
+	}
+	
+	private void addToolBar() {
+		// add actions to toolbar, 
+		
+		JToolBar bar = new JToolBar();
+		bar.add(actions.get(Command.Open));
+		bar.add(actions.get(Command.Save));
+		bar.add(actions.get(Command.Clear));
+		
+		bar.addSeparator();
+		
+		bar.add(actions.get(Command.Events));
+		bar.add(actions.get(Command.Play));
+		bar.add(actions.get(Command.Reset));
+		
+		//Steps y time...
+		bar.add(stepsSpinner);
+		
+		//timeViewer.setSize(2, 2);
+		timeViewer.setEditable(false);
+		bar.add(timeViewer);
+		
+		bar.add(actions.get(Command.Report));
+		bar.add(actions.get(Command.DeleteReport));
+		bar.add(actions.get(Command.SaveReport));
+		
+		bar.addSeparator();
+		
+		bar.add(actions.get(Command.Exit));	
+		
+		//Add bar to window
+		add(bar, BorderLayout.NORTH);
+	}
+	
+	private void addMenuBar() {
+		JMenuBar menu = new JMenuBar();
+		
+		JMenu file = new JMenu("File");
+	
+		file.add(actions.get(Command.Open));
+		file.add(actions.get(Command.Save));
+		
+		file.addSeparator();
+		
+		file.add(actions.get(Command.SaveReport));
+		
+		file.addSeparator();
+		
+		file.add(actions.get(Command.Exit));
+		
+		JMenu simulator = new JMenu("Simulator");
+		
+		simulator.add(actions.get(Command.Play));
+		simulator.add(actions.get(Command.Reset));
+		//Falta redirect Output
+		
+		JMenu reports = new JMenu("Reports");
+		
+		reports.add(actions.get(Command.Report));
+		reports.add(actions.get(Command.Clear));
+		
+		menu.add(file);
+		menu.add(simulator);
+		menu.add(reports);
+		
+		//Add menu to window
+		setJMenuBar(menu);
 	}
 	
 	private void addBars() {
-		// instantiate actions
-		SimulatorAction salir = new SimulatorAction(
-				"Salir", "exit.png", "Salir de la aplicacion",
-				KeyEvent.VK_A, "control shift X", 
-				()-> System.exit(0));
 		
-		SimulatorAction saveEvent = new SimulatorAction(
-				"Guardar", "save.png", "Guardar cosas",
-				KeyEvent.VK_S, "control S", 
-				()-> System.err.println("guardando..."));
-		
-		SimulatorAction cargar = new SimulatorAction(
-				"Cargar", "open.png", "Cargar un fichero en formato .ini", 
-				KeyEvent.VK_L, "control L", 
-				()->readIni());
-		
-		SimulatorAction saveReport = new SimulatorAction(
-				"Save Report", "save_report.png", "Save a report", 
-				KeyEvent.VK_R, "control R", 
-				()->System.out.println("salvando..."));
-		
-		SimulatorAction flush = new SimulatorAction(
-				"Clear", "clear.png", "Clear the text",
-				KeyEvent.VK_X, "control X",
-				()->System.out.println(""));
-		
-		// add actions to toolbar, and bar to window
-		JToolBar bar = new JToolBar();
-		bar.add(cargar);
-		bar.add(saveEvent);
-		bar.add(flush);
-		bar.addSeparator(new Dimension(5, 5));
-		bar.add(saveReport);
-		bar.addSeparator();
-		bar.add(salir);
-		add(bar, BorderLayout.NORTH);
-
-		// add actions to menubar, and bar to window
-		JMenu file = new JMenu("File");
-		file.add(cargar);
-		file.add(saveEvent);
-		file.addSeparator();
-		file.add(saveReport);
-		file.addSeparator();
-		file.add(salir);		
-		JMenuBar menu = new JMenuBar();
-		menu.add(file);
-		setJMenuBar(menu);
-		
-		JMenu reports = new JMenu("Reports");
-		reports.add(flush);
-		menu.add(reports);
-		
-		JPanel panelSup = new JPanel(new BorderLayout());
-		JPanel leftPanel = new JPanel();
-		leftPanel.setBackground(Color.BLUE);
-		JPanel centerPanel = new JPanel();
-		centerPanel.setBackground(Color.GREEN);
-		JPanel rightPanel = new JPanel();
-		rightPanel.setBackground(Color.RED);
-		
-		JSplitPane sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, centerPanel);
-		JSplitPane sp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sp, rightPanel);
-		
-		panelSup.add(sp2, BorderLayout.CENTER);
-		
-		add(panelSup);
-		JPanel panelInf = new JPanel();
-	}
-	
-	public void addMenuAndToolBar() {
-		
-		
-		
+		JScrollPane iniInput = new JScrollPane(textSection.textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		//JScrollPane reportsAreaScroll = new JScrollPane(new JTextArea(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JPanel supPanel = new JPanel();
+		supPanel.setLayout(new BoxLayout(supPanel, BoxLayout.X_AXIS));
+		supPanel.add(iniInput);
+		JPanel infPanel = new JPanel();
+		JSplitPane topSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, supPanel, infPanel); //Division horizontal
+		add(topSplit);
+		setVisible(true);
+		topSplit.setDividerLocation(.5);
 	}
 	
 	public static void main(String ... args) {
@@ -215,8 +262,8 @@ public class SimWindow extends JFrame {
 	}
 	
 	private enum Command {
-		Exit("Exit"), Clear("Clear"), Save("Save"), Load("Load"), Run("Run"), Stop("Stop"), SaveReport("Save Report"), 
-		Events("Events"), DeleteReport("Delete report"), Play("Play");
+		Exit("Exit"), Clear("Clear"), Save("Save"), Stop("Stop"), SaveReport("Save Report"), 
+		Events("Events"), DeleteReport("Delete report"), Play("Play"), Open("Open"), Report("Report"), Reset("Reset");
 		
 		private String text;
 		

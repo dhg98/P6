@@ -8,20 +8,20 @@ import java.nio.file.Files;
 
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class TextSection extends JPanel {
 
 	protected JTextArea textArea;
-	public TextSection() {
+	public TextSection(String ini) {
 		super();
+		textArea = new JTextArea(ini);
 	}
 	
-
-
 	public void setText(String text) {
-		
+		textArea.setText(text);
 	}
 	
 	
