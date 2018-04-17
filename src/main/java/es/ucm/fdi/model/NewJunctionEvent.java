@@ -1,6 +1,8 @@
 package es.ucm.fdi.model;
 
-public class NewJunctionEvent extends Event {
+import java.util.Map;
+
+public class NewJunctionEvent extends Event implements Describable {
 	private String id;
 	
 	public NewJunctionEvent(int time, String id) {
@@ -24,5 +26,11 @@ public class NewJunctionEvent extends Event {
 	@Override
 	public String getType() {
 		return "New Junction " + id;
+	}
+
+	@Override
+	public void describe(Map<String, String> out) {
+		out.put("Time", "" + getTime());
+		out.put("Type", getType());
 	}
 }

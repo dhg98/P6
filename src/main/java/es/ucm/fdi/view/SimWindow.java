@@ -41,6 +41,15 @@ public class SimWindow extends JFrame {
 	
 	
 	private TextSection textSection = new TextSection("");
+	private JPanel eventEditor;
+	private JPanel vehicleTablePanel;
+	private JPanel roadsTablePanel;
+	private JPanel junctionsTablePanel;
+	private JPanel reportsViewer;
+	private JPanel eventsView;
+	private JPanel supPanel;
+	private JPanel infPanel;
+	private JPanel infLeftPanel;
 	private JSpinner stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1)); //new SpinnerNumberModel(CurrentValue, min, max, steps)
 	private JTextField timeViewer = new JTextField("1");
 	private Map<Object, SimulatorAction> actions = new HashMap<>();
@@ -51,16 +60,19 @@ public class SimWindow extends JFrame {
 		createActions();
 		addToolBar();
 		addMenuBar();
+		addEventEditor();
+		addEventsView();
+		addReportsViewer();
+		addSupPanel();
+		addVehiclesTablePanel();
+		addRoadsTablePanel();
+		addJunctionsTablePanel();
+		addInfLeftPanel();
+		addInfPanel();
 		addBars();
 		
 		setSize(1000, 1000);		
 		setVisible(true);
-	}
-	
-	private JPanel createPanel(Color color) {
-		JPanel panel = new JPanel();
-		panel.setBackground(color);
-		return panel;
 	}
 	
 	public void readIni() {
@@ -73,15 +85,12 @@ public class SimWindow extends JFrame {
 	       File f = chooser.getSelectedFile();
 	       System.out.println("You chose to open this file: " +
 	            f.getName());
-	       
 	       try {
 	    	   String st = new String(Files.readAllBytes(f.toPath()), "UTF-8");
 	    	   textSection.textArea.setText(st);
-	    	   
 	       } catch (IOException e) {
-	    	   
+	    	   textSection.textArea.setText("");
 	       }
-	       
 	    }		
 	}
 	
@@ -100,6 +109,7 @@ public class SimWindow extends JFrame {
 	    		Files.write(f.toPath(), textSection.textArea.getText().getBytes("UTF-8"));
 	    		
 	    	} catch (IOException e) {
+	    		
 	    	}	   
 	    }
 	}
@@ -243,18 +253,67 @@ public class SimWindow extends JFrame {
 		setJMenuBar(menu);
 	}
 	
+	private void addSupPanel() {
+		supPanel = new JPanel();
+		supPanel.setLayout(new BoxLayout(supPanel, BoxLayout.X_AXIS));
+		supPanel.add(eventEditor);
+		supPanel.add(eventsView);
+		supPanel.add(reportsViewer);
+	}
+	
+	private void addEventEditor() {
+		JScrollPane iniInput = new JScrollPane(textSection.textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		eventEditor = new JPanel(new BorderLayout());
+		eventEditor.add(iniInput);
+	}
+	
+	private void addEventsView() {
+		eventsView = new JPanel(new BorderLayout());
+	}
+	
+	private void addReportsViewer() {
+		JScrollPane reportsAreaScroll = new JScrollPane(new JTextArea(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		reportsViewer = new JPanel(new BorderLayout());
+		reportsViewer.add(reportsAreaScroll);
+		
+	}
+	
+	private void addVehiclesTablePanel() {
+		vehicleTablePanel = new JPanel(new BorderLayout());
+	}
+	
+	private void addRoadsTablePanel() {
+		roadsTablePanel = new JPanel(new BorderLayout());
+	}
+	
+	private void addJunctionsTablePanel() {
+		junctionsTablePanel = new JPanel(new BorderLayout());
+	}
+	
+	private void addInfLeftPanel() {
+		infLeftPanel = new JPanel();
+		infLeftPanel.setLayout(new BoxLayout(infLeftPanel, BoxLayout.Y_AXIS));
+		infLeftPanel.add(vehicleTablePanel);
+		infLeftPanel.add(roadsTablePanel);
+		infLeftPanel.add(junctionsTablePanel);	
+	}
+	
+	private void addInfPanel() {
+		infPanel = new JPanel();
+		infPanel.setLayout(new BorderLayout());
+		JPanel rightInfPanel = new JPanel(new BorderLayout()); //Aqui iria el grafo
+		JSplitPane bottomSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, infLeftPanel, rightInfPanel);
+		infPanel.add(bottomSplit);
+		bottomSplit.setVisible(true);
+		bottomSplit.setResizeWeight(.5);
+	}
+	
 	private void addBars() {
 		
-		JScrollPane iniInput = new JScrollPane(textSection.textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		//JScrollPane reportsAreaScroll = new JScrollPane(new JTextArea(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		JPanel supPanel = new JPanel();
-		supPanel.setLayout(new BoxLayout(supPanel, BoxLayout.X_AXIS));
-		supPanel.add(iniInput);
-		JPanel infPanel = new JPanel();
 		JSplitPane topSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, supPanel, infPanel); //Division horizontal
 		add(topSplit);
-		setVisible(true);
-		topSplit.setDividerLocation(.5);
+		topSplit.setVisible(true);
+		topSplit.setResizeWeight(.33);
 	}
 	
 	public static void main(String ... args) {

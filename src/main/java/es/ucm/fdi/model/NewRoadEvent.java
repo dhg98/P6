@@ -1,6 +1,8 @@
 package es.ucm.fdi.model;
 
-public class NewRoadEvent extends Event {
+import java.util.Map;
+
+public class NewRoadEvent extends Event implements Describable {
 	private int maxSpeed;
 	private int length;
 	private String src;
@@ -52,5 +54,11 @@ public class NewRoadEvent extends Event {
 	@Override
 	public String getType() {
 		return "New Road " + id;
+	}
+
+	@Override
+	public void describe(Map<String, String> out) {
+		out.put("Time", "" + getTime());
+		out.put("Type", getType());
 	}
 }

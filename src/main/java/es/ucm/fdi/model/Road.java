@@ -9,7 +9,7 @@ import es.ucm.fdi.util.MultiTreeMap;
  * @author Daniel Herranz
  *
  */
-public class Road extends SimObject {
+public class Road extends SimObject implements Describable {
 	public static final String REPORT_HEADER = "road_report";
 	
 	private int size;
@@ -108,7 +108,7 @@ public class Road extends SimObject {
 		out.put("state", toString());
 	}
 	
-	public String toStringVehicles() {
+	public String toString() {
 		List <String> vehicleList = new ArrayList<>();
 		if(numVehicles > 0) {
 			for(Vehicle v: street.innerValues()) {
@@ -116,6 +116,14 @@ public class Road extends SimObject {
 			}
 		}
 		return String.join(",", vehicleList);
+	}
+	
+	public String toStringVehicles() {
+		List <String> vehicleList = new ArrayList<>();
+		for(Vehicle v: street.innerValues()) {
+			vehicleList.add(v.getId());
+		}
+		return "[" + String.join(",", vehicleList) + "]";
 	}
 	
 	protected String getReportHeader() {
@@ -128,5 +136,15 @@ public class Road extends SimObject {
 	 */
 	public int modificarVelBase(){
 		return Math.min(maxVel, (maxVel / Math.max(numVehicles, 1)) + 1);
+	}
+
+	@Override
+	public void describe(Map<String, String> out) {
+		out.put("ID", getId());
+		out.put("Source", start.getId());
+		out.put("Target", end.getId());
+		out.put("Length", "" + size);
+		out.put("Max Speed", "" + maxVel);
+		out.put("Vehicles", toStringVehicles());
 	}
 }

@@ -7,7 +7,7 @@ import java.util.*;
  * @author Daniel Herranz
  *
  */
-public class Vehicle extends SimObject {
+public class Vehicle extends SimObject implements Describable {
 	public static final String REPORT_HEADER = "vehicle_report";
 	
 	private int velMax;
@@ -166,5 +166,17 @@ public class Vehicle extends SimObject {
 						+ " is incorrect after the junction " + itinerario.get(contadorCruce).getId());
 				}
 		}
+	}
+
+
+	@Override
+	public void describe(Map<String, String> out) {
+		out.put("ID", getId());
+		out.put("Road", road.getId());
+		out.put("Location", "" + location);
+		out.put("Speed", "" + velAct);
+		out.put("Km", "" + kilometrage);
+		out.put("Faulty Units", "" + tiempoAveria);
+		out.put("Itinerary", toStringItinerary());
 	}
 }
