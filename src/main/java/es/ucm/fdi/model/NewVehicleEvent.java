@@ -2,7 +2,7 @@ package es.ucm.fdi.model;
 
 import java.util.*;
 
-public class NewVehicleEvent extends Event {
+public class NewVehicleEvent extends Event implements Describable {
 
 	private String id;
 	private int maxSpeed;
@@ -49,6 +49,12 @@ public class NewVehicleEvent extends Event {
 	@Override
 	public String getType() {
 		return "New Vehicle " + id;
+	}
+
+	@Override
+	public void describe(Map<String, String> out) {
+		out.put("Time", "" + getTime());
+		out.put("Type" , getType());
 	}
 
 }

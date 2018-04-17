@@ -7,7 +7,7 @@ import java.util.*;
  * @author Daniel Herranz
  *
  */
-public class Junction extends SimObject {
+public class Junction extends SimObject implements Describable {
 	public static final String REPORT_HEADER = "junction_report";
 	
 	private List<IncomingRoads> junctionDeque = new ArrayList<>();
@@ -85,7 +85,7 @@ public class Junction extends SimObject {
 	protected void fillReportDetails(Map<String, String> out) {
 		
 		String aux = "";
-		for(int i = 0; i < junctionDeque.size(); ++i){
+		for(int i = 0; i < junctionDeque.size(); ++i) {
 			if(i == trafficLight) {
 				aux += "(" + junctionDeque.get(i).road.getId() + ",green,[";
 			} else {
@@ -139,5 +139,12 @@ public class Junction extends SimObject {
 		junctionMap.put(r, ir);
 		trafficLight = junctionDeque.size() - 1; //al introducir una nueva carretera, se modifica el semaforo para que en el siguiente tick, al aumentar su valor
 		//se aumente de forma correcta y se ponga a 0, dejando pasar a la carretera que se agrego primero.
+	}
+
+	@Override
+	public void describe(Map<String, String> out) {
+		out.put("Id", getId());
+		out.put("Green", "");
+		out.put("Red", "");
 	}
 }
