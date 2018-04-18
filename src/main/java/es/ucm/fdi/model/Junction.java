@@ -10,10 +10,10 @@ import java.util.*;
 public class Junction extends SimObject implements Describable {
 	public static final String REPORT_HEADER = "junction_report";
 	
-	private List<IncomingRoads> junctionDeque = new ArrayList<>();
-	private List<Road> outgoingRoadsList = new ArrayList<>();
-	private Map<Road, IncomingRoads> junctionMap = new HashMap<>();
-	private int trafficLight = 0;
+	protected List<IncomingRoads> junctionDeque = new ArrayList<>();
+	protected List<Road> outgoingRoadsList = new ArrayList<>();
+	protected Map<Road, IncomingRoads> junctionMap = new HashMap<>();
+	protected int trafficLight = 0;
 	
 	public int getTrafficLight() {
 		return trafficLight;
@@ -61,8 +61,8 @@ public class Junction extends SimObject implements Describable {
 	}
 	
 	public static class IncomingRoads {
-		private Deque<Vehicle> roadDeque;
-		private Road road;
+		protected Deque<Vehicle> roadDeque;
+		protected Road road;
 		
 		public IncomingRoads(Road road) {
 			super();
@@ -77,34 +77,47 @@ public class Junction extends SimObject implements Describable {
 		public Deque<Vehicle> getRoadDeque() {
 			return roadDeque;
 		}
+		
+		public void avanzaVeh() {
+			if (!roadDeque.isEmpty()) {
+				roadDeque.pollFirst().moverASiguienteCarretera();
+			}
+		}
+		
+		public String junctionToString(Map<String, String> out) {
+			StringBuilder sb = new StringBuilder();
+			
+			for(Iterator<Vehicle> itr = roadDeque.iterator(); itr.hasNext();){
+				sb.append(itr.next().getId());
+				if (itr.hasNext()) {
+					sb.append(",");
+				}
+			}
+			return sb.toString();
+		}
 	}
 	
 	/**
 	 * Report a Junction given the statement of the project
 	 */
 	protected void fillReportDetails(Map<String, String> out) {
-		
-		String aux = "";
+		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < junctionDeque.size(); ++i) {
+			sb.append("(" + junctionDeque.get(i).road.getId() + ",");
 			if(i == trafficLight) {
-				aux += "(" + junctionDeque.get(i).road.getId() + ",green,[";
+				sb.append("green,[");
 			} else {
-				aux += "(" + junctionDeque.get(i).road.getId() + ",red,[";
+				sb.append("red,[");
 			}
+			sb.append(junctionDeque.get(i).junctionToString(out));
 			
-			for(Iterator<Vehicle> itr = junctionDeque.get(i).roadDeque.iterator(); itr.hasNext();){
-				aux += itr.next().getId();
-				if (itr.hasNext()) {
-					aux += ",";
-				}
-			}
 			if(i != junctionDeque.size() - 1) {
-				aux += "]),";
+				sb.append("]),");
 			} else {
-				aux += "])";
+				sb.append("])");
 			}
 		}
-		out.put("queues", aux);
+		out.put("queues", sb.toString());
 	}
 	
 	public void getColorLights(String red, String green) {
@@ -120,11 +133,7 @@ public class Junction extends SimObject implements Describable {
 	 */
 	public void avanza() {
 		if(!junctionDeque.isEmpty()) {
-			if (!junctionDeque.get(trafficLight).roadDeque.isEmpty()) {
-				//el array de incomingRoads no este vacio y la cola que indica el semaforo tampoco
-				junctionDeque.get(trafficLight).roadDeque.getFirst().moverASiguienteCarretera(); //movemos el vehiculo a la carretera en funcion de su itinerario
-				junctionDeque.get(trafficLight).roadDeque.removeFirst(); //eliminar vehiculo de la cola
-			}
+			junctionDeque.get(trafficLight).avanzaVeh();
 			advanceLight();
 		}
 	}
