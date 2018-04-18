@@ -17,5 +17,4 @@ public class NewRoundRobinJunctionEvent extends NewJunctionEvent {
 		r.addJunction(j);
 	}
 
-
 }

@@ -13,27 +13,23 @@ public class MostCrowdedJunction extends JunctionWithTimeSlice {
 	}
 	
 	@Override
-	public void advanceLight(){
+	public void advanceLight() {
 		
 		IncomingRoadWithTimeSlice irs = (IncomingRoadWithTimeSlice)getJunctionDeque().get(getTrafficLight());
 		if(irs.getTimeSlice() == irs.getUsedTimeUnits()) {
-			int maximo = 0, i = 0, posMax = 0;
-			for(IncomingRoads itrs: getJunctionDeque()){
+			int maximo = -1, i = 0, posMax = 0;
+			for(IncomingRoads itrs: getJunctionDeque()) {
 				if(itrs.getRoadDeque().size() > maximo && i != getTrafficLight()) {
 					maximo = itrs.getRoadDeque().size();
 					posMax = i;
 				}
 				i++;
 			}
-			
 			setTrafficLight(posMax);
 			irs = (IncomingRoadWithTimeSlice)getJunctionDeque().get(posMax);
 			irs.setTimeSlice(Math.max(maximo/2, 1));
 			irs.setUsedTimeUnits(0);
-		} else {
-			irs.setUsedTimeUnits(irs.getUsedTimeUnits() + 1);
 		}
-		
 	}
 	
 	/**
@@ -41,35 +37,13 @@ public class MostCrowdedJunction extends JunctionWithTimeSlice {
 	 */
 	@Override
 	protected void fillReportDetails(Map<String, String> out) {
-		String aux = "";
-		for(int i = 0; i < getJunctionDeque().size(); ++i){
-			
-			IncomingRoadWithTimeSlice irs = (IncomingRoadWithTimeSlice)getJunctionDeque().get(i);
-			if(i == getTrafficLight()) {
-				aux += "(" + irs.getRoad().getId() + ",green:" + (irs.getTimeSlice() - irs.getUsedTimeUnits()) + ",[";
-			} else {
-				aux += "(" + irs.getRoad().getId() + ",red,[";
-			}
-			
-			for(Iterator<Vehicle> itr = irs.getRoadDeque().iterator(); itr.hasNext();){
-				aux += itr.next().getId();
-				if (itr.hasNext()) {
-					aux += ",";
-				}
-			}
-			if(i != getJunctionDeque().size() - 1) {
-				aux += "]),";
-			} else {
-				aux += "])";
-			}
-		}
-		out.put("queues", aux);
+		super.fillReportDetails(out);
 		out.put("type", "mc");
 	}
 	
 	@Override
 	public void addIncomingRoad(Road r) {
-		IncomingRoadWithTimeSlice ir = new IncomingRoadWithTimeSlice(r, 0 , 0, 0);
+		IncomingRoadWithTimeSlice ir = new IncomingRoadWithTimeSlice(r, 0);
 		getJunctionDeque().add(ir);
 		getJunctionMap().put(r, ir);
 		setTrafficLight(getJunctionDeque().size() - 1); //al introducir una nueva carretera, se modifica el semaforo para que en el siguiente tick, al aumentar su valor
