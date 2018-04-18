@@ -1,19 +1,19 @@
 package es.ucm.fdi.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -28,6 +28,9 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import es.ucm.fdi.control.Controller;
+import es.ucm.fdi.model.*;
+
 /**
  * Esto es sólo para empezar a jugar con las interfaces
  * de la P5. 
@@ -38,13 +41,20 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 
 public class SimWindow extends JFrame {
+	private Controller ctrl;
+	private RoadMap map;
+	private int time;
+	private ArrayList<Event> events; // Al poner List no deja el compilador, nos vemos forzados a usar ArrayList como tipo estatico.
+	private OutputStream reportsOutputStream;
 	
-	
+	private JTable vehiclesTable;
+	private ListOfVehicleTableModel vehiclesTableModel;
 	private TextSection textSection = new TextSection("");
 	private JPanel eventEditor;
 	private JPanel vehicleTablePanel;
 	private JPanel roadsTablePanel;
 	private JPanel junctionsTablePanel;
+	private JTextArea reportsArea = new JTextArea();
 	private JPanel reportsViewer;
 	private JPanel eventsView;
 	private JPanel supPanel;
@@ -54,9 +64,10 @@ public class SimWindow extends JFrame {
 	private JTextField timeViewer = new JTextField("1");
 	private Map<Object, SimulatorAction> actions = new HashMap<>();
 	
-	public SimWindow() {
+	public SimWindow(Controller ctrl, String inFileName) {
 		super("Traffic Simulator");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.ctrl = ctrl;		
 		createActions();
 		addToolBar();
 		addMenuBar();
@@ -94,7 +105,7 @@ public class SimWindow extends JFrame {
 	    }		
 	}
 	
-	public void saveIni() {
+	public void saveIni(JTextArea text) {
 		JFileChooser chooser = new JFileChooser();
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
 	        "Ini files", "ini");
@@ -105,13 +116,17 @@ public class SimWindow extends JFrame {
 	    	System.out.println("You chose to open this file: " +
 	           f.getName());
 	    	try {
-	    		String s = textSection.textArea.getText();
-	    		Files.write(f.toPath(), textSection.textArea.getText().getBytes("UTF-8"));
+	    		String s = text.getText();
+	    		Files.write(f.toPath(), s.getBytes("UTF-8"));
 	    		
 	    	} catch (IOException e) {
 	    		
 	    	}	   
 	    }
+	}
+	
+	public void clearText() {
+		textSection.textArea.setText("");
 	}
 	
 	private void createActions() {
@@ -125,7 +140,7 @@ public class SimWindow extends JFrame {
 		SimulatorAction saveEvent = new SimulatorAction(
 				Command.Save, "save.png", "Save an Event",
 				KeyEvent.VK_S, "control S", 
-				()-> saveIni());
+				()-> saveIni(textSection.textArea));
 		
 		SimulatorAction open = new SimulatorAction(
 				Command.Open, "open.png", "Load an ini file", 
@@ -135,12 +150,12 @@ public class SimWindow extends JFrame {
 		SimulatorAction saveReport = new SimulatorAction(
 				Command.SaveReport, "save_report.png", "Save a report", 
 				KeyEvent.VK_R, "control R", 
-				()->System.out.println("salvando..."));
+				()-> saveIni(reportsArea));
 		
 		SimulatorAction clear = new SimulatorAction(
 				Command.Clear, "clear.png", "Clear the text",
 				KeyEvent.VK_X, "control X",
-				()->System.out.println(""));
+				()->clearText());
 		
 		SimulatorAction play = new SimulatorAction(
 				Command.Play, "play.png", "Play the simulation",
@@ -200,10 +215,13 @@ public class SimWindow extends JFrame {
 		bar.add(actions.get(Command.Reset));
 		
 		//Steps y time...
+		JLabel stepsLabel = new JLabel(" Steps: "), timeLabel = new JLabel(" Time: ");
+		bar.add(stepsLabel);
 		bar.add(stepsSpinner);
 		
 		//timeViewer.setSize(2, 2);
 		timeViewer.setEditable(false);
+		bar.add(timeLabel);
 		bar.add(timeViewer);
 		
 		bar.add(actions.get(Command.Report));
@@ -264,30 +282,41 @@ public class SimWindow extends JFrame {
 	private void addEventEditor() {
 		JScrollPane iniInput = new JScrollPane(textSection.textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		eventEditor = new JPanel(new BorderLayout());
+		eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor "));
 		eventEditor.add(iniInput);
 	}
 	
 	private void addEventsView() {
 		eventsView = new JPanel(new BorderLayout());
+		eventsView.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Queue "));
 	}
 	
 	private void addReportsViewer() {
-		JScrollPane reportsAreaScroll = new JScrollPane(new JTextArea(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		reportsArea.setEditable(false);
+		JScrollPane reportsAreaScroll = new JScrollPane(reportsArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		reportsViewer = new JPanel(new BorderLayout());
+		reportsViewer.setBorder(javax.swing.BorderFactory.createTitledBorder(" Reports Area "));
 		reportsViewer.add(reportsAreaScroll);
 		
 	}
 	
 	private void addVehiclesTablePanel() {
+		vehiclesTableModel = new ListOfVehicleTableModel();
+		ctrl.getSimulator().addSimulatorListener(vehiclesTableModel);
+		vehiclesTable = new JTable(vehiclesTableModel);
 		vehicleTablePanel = new JPanel(new BorderLayout());
+		vehicleTablePanel.add(vehiclesTable);
+		vehicleTablePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(" Vehicles Table "));
 	}
 	
 	private void addRoadsTablePanel() {
 		roadsTablePanel = new JPanel(new BorderLayout());
+		roadsTablePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(" Roads Table "));
 	}
 	
 	private void addJunctionsTablePanel() {
 		junctionsTablePanel = new JPanel(new BorderLayout());
+		junctionsTablePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(" Junctions Table "));
 	}
 	
 	private void addInfLeftPanel() {
@@ -316,9 +345,9 @@ public class SimWindow extends JFrame {
 		topSplit.setResizeWeight(.33);
 	}
 	
-	public static void main(String ... args) {
+	/*public static void main(String ... args) {
 		SwingUtilities.invokeLater(() -> new SimWindow());
-	}
+	}*/
 	
 	private enum Command {
 		Exit("Exit"), Clear("Clear"), Save("Save"), Stop("Stop"), SaveReport("Save Report"), 

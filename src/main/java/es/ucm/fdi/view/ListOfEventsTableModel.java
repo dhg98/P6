@@ -1,18 +1,16 @@
 package es.ucm.fdi.view;
 
-import java.awt.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import es.ucm.fdi.model.*;
-
 import javax.swing.table.AbstractTableModel;
 
-public class ListOfRoadTableModel extends AbstractTableModel {
-	
-	private ArrayList <Road> elements; //Mismo motivo que en SimWindow
-	private String[] fieldNames = {"ID", "Source", "Target", "Length", "Max Speed", "Vehicles"};
+import es.ucm.fdi.model.Event;
+
+public class ListOfEventsTableModel extends AbstractTableModel {
+	private ArrayList <Event> elements; //Mismo motivo que en SimWindow
+	private String[] fieldNames = {"#", "Time", "Type"};
 	
 	@Override
 	public int getRowCount() {
@@ -30,5 +28,4 @@ public class ListOfRoadTableModel extends AbstractTableModel {
 		elements.get(rowIndex).describe(description);
 		return description.get(fieldNames[columnIndex]);
 	}
-
 }

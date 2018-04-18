@@ -3,6 +3,8 @@ package es.ucm.fdi.launcher;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -14,6 +16,7 @@ import org.apache.commons.cli.ParseException;
 import es.ucm.fdi.control.Controller;
 import es.ucm.fdi.ini.Ini;
 import es.ucm.fdi.model.TrafficSimulator;
+import es.ucm.fdi.view.*;
 
 public class ExampleMain {
 
@@ -160,8 +163,21 @@ public class ExampleMain {
 			e.printStackTrace();
 		}
 	}
+	
+	private static void startGUIMode() throws IOException, InvocationTargetException, InterruptedException {
+		TrafficSimulator t = new TrafficSimulator();
+		OutputStream out = _outFile != null ? new FileOutputStream(_outFile) : System.out;
+		//Si _outFile es null mostramos por pantalla y si no guardamos los datos de la simulacion en un fichero.
+		InputStream in = new FileInputStream(_inFile);
+		Controller c = new Controller(t, _timeLimit, in, out);
+		SwingUtilities.invokeAndWait(new Runnable() {
+			public void run() {
+				new SimWindow(c, _inFile);
+			}
+		});
+	}
 
-	private static void start(String[] args) throws IOException {
+	private static void start(String[] args) throws IOException, InvocationTargetException, InterruptedException {
 		parseArgs(args);
 		if (_timeLimit == null) {
 			_timeLimit = _timeLimitDefaultValue;

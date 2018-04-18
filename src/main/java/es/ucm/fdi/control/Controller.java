@@ -30,6 +30,10 @@ public class Controller {
 		this.out = out;
 	}
 	
+	public TrafficSimulator getSimulator() {
+		return simulator;
+	}
+
 	/**
 	 * Insert the events from an Ini File to the simulator.
 	 * @throws IOException

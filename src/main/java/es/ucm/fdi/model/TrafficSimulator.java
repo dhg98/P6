@@ -34,27 +34,49 @@ public class TrafficSimulator {
 	 */
 	public void insertaEvento(Event e) {
 		if (e.getTime() < timeCounter) {
+			notifyError("The time you have given for this event is previous than the current time");
 			throw new RuntimeException("The time you have given for this event is previous than the current time");
 		} else {
 			events.putValue(e.getTime(), e);
+			notifyEventAdded();
 		}
 	}
 	
-	/*public void addSimulatorListener(Listener l) {
+	public void addSimulatorListener(Listener l) {
 		listeners.add(l);
-		UpdateEvent ue = new UpdateEvent(EventType.REGISTERED);
-		SwingUtilities.invokeLater(()->l.registered(ue));
-	}*/
+		notifyRegistered(l);
+	}
 	
 	public void removeListener(Listener l) {
 		listeners.remove(l);
 	}
+		
+	private void notifyRegistered(Listener o) {
+		o.registered(timeCounter, r, events.valuesList());
+	}
 	
-	private void fireUpdateEvent(EventType type, String error) {
-		UpdateEvent ue = new UpdateEvent(type);
+	private void notifyReset() {
 		for (Listener l : listeners) {
-			l.update(ue, error);
-		}		
+			l.reset(timeCounter, r, events.valuesList());;
+		}
+	}
+	
+	private void notifyEventAdded() {
+		for (Listener l : listeners) {
+			l.eventAdded(timeCounter, r, events.valuesList());;
+		}
+	}
+	
+	private void notifyAdvanced() {
+		for (Listener l : listeners) {
+			l.advanced(timeCounter, r, events.valuesList());;
+		}
+	}
+	
+	private void notifyError(String error) {
+		for (Listener l : listeners) {
+			l.simulatorError(timeCounter, r, events.valuesList(), error);;
+		}
 	}
 	
 	/**
@@ -69,6 +91,7 @@ public class TrafficSimulator {
 		while (timeCounter <= limiteTiempo) {
 			eventProcess();
 			advance();
+			notifyAdvanced();
 			++timeCounter;
 			writeReport(report, out);
 		}
@@ -91,6 +114,7 @@ public class TrafficSimulator {
 			}
 			
 		} catch (IllegalArgumentException e) {
+			notifyError("There was an error while processing the events");
 			throw new IllegalArgumentException("There was an error while processing the events", e);
 		}
 	}
@@ -110,6 +134,7 @@ public class TrafficSimulator {
 				j.avanza();
 			}
 		} catch (IllegalArgumentException e) {
+			notifyError("There was an error while advancing the objects");
 			throw new IllegalArgumentException("There was an error while advancing the objects", e);
 		}
 	}
@@ -155,7 +180,12 @@ public class TrafficSimulator {
 	}
 	
 	public interface Listener {
-		void update(UpdateEvent ue, String error);
+		public void registered(int time, RoadMap map, List<Event> events);
+		public void reset(int time, RoadMap map, List<Event> events);
+		public void eventAdded(int time, RoadMap map, List<Event> events);
+		public void advanced(int time, RoadMap map, List<Event> events);
+		public void simulatorError(int time, RoadMap map, List<Event> events, String error);
+		
 	}
 	
 	public enum EventType {
@@ -184,5 +214,12 @@ public class TrafficSimulator {
 		public int getCurrentTime() {
 			return timeCounter;
 		}
+	}
+	
+	public void reset() {
+		timeCounter = 0;
+		r = new RoadMap();
+		events.clear();
+		notifyReset();
 	}
 }
