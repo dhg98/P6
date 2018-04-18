@@ -69,7 +69,7 @@ public class MostCrowdedJunction extends JunctionWithTimeSlice {
 	
 	@Override
 	public void addIncomingRoad(Road r) {
-		IncomingRoadWithTimeSlice ir = new IncomingRoadWithTimeSlice(r, 0 , 0, 0);
+		IncomingRoadWithTimeSlice ir = new IncomingRoadWithTimeSlice(r, 0);
 		getJunctionDeque().add(ir);
 		getJunctionMap().put(r, ir);
 		setTrafficLight(getJunctionDeque().size() - 1); //al introducir una nueva carretera, se modifica el semaforo para que en el siguiente tick, al aumentar su valor

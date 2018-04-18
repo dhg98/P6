@@ -9,48 +9,33 @@ public class JunctionWithTimeSlice extends Junction {
 		super(id);
 	}
 
-	public static class IncomingRoadWithTimeSlice extends IncomingRoads {
+	protected class IncomingRoadWithTimeSlice extends IncomingRoads {
 		
 		private int timeSlice;
-		private int usedTimeUnits;
-		private int numVehicles; 
+		private int usedTimeUnits = -1;
+		protected boolean used = false;
+		protected boolean fullyUsed = true;
 		
-		public IncomingRoadWithTimeSlice(Road road, int timeSlice, int usedTimeUnits, int numVehicles) {
+		public IncomingRoadWithTimeSlice(Road road, int timeSlice) {
 			super(road);
 			this.timeSlice = timeSlice;
-			this.usedTimeUnits = usedTimeUnits;
-			this.numVehicles = numVehicles;
 		}
 		
 		public void setTimeSlice(int timeSlice) {
 			this.timeSlice = timeSlice;
 		}
 
-
 		public void setUsedTimeUnits(int usedTimeUnits) {
 			this.usedTimeUnits = usedTimeUnits;
 		}
 
-
-		public void setNumVehicles(int numVehicles) {
-			this.numVehicles = numVehicles;
-		}
-
-
 		public int getTimeSlice() {
 			return timeSlice;
-		}
-		
-		public int getNumVehicles() {
-			return numVehicles;
 		}
 
 		public int getUsedTimeUnits() {
 			return usedTimeUnits;
 		}
 		
-		public boolean isUsed() {
-			return numVehicles == usedTimeUnits;
-		}
 	}
 }

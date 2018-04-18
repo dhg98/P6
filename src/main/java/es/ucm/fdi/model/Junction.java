@@ -120,7 +120,7 @@ public class Junction extends SimObject implements Describable {
 	 */
 	public void avanza() {
 		if(!junctionDeque.isEmpty()) {
-			if (!junctionDeque.get(trafficLight ).roadDeque.isEmpty()) {
+			if (!junctionDeque.get(trafficLight).roadDeque.isEmpty()) {
 				//el array de incomingRoads no este vacio y la cola que indica el semaforo tampoco
 				junctionDeque.get(trafficLight).roadDeque.getFirst().moverASiguienteCarretera(); //movemos el vehiculo a la carretera en funcion de su itinerario
 				junctionDeque.get(trafficLight).roadDeque.removeFirst(); //eliminar vehiculo de la cola
