@@ -57,25 +57,25 @@ public class TrafficSimulator {
 	
 	private void notifyReset() {
 		for (Listener l : listeners) {
-			l.reset(timeCounter, r, events.valuesList());;
+			l.reset(timeCounter, r, events.valuesList());
 		}
 	}
 	
 	private void notifyEventAdded() {
 		for (Listener l : listeners) {
-			l.eventAdded(timeCounter, r, events.valuesList());;
+			l.eventAdded(timeCounter, r, events.valuesList());
 		}
 	}
 	
 	private void notifyAdvanced() {
 		for (Listener l : listeners) {
-			l.advanced(timeCounter, r, events.valuesList());;
+			l.advanced(timeCounter, r, events.valuesList());
 		}
 	}
 	
-	private void notifyError(String error) {
+	public void notifyError(String error) {
 		for (Listener l : listeners) {
-			l.simulatorError(timeCounter, r, events.valuesList(), error);;
+			l.simulatorError(timeCounter, r, events.valuesList(), error);
 		}
 	}
 	
@@ -185,7 +185,6 @@ public class TrafficSimulator {
 		public void eventAdded(int time, RoadMap map, List<Event> events);
 		public void advanced(int time, RoadMap map, List<Event> events);
 		public void simulatorError(int time, RoadMap map, List<Event> events, String error);
-		
 	}
 	
 	public enum EventType {

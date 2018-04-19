@@ -152,8 +152,8 @@ public class Junction extends SimObject implements Describable {
 
 	@Override
 	public void describe(Map<String, String> out) {
-		out.put("Id", getId());
-		out.put("Green", "");
-		out.put("Red", "");
+		out.put("ID", getId());
+		out.put("Green", "" + Math.random());
+		out.put("Red", "" + Math.random());
 	}
 }

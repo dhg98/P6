@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
@@ -20,16 +21,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import es.ucm.fdi.control.Controller;
-import es.ucm.fdi.model.*;
+import es.ucm.fdi.model.Event;
+import es.ucm.fdi.model.RoadMap;
+import es.ucm.fdi.model.TrafficSimulator.Listener;
 
 /**
  * Esto es sólo para empezar a jugar con las interfaces
@@ -40,23 +41,32 @@ import es.ucm.fdi.model.*;
  * de vista de mantenibilidad.
  */
 
-public class SimWindow extends JFrame {
+public class SimWindow extends JFrame implements Listener {
+	private final static String[] columnNameVehicle = new String[]  {"ID", "Road", "Location", "Speed", "Km", "Faulty Units", "Itinerary"};
+	private final static String[] columnNameRoad = new String[] {"ID", "Source", "Target", "Lenght", "Max Speed", "Vehicles"};
+	private final static String[] columnNameJunction = new String[] {"ID", "Green", "Red"};
+	private final static String[] columnNameEvents = new String[] {"#", "Time", "Type"};
+	
+	
 	private Controller ctrl;
-	private RoadMap map;
+	private RoadMap map = new RoadMap();
 	private int time;
-	private ArrayList<Event> events; // Al poner List no deja el compilador, nos vemos forzados a usar ArrayList como tipo estatico.
+	private List<Event> events = new ArrayList<>();
 	private OutputStream reportsOutputStream;
 	
-	private JTable vehiclesTable;
-	private ListOfVehicleTableModel vehiclesTableModel;
+	private TableOfDescribables vehiclesTable;
+	private ListOfMapsTableModel vehiclesTableModel;
+	private TableOfDescribables roadTable;
+	private ListOfMapsTableModel roadTableModel;
+	private TableOfDescribables junctionTable;
+	private ListOfMapsTableModel junctionTableModel;
+	private TableOfDescribables eventsTable;
+	private ListOfMapsTableModel eventsTableModel;
+	
 	private TextSection textSection = new TextSection("");
 	private JPanel eventEditor;
-	private JPanel vehicleTablePanel;
-	private JPanel roadsTablePanel;
-	private JPanel junctionsTablePanel;
 	private JTextArea reportsArea = new JTextArea();
 	private JPanel reportsViewer;
-	private JPanel eventsView;
 	private JPanel supPanel;
 	private JPanel infPanel;
 	private JPanel infLeftPanel;
@@ -81,7 +91,7 @@ public class SimWindow extends JFrame {
 		addInfLeftPanel();
 		addInfPanel();
 		addBars();
-		
+		ctrl.getSimulator().addSimulatorListener(this);
 		setSize(1000, 1000);		
 		setVisible(true);
 	}
@@ -165,7 +175,13 @@ public class SimWindow extends JFrame {
 		SimulatorAction events = new SimulatorAction(
 				Command.Events, "events.png", "Add events to the simulation",
 				KeyEvent.VK_A, "control A",
-				()->System.out.println(""));
+				()->{
+					try {
+						ctrl.loadEvents();
+					} catch (IOException e) {
+						ctrl.getSimulator().notifyError(e.getMessage());
+					}
+				});
 		
 		SimulatorAction deleteReport = new SimulatorAction(
 				Command.DeleteReport, "delete_report.png", "Delete a report",
@@ -275,7 +291,7 @@ public class SimWindow extends JFrame {
 		supPanel = new JPanel();
 		supPanel.setLayout(new BoxLayout(supPanel, BoxLayout.X_AXIS));
 		supPanel.add(eventEditor);
-		supPanel.add(eventsView);
+		supPanel.add(eventsTable);
 		supPanel.add(reportsViewer);
 	}
 	
@@ -287,8 +303,9 @@ public class SimWindow extends JFrame {
 	}
 	
 	private void addEventsView() {
-		eventsView = new JPanel(new BorderLayout());
-		eventsView.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Queue "));
+		eventsTable = new TableOfDescribables(events, columnNameEvents);
+		eventsTableModel = new ListOfMapsTableModel();
+		eventsTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Queue "));
 	}
 	
 	private void addReportsViewer() {
@@ -301,30 +318,30 @@ public class SimWindow extends JFrame {
 	}
 	
 	private void addVehiclesTablePanel() {
-		vehiclesTableModel = new ListOfVehicleTableModel();
-		ctrl.getSimulator().addSimulatorListener(vehiclesTableModel);
-		vehiclesTable = new JTable(vehiclesTableModel);
-		vehicleTablePanel = new JPanel(new BorderLayout());
-		vehicleTablePanel.add(vehiclesTable);
-		vehicleTablePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(" Vehicles Table "));
+		vehiclesTable = new TableOfDescribables(map.getVehiclesRO(), columnNameVehicle);
+		vehiclesTableModel = new ListOfMapsTableModel();
+		vehiclesTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Vehicles Table "));
+		
 	}
 	
 	private void addRoadsTablePanel() {
-		roadsTablePanel = new JPanel(new BorderLayout());
-		roadsTablePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(" Roads Table "));
+		roadTable = new TableOfDescribables(map.getRoadsRO(), columnNameRoad);
+		roadTableModel = new ListOfMapsTableModel();
+		roadTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Road Table "));
 	}
 	
 	private void addJunctionsTablePanel() {
-		junctionsTablePanel = new JPanel(new BorderLayout());
-		junctionsTablePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(" Junctions Table "));
+		junctionTable = new TableOfDescribables(map.getJunctionsRO(), columnNameJunction);
+		junctionTableModel = new ListOfMapsTableModel();
+		junctionTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Junction Table "));
 	}
 	
 	private void addInfLeftPanel() {
 		infLeftPanel = new JPanel();
 		infLeftPanel.setLayout(new BoxLayout(infLeftPanel, BoxLayout.Y_AXIS));
-		infLeftPanel.add(vehicleTablePanel);
-		infLeftPanel.add(roadsTablePanel);
-		infLeftPanel.add(junctionsTablePanel);	
+		infLeftPanel.add(vehiclesTable);
+		infLeftPanel.add(roadTable);
+		infLeftPanel.add(junctionTable);	
 	}
 	
 	private void addInfPanel() {
@@ -345,10 +362,6 @@ public class SimWindow extends JFrame {
 		topSplit.setResizeWeight(.33);
 	}
 	
-	/*public static void main(String ... args) {
-		SwingUtilities.invokeLater(() -> new SimWindow());
-	}*/
-	
 	private enum Command {
 		Exit("Exit"), Clear("Clear"), Save("Save"), Stop("Stop"), SaveReport("Save Report"), 
 		Events("Events"), DeleteReport("Delete report"), Play("Play"), Open("Open"), Report("Report"), Reset("Reset");
@@ -363,6 +376,37 @@ public class SimWindow extends JFrame {
 		public String toString() {
 			return text;
 		}
+		
+	}
+
+	@Override
+	public void registered(int time, RoadMap map, List<Event> events) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void reset(int time, RoadMap map, List<Event> events) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void eventAdded(int time, RoadMap map, List<Event> events) {
+		this.events = events;
+		eventsTable.setElements(events);
+		eventsTable.update();
+	}
+
+	@Override
+	public void advanced(int time, RoadMap map, List<Event> events) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void simulatorError(int time, RoadMap map, List<Event> events, String error) {
+		// TODO Auto-generated method stub
 		
 	}
 }

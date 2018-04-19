@@ -83,6 +83,18 @@ public class RoadMap {
 		return roads;
 	}
 	
+	public List<Junction> getJunctionsRO() {
+		return junctionsRO;
+	}
+
+	public List<Road> getRoadsRO() {
+		return roadsRO;
+	}
+
+	public List<Vehicle> getVehiclesRO() {
+		return vehiclesRO;
+	}
+
 	/**
 	 * Adds a Junction if the the id does not exist
 	 * @param j

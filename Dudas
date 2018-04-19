@@ -8,17 +8,3 @@
 
 COSAS QUE FALTAN
 - Tablas
-
-
-
-
-- MostCrowdedJuntionEventBuilder (Revisada)
-- RoundRobinJunctionEventBuilder (Revisada)
-- MostCrowdedJuntionEvent
-- RoundRobinJunctionEvent
-- MostCrowdedJuntion
-- RoundRobinJunction
-- Junction
-- JunctionWithTimeSlice
-- JunctionEventBuilder (Revisada)
-- JunctionEvent

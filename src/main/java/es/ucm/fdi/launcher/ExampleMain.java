@@ -182,7 +182,7 @@ public class ExampleMain {
 		if (_timeLimit == null) {
 			_timeLimit = _timeLimitDefaultValue;
 		}
-		startBatchMode();
+		startGUIMode();
 	}
 
 	public static void main(String[] args) throws IOException, InvocationTargetException, InterruptedException {
