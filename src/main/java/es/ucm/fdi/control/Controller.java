@@ -30,6 +30,15 @@ public class Controller {
 		this.out = out;
 	}
 	
+	public Controller(TrafficSimulator simulator, InputStream in) {
+		this.simulator = simulator;
+		this.in = in;
+	}
+	
+	public void setIn(InputStream in) {
+		this.in = in;
+	}
+
 	public TrafficSimulator getSimulator() {
 		return simulator;
 	}
@@ -39,6 +48,8 @@ public class Controller {
 	 * @throws IOException
 	 */
 	public void loadEvents() throws IOException {
+		getSimulator().getEvents().clear(); //Vaciamos el multiTreeMap por si hubiera elementos anteriormente.
+		//Esto sucede cuando se carga un fichero despues de haber cargado eventos por primera vez y se quiere volver a cargar eventos
 		Ini iniS = new Ini(in);
 		for (IniSection sec : iniS.getSections()) {
 			simulator.insertaEvento(parseSection(sec));

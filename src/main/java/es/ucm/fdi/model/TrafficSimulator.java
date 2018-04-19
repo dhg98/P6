@@ -17,16 +17,20 @@ import es.ucm.fdi.util.MultiTreeMap;
  *
  */
 public class TrafficSimulator {
-	private RoadMap r;
+	private RoadMap rm;
 	private List<Listener> listeners = new ArrayList<>();
 	private int timeCounter;
 	private MultiTreeMap<Integer, Event> events = new MultiTreeMap <>();
 	
 	public TrafficSimulator() {
-		r = new RoadMap();
+		rm = new RoadMap();
 		timeCounter = 0;
 	}
-	
+		
+	public MultiTreeMap<Integer, Event> getEvents() {
+		return events;
+	}
+
 	/**
 	 * Insert the event in order to execute it if the time is previous than the Simulation Time.
 	 * @param e
@@ -52,30 +56,30 @@ public class TrafficSimulator {
 	}
 		
 	private void notifyRegistered(Listener o) {
-		o.registered(timeCounter, r, events.valuesList());
+		o.registered(timeCounter, rm, events.valuesList());
 	}
 	
 	private void notifyReset() {
 		for (Listener l : listeners) {
-			l.reset(timeCounter, r, events.valuesList());
+			l.reset(timeCounter, rm, events.valuesList());
 		}
 	}
 	
 	private void notifyEventAdded() {
 		for (Listener l : listeners) {
-			l.eventAdded(timeCounter, r, events.valuesList());
+			l.eventAdded(timeCounter, rm, events.valuesList());
 		}
 	}
 	
 	private void notifyAdvanced() {
 		for (Listener l : listeners) {
-			l.advanced(timeCounter, r, events.valuesList());
+			l.advanced(timeCounter, rm, events.valuesList());
 		}
 	}
 	
 	public void notifyError(String error) {
 		for (Listener l : listeners) {
-			l.simulatorError(timeCounter, r, events.valuesList(), error);
+			l.simulatorError(timeCounter, rm, events.valuesList(), error);
 		}
 	}
 	
@@ -108,7 +112,7 @@ public class TrafficSimulator {
 				int i = 0;
 				while (i < arrayEvent.size()) {
 					Event e = arrayEvent.get(i);
-					e.execute(r);
+					e.execute(rm);
 					++i;
 				}
 			}
@@ -125,12 +129,12 @@ public class TrafficSimulator {
 	 */
 	public void advance() {
 		try {
-			for (Road ro: r.getRoads()) {
+			for (Road ro: rm.getRoads()) {
 				if(ro.getNumVehicles() > 0) {
 					ro.avanza();
 				}
 			}
-			for (Junction j : r.getJunctions()) {
+			for (Junction j : rm.getJunctions()) {
 				j.avanza();
 			}
 		} catch (IllegalArgumentException e) {
@@ -161,17 +165,17 @@ public class TrafficSimulator {
 	 */
 	public void writeReport(Map<String, String> report, OutputStream out) throws IOException {
 		Ini file = new Ini();
-		for (Junction j : r.getJunctions()) {
+		for (Junction j : rm.getJunctions()) {
 			j.report(timeCounter, report);
 			file.addsection(createIniSection(report));
 			report.clear(); //Al estar reutilizando el mismo mapa es necesario eliminar todas las claves antes de sobreescribir.
 		}
-		for (Road ro: r.getRoads()) {
+		for (Road ro: rm.getRoads()) {
 			ro.report(timeCounter, report);
 			file.addsection(createIniSection(report));
 			report.clear(); 
 		}
-		for (Vehicle v: r.getVehicles()) {
+		for (Vehicle v: rm.getVehicles()) {
 			v.report(timeCounter, report);
 			file.addsection(createIniSection(report));
 			report.clear(); 
@@ -203,7 +207,7 @@ public class TrafficSimulator {
 		}
 		
 		public RoadMap getRoadMap() {
-			return r;
+			return rm;
 		}
 		
 		public List<Event> getEventQueue() {
@@ -217,7 +221,7 @@ public class TrafficSimulator {
 	
 	public void reset() {
 		timeCounter = 0;
-		r = new RoadMap();
+		rm = new RoadMap();
 		events.clear();
 		notifyReset();
 	}
