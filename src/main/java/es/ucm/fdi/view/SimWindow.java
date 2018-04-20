@@ -3,8 +3,11 @@ package es.ucm.fdi.view;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +56,7 @@ public class SimWindow extends JFrame implements Listener {
 	private int time;
 	private List<Event> events = new ArrayList<>();
 	private OutputStream reportsOutputStream;
+	private File currentInput;
 	
 	private TableOfDescribables vehiclesTable;
 	private ListOfMapsTableModel vehiclesTableModel;
@@ -63,7 +67,7 @@ public class SimWindow extends JFrame implements Listener {
 	private TableOfDescribables eventsTable;
 	private ListOfMapsTableModel eventsTableModel;
 	
-	private TextSection textSection = new TextSection("");
+	private TextSection textSection;
 	private JPanel eventEditor;
 	private JTextArea reportsArea = new JTextArea();
 	private JPanel reportsViewer;
@@ -76,6 +80,17 @@ public class SimWindow extends JFrame implements Listener {
 	
 	public SimWindow(Controller ctrl, String inFileName) {
 		super("Traffic Simulator");
+		textSection = new TextSection("");
+		if (inFileName != null) {
+			currentInput = new File(inFileName);
+			String st = "";
+			try {
+				st = new String(Files.readAllBytes(currentInput.toPath()), "UTF-8");
+			} catch (Exception e) {
+				
+			}
+	    	textSection.textArea.setText(st);
+		}
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.ctrl = ctrl;		
 		createActions();
@@ -103,11 +118,12 @@ public class SimWindow extends JFrame implements Listener {
 	    chooser.setFileFilter(filter);
 	    int returnVal = chooser.showOpenDialog(chooser.getParent());
 	    if(returnVal == JFileChooser.APPROVE_OPTION) {
-	       File f = chooser.getSelectedFile();
+	       currentInput = chooser.getSelectedFile();
 	       System.out.println("You chose to open this file: " +
-	            f.getName());
+	            currentInput.getName());
 	       try {
-	    	   String st = new String(Files.readAllBytes(f.toPath()), "UTF-8");
+	    	   String st = new String(Files.readAllBytes(currentInput.toPath()), "UTF-8");
+	    	   ctrl.setIn(new FileInputStream(currentInput));
 	    	   textSection.textArea.setText(st);
 	       } catch (IOException e) {
 	    	   textSection.textArea.setText("");

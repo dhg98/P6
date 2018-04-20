@@ -24,6 +24,7 @@ public class ExampleMain {
 	private static Integer _timeLimit = null;
 	private static String _inFile = null;
 	private static String _outFile = null;
+	private static ViewOption option = ViewOption.BATCH;
 
 	private static void parseArgs(String[] args) {
 
@@ -37,6 +38,7 @@ public class ExampleMain {
 		try {
 			CommandLine line = parser.parse(cmdLineOptions, args);
 			parseHelpOption(line, cmdLineOptions);
+			parseViewOption(line);
 			parseInFileOption(line);
 			parseOutFileOption(line);
 			parseStepsOption(line);
@@ -70,6 +72,8 @@ public class ExampleMain {
 		cmdLineOptions.addOption(Option.builder("t").longOpt("ticks").hasArg()
 				.desc("Ticks to execute the simulator's main loop (default value is " + _timeLimitDefaultValue + ").")
 				.build());
+		cmdLineOptions.addOption(Option.builder("m").longOpt("view").hasArg().desc(
+				"batch’ for batch mode and ’gui’ for GUI mode" + "(default value is ’batch’)").build());
 
 		return cmdLineOptions;
 	}
@@ -84,13 +88,24 @@ public class ExampleMain {
 
 	private static void parseInFileOption(CommandLine line) throws ParseException {
 		_inFile = line.getOptionValue("i");
-		if (_inFile == null) {
+		if (_inFile == null && option.equals(ViewOption.BATCH)) {
 			throw new ParseException("An events file is missing");
 		}
 	}
 
 	private static void parseOutFileOption(CommandLine line) throws ParseException {
 		_outFile = line.getOptionValue("o");
+	}
+	
+	private static void parseViewOption(CommandLine line) throws ParseException {
+		if (line.hasOption("m")) {
+			String view = line.getOptionValue("m");
+			if ("gui".equals(view)) {
+				option = ViewOption.GUI; 
+			} else if (!"batch".equals(view)) {
+				throw new ParseException("Invalid view mode for the simulation: " + view);
+			}
+		}
 	}
 
 	private static void parseStepsOption(CommandLine line) throws ParseException {
@@ -151,7 +166,9 @@ public class ExampleMain {
 		// TODO
 		// Add your code here. Note that the input argument where parsed and stored into
 		// corresponding fields.
-		
+		if (_timeLimit == null) {
+			_timeLimit = _timeLimitDefaultValue;
+		}
 		TrafficSimulator t = new TrafficSimulator();
 		OutputStream out = _outFile != null ? new FileOutputStream(_outFile) : System.out;
 		//Si _outFile es null mostramos por pantalla y si no guardamos los datos de la simulacion en un fichero.
@@ -166,10 +183,13 @@ public class ExampleMain {
 	
 	private static void startGUIMode() throws IOException, InvocationTargetException, InterruptedException {
 		TrafficSimulator t = new TrafficSimulator();
-		OutputStream out = _outFile != null ? new FileOutputStream(_outFile) : System.out;
-		//Si _outFile es null mostramos por pantalla y si no guardamos los datos de la simulacion en un fichero.
-		InputStream in = new FileInputStream(_inFile);
-		Controller c = new Controller(t, _timeLimit, in, out);
+		InputStream in;
+		if (_inFile != null) {
+			in = new FileInputStream(_inFile);
+		} else {
+			in = null;
+		}
+		Controller c = new Controller(t, in);
 		SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {
 				new SimWindow(c, _inFile);
@@ -179,10 +199,14 @@ public class ExampleMain {
 
 	private static void start(String[] args) throws IOException, InvocationTargetException, InterruptedException {
 		parseArgs(args);
-		if (_timeLimit == null) {
-			_timeLimit = _timeLimitDefaultValue;
+		switch(option) {
+			case BATCH: {
+				startBatchMode();
+			} break;
+			case GUI: {
+				startGUIMode();
+			} break;
 		}
-		startGUIMode();
 	}
 
 	public static void main(String[] args) throws IOException, InvocationTargetException, InterruptedException {
@@ -204,4 +228,8 @@ public class ExampleMain {
 
 	}
 
+	private enum ViewOption {
+		GUI, BATCH;
+	}
+	
 }
