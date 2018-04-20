@@ -6,5 +6,9 @@
 en la accion events, pero no soy capaz de saber como, porque si se llama a loadEvents de Controller carga los eventos del fichero actual y no del modificado.
 ¿Se puede crear un FileInputStream a partir del fichero modificado, o se puede crear de hecho un fichero .ini con las modificaciones? No sé cómo se haría.
 
+- Creo que deberiamos meter algo para no dejar pulsar botones que no queramos durante la simulacion, que si se esta ejecutando el simulador y le damos a
+cargar eventos explota, y si se esta ejecutando, cargamos un nuevo fichero y cargamos los eventos explota tambien. No se muy bien cual debe ser el tratamiento
+que debemos seguir ahi. Quiza resetear el simulador y cargar despues sea la mejor. ¡¡Preguntar por si acaso!!
+
 COSAS QUE FALTAN
 - Tablas

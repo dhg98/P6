@@ -78,7 +78,7 @@ public class SimWindow extends JFrame implements Listener {
 	private JPanel infPanel;
 	private JPanel infLeftPanel;
 	private JSpinner stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1)); //new SpinnerNumberModel(CurrentValue, min, max, steps)
-	private JTextField timeViewer = new JTextField("1");
+	private JTextField timeViewer = new JTextField("0");
 	private Map<Object, SimulatorAction> actions = new HashMap<>();
 	
 	public SimWindow(Controller ctrl, String inFileName) {
@@ -335,10 +335,11 @@ public class SimWindow extends JFrame implements Listener {
 	
 	private void play() {
 		if (loadedEvents) {
-			int time = stepsSpinner.get;
+			int time = (Integer)stepsSpinner.getValue();
 			ByteArrayOutputStream str = new ByteArrayOutputStream();
 			try {
 				ctrl.getSimulator().execute(str, time);
+				timeViewer.setText("" + ctrl.getSimulator().getTimeCounter());
 			} catch (IOException e) {
 				ctrl.getSimulator().notifyError("MAL");
 				e.printStackTrace();
@@ -441,6 +442,7 @@ public class SimWindow extends JFrame implements Listener {
 	public void reset(int time, RoadMap map, List<Event> events) {
 		loadedEvents = false;
 		reportsArea.setText("");
+		timeViewer.setText("" + 0);
 		this.events = ctrl.getSimulator().getEvents().valuesList();
 		
 		junctionTable.setElements(map.getJunctionsRO());

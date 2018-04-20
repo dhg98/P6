@@ -35,6 +35,10 @@ public class TrafficSimulator {
 		return rm;
 	}
 
+	public int getTimeCounter() {
+		return timeCounter;
+	}
+
 	/**
 	 * Insert the event in order to execute it if the time is previous than the Simulation Time.
 	 * @param e
