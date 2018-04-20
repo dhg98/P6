@@ -143,7 +143,7 @@ public class Road extends SimObject implements Describable {
 		out.put("ID", getId());
 		out.put("Source", start.getId());
 		out.put("Target", end.getId());
-		out.put("Length", "" + size);
+		out.put("Lenght", "" + size);
 		out.put("Max Speed", "" + maxVel);
 		out.put("Vehicles", toStringVehicles());
 	}

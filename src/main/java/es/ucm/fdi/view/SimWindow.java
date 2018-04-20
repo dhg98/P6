@@ -2,12 +2,13 @@ package es.ucm.fdi.view;
 
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import es.ucm.fdi.control.Controller;
+import es.ucm.fdi.ini.Ini;
 import es.ucm.fdi.model.Event;
 import es.ucm.fdi.model.RoadMap;
 import es.ucm.fdi.model.TrafficSimulator.Listener;
@@ -49,6 +51,7 @@ public class SimWindow extends JFrame implements Listener {
 	private final static String[] columnNameRoad = new String[] {"ID", "Source", "Target", "Lenght", "Max Speed", "Vehicles"};
 	private final static String[] columnNameJunction = new String[] {"ID", "Green", "Red"};
 	private final static String[] columnNameEvents = new String[] {"#", "Time", "Type"};
+	private static boolean loadedEvents = false;
 	
 	
 	private Controller ctrl;
@@ -92,7 +95,8 @@ public class SimWindow extends JFrame implements Listener {
 	    	textSection.textArea.setText(st);
 		}
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.ctrl = ctrl;		
+		this.ctrl = ctrl;
+		map = ctrl.getSimulator().getRm();
 		createActions();
 		addToolBar();
 		addMenuBar();
@@ -151,8 +155,21 @@ public class SimWindow extends JFrame implements Listener {
 	    }
 	}
 	
+	public void readText() {
+		String st = textSection.textArea.getText();
+		ctrl.setIn(new ByteArrayInputStream(st.getBytes(StandardCharsets.UTF_8)));
+	}
+	
 	public void clearText() {
 		textSection.textArea.setText("");
+	}
+	
+	public void showReport() {
+		Ini ini = new Ini();
+		ctrl.getSimulator().fillReport(map.getJunctionsRO(), ini);
+		ctrl.getSimulator().fillReport(map.getRoadsRO(), ini);
+		ctrl.getSimulator().fillReport(map.getVehiclesRO(), ini);
+		reportsArea.setText(ini.toString());
 	}
 	
 	private void createActions() {
@@ -171,7 +188,10 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction open = new SimulatorAction(
 				Command.Open, "open.png", "Load an ini file", 
 				KeyEvent.VK_L, "control L", 
-				()->readIni());
+				()->{
+					readIni();
+					loadedEvents = false;
+				});
 		
 		SimulatorAction saveReport = new SimulatorAction(
 				Command.SaveReport, "save_report.png", "Save a report", 
@@ -186,14 +206,16 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction play = new SimulatorAction(
 				Command.Play, "play.png", "Play the simulation",
 				KeyEvent.VK_P, "control P",
-				()->System.out.println(""));
+				()->play());
 		
 		SimulatorAction events = new SimulatorAction(
 				Command.Events, "events.png", "Add events to the simulation",
 				KeyEvent.VK_A, "control A",
 				()->{
 					try {
+						readText();
 						ctrl.loadEvents();
+						loadedEvents = true;
 					} catch (IOException e) {
 						ctrl.getSimulator().notifyError(e.getMessage());
 					}
@@ -212,12 +234,12 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction report = new SimulatorAction(
 				Command.Report, "report.png", "Report the simulation",
 				KeyEvent.VK_M, "control M",
-				()->System.out.println(""));
+				()-> showReport());
 		
 		SimulatorAction reset = new SimulatorAction(
 				Command.Reset, "reset.png", "Reset the simulation",
 				KeyEvent.VK_Z, "control Z",
-				()->System.out.println(""));
+				()->ctrl.getSimulator().reset());
 		
 		actions.put(Command.Exit, exit);
 		actions.put(Command.Clear, clear);
@@ -309,6 +331,20 @@ public class SimWindow extends JFrame implements Listener {
 		supPanel.add(eventEditor);
 		supPanel.add(eventsTable);
 		supPanel.add(reportsViewer);
+	}
+	
+	private void play() {
+		if (loadedEvents) {
+			int time = stepsSpinner.get;
+			ByteArrayOutputStream str = new ByteArrayOutputStream();
+			try {
+				ctrl.getSimulator().execute(str, time);
+			} catch (IOException e) {
+				ctrl.getSimulator().notifyError("MAL");
+				e.printStackTrace();
+			}
+			showReport();
+		}
 	}
 	
 	private void addEventEditor() {
@@ -403,8 +439,19 @@ public class SimWindow extends JFrame implements Listener {
 
 	@Override
 	public void reset(int time, RoadMap map, List<Event> events) {
-		// TODO Auto-generated method stub
+		loadedEvents = false;
+		reportsArea.setText("");
+		this.events = ctrl.getSimulator().getEvents().valuesList();
 		
+		junctionTable.setElements(map.getJunctionsRO());
+		roadTable.setElements(map.getRoadsRO());
+		vehiclesTable.setElements(map.getVehiclesRO());
+		junctionTable.update();
+		roadTable.update();
+		vehiclesTable.update();		
+		
+		eventsTable.setElements(events);
+		eventsTable.update();
 	}
 
 	@Override
@@ -416,13 +463,17 @@ public class SimWindow extends JFrame implements Listener {
 
 	@Override
 	public void advanced(int time, RoadMap map, List<Event> events) {
-		// TODO Auto-generated method stub
-		
+		junctionTable.setElements(map.getJunctionsRO());
+		roadTable.setElements(map.getRoadsRO());
+		vehiclesTable.setElements(map.getVehiclesRO());
+		junctionTable.update();
+		roadTable.update();
+		vehiclesTable.update();		
 	}
 
 	@Override
 	public void simulatorError(int time, RoadMap map, List<Event> events, String error) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 }

@@ -168,7 +168,6 @@ public class Vehicle extends SimObject implements Describable {
 		}
 	}
 
-
 	@Override
 	public void describe(Map<String, String> out) {
 		out.put("ID", getId());

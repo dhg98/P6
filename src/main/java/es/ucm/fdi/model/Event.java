@@ -5,7 +5,7 @@ package es.ucm.fdi.model;
  * @author Daniel Herranz
  *
  */
-public abstract class Event implements Describable{
+public abstract class Event implements Describable {
 	private int time;
 
 	public Event(int time) {

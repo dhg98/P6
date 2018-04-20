@@ -18,7 +18,7 @@ import javax.swing.table.AbstractTableModel;
 import es.ucm.fdi.model.Describable;
 import es.ucm.fdi.model.Junction;
 
-public class TableOfDescribables extends JPanel{
+public class TableOfDescribables extends JPanel {
 	
 	private JTable table;	
 	private ListOfMapsTableModel model;
@@ -30,7 +30,7 @@ public class TableOfDescribables extends JPanel{
 	public void setElements(List<? extends Describable> elements) {
 		this.elements = elements;
 	}
-
+ 
 	public TableOfDescribables(List<? extends Describable> elements, String[] colNames) {
 		super(new BorderLayout());
 		this.elements = elements;
