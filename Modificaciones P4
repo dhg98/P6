@@ -5,3 +5,13 @@
 - Se modifican comentarios.
 
 - Se añade simetria en declaraciones similares.
+
+- Se pone a minuscula el atributo Events de TrafficSimulator al ser un atributo y no una clase.
+
+- Se añade un bucle forEach en el metodo isValidId de EventBuilder.
+
+- Se añade un bucle forEach en el metodo eventProcess de TrafficSimulator en lugar del bucle ya existente.
+
+- Se le cambia el nombre a la clase ExampleMain
+
+- Se modifica el nombre de la variable RoadMap en las clases Event: cada uno se llamaba de una forma. Ahora se llaman todos rm.
