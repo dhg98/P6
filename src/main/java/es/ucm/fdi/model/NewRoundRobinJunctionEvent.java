@@ -13,8 +13,7 @@ public class NewRoundRobinJunctionEvent extends NewJunctionEvent {
 	
 	@Override
 	public void execute(RoadMap r) {
-		RoundRobinJunction j = new RoundRobinJunction(getId(), maxTimeSlice, minTimeSlice);
-		r.addJunction(j);
+		r.addJunction(new RoundRobinJunction(getId(), maxTimeSlice, minTimeSlice));
 	}
 
 }

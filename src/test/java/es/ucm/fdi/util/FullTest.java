@@ -1,10 +1,10 @@
 package es.ucm.fdi.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import es.ucm.fdi.launcher.ExampleMain;
+import es.ucm.fdi.launcher.Main;
 
 public class FullTest {
 	private static final String BASE = "src/main/resources/";
@@ -12,7 +12,7 @@ public class FullTest {
 	@Test
 	public void testError() throws Exception {
 		try {
-			ExampleMain.test(BASE + "examples/err");
+			Main.test(BASE + "examples/err");
 			fail("Expected an exception while parsing a wrong-formed Ini File");
 		} catch (IllegalArgumentException e) {
 			//Ya contabamos con esta exception
@@ -21,7 +21,7 @@ public class FullTest {
 	
 	@Test
 	public void testBasic() throws Exception {
-		ExampleMain.test(BASE + "examples/basic");
+		Main.test(BASE + "examples/basic");
 	}
 	
 	/*@Test

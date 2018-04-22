@@ -19,7 +19,7 @@ public abstract class Event implements Describable {
 		this.time = time;
 	}
 	
-	public abstract void execute(RoadMap r);
+	public abstract void execute(RoadMap rm);
 	
 	public abstract String getType();
 }

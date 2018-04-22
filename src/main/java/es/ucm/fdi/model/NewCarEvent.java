@@ -23,15 +23,15 @@ public class NewCarEvent extends NewVehicleEvent {
 	 * Executes a NewCarEvent and adds the NewBike to the RoadMap
 	 */
 	@Override
-	public void execute(RoadMap r) {
+	public void execute(RoadMap rm) {
 		List <Junction> its = new ArrayList<>();
 		for (String i : getItinerary()) {
-			its.add(r.getJunction(i));
+			its.add(rm.getJunction(i));
 		}
-		for (Road ro : r.getJunction(getItinerary().get(0)).getOutgoingRoadsList()) {
-			if (ro.getEnd().getId().equals(r.getJunction(getItinerary().get(1)).getId())) {
+		for (Road ro : rm.getJunction(getItinerary().get(0)).getOutgoingRoadsList()) {
+			if (ro.getEnd().getId().equals(rm.getJunction(getItinerary().get(1)).getId())) {
 				Car v = new Car(getId(), getMaxSpeed(), ro, its, resistanceKm, faultProbability, maxFaultDuration, seed);
-				r.addVehicle(v);
+				rm.addVehicle(v);
 				ro.entraVehiculo(v);
 				break;
 			}

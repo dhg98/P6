@@ -8,9 +8,8 @@ public class NewMostCrowdedJunctionEvent extends NewJunctionEvent {
 	}
 	
 	@Override
-	public void execute(RoadMap r) {
-		MostCrowdedJunction j = new MostCrowdedJunction(getId());
-		r.addJunction(j);
+	public void execute(RoadMap rm) {
+		rm.addJunction(new MostCrowdedJunction(getId()));
 	}
 
 }

@@ -10,11 +10,11 @@ public class NewDirtRoadEvent extends NewRoadEvent {
 	 * Executes a NewDirtRoadEvent and adds the NewBike to the RoadMap
 	 */
 	@Override
-	public void execute(RoadMap roadMap) {
-		Junction start = roadMap.getJunction(getSrc());
-		Junction end = roadMap.getJunction(getDest());
+	public void execute(RoadMap rm) {
+		Junction start = rm.getJunction(getSrc());
+		Junction end = rm.getJunction(getDest());
 		DirtRoad road = new DirtRoad(getId(), getLength(), getMaxSpeed(), start, end);
-		roadMap.addRoad(road);
+		rm.addRoad(road);
 		start.getOutgoingRoadsList().add(road);
 		end.addIncomingRoad(road);
 	}

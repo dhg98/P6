@@ -31,15 +31,15 @@ public class NewVehicleEvent extends Event implements Describable {
 	 * Executes a NewVehicleEvent and adds the NewBike to the RoadMap
 	 */
 	@Override
-	public void execute(RoadMap r) {
+	public void execute(RoadMap rm) {
 		List <Junction> its = new ArrayList<>();
 		for (String i : itinerary) {
-			its.add(r.getJunction(i));
+			its.add(rm.getJunction(i));
 		}
-		for (Road ro : r.getJunction(itinerary.get(0)).getOutgoingRoadsList()) {
-			if (ro.getEnd().getId().equals(r.getJunction(itinerary.get(1)).getId())) {
+		for (Road ro : rm.getJunction(itinerary.get(0)).getOutgoingRoadsList()) {
+			if (ro.getEnd().getId().equals(rm.getJunction(itinerary.get(1)).getId())) {
 				Vehicle v = new Vehicle(id, maxSpeed, ro, its);
-				r.addVehicle(v);
+				rm.addVehicle(v);
 				ro.entraVehiculo(v);
 				break;
 			}
