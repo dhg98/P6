@@ -1,8 +1,5 @@
 package es.ucm.fdi.model;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Iterator;
 import java.util.Map;
 
 public class JunctionWithTimeSlice extends Junction {
@@ -13,8 +10,8 @@ public class JunctionWithTimeSlice extends Junction {
 
 	protected class IncomingRoadWithTimeSlice extends IncomingRoads {
 		
-		private int timeSlice;
-		private int usedTimeUnits = -1;
+		protected int timeSlice;
+		protected int usedTimeUnits = -1;
 		protected boolean used = false;
 		protected boolean fullyUsed = true;
 		
@@ -35,22 +32,6 @@ public class JunctionWithTimeSlice extends Junction {
 				usedTimeUnits++;
 			}
 		}
-
-		public void setTimeSlice(int timeSlice) {
-			this.timeSlice = timeSlice;
-		}
-
-		public void setUsedTimeUnits(int usedTimeUnits) {
-			this.usedTimeUnits = usedTimeUnits;
-		}
-
-		public int getTimeSlice() {
-			return timeSlice;
-		}
-
-		public int getUsedTimeUnits() {
-			return usedTimeUnits;
-		}		
 	}
 	
 	/**
@@ -62,7 +43,7 @@ public class JunctionWithTimeSlice extends Junction {
 			IncomingRoadWithTimeSlice irs = (IncomingRoadWithTimeSlice)getJunctionDeque().get(i);
 			sb.append("(" + irs.road.getId() + ",");
 			if(i == trafficLight) {
-				sb.append("green:" + (irs.getTimeSlice() - irs.getUsedTimeUnits()) + ",[");
+				sb.append("green:" + (irs.timeSlice - irs.usedTimeUnits) + ",[");
 			} else {
 				sb.append("red,[");
 			}

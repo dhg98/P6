@@ -1,9 +1,6 @@
 package es.ucm.fdi.model;
 
-import java.util.Iterator;
 import java.util.Map;
-
-import es.ucm.fdi.model.Junction.IncomingRoads;
 
 public class RoundRobinJunction extends JunctionWithTimeSlice {
 	
@@ -19,13 +16,13 @@ public class RoundRobinJunction extends JunctionWithTimeSlice {
 	@Override
 	public void advanceLight() {
 		IncomingRoadWithTimeSlice irs = (IncomingRoadWithTimeSlice)getJunctionDeque().get(getTrafficLight());
-		if(irs.getTimeSlice() == irs.getUsedTimeUnits()) {
+		if(irs.timeSlice == irs.usedTimeUnits) {
 			if(irs.fullyUsed) {
-				irs.setTimeSlice(Math.min(maxTimeSlice, irs.getTimeSlice() + 1));
+				irs.timeSlice = Math.min(maxTimeSlice, irs.timeSlice + 1);
 			} else if(!irs.used) {
-				irs.setTimeSlice(Math.max(minTimeSlice, irs.getTimeSlice() - 1));
+				irs.timeSlice = Math.max(minTimeSlice, irs.timeSlice - 1);
 			}
-			irs.setUsedTimeUnits(0);	
+			irs.usedTimeUnits = 0;	
 			super.advanceLight();
 		}
 	}
@@ -43,7 +40,9 @@ public class RoundRobinJunction extends JunctionWithTimeSlice {
 		IncomingRoadWithTimeSlice ir = new IncomingRoadWithTimeSlice(r, maxTimeSlice);
 		getJunctionDeque().add(ir);
 		getJunctionMap().put(r, ir);
-		setTrafficLight(getJunctionDeque().size() - 1); //al introducir una nueva carretera, se modifica el semaforo para que en el siguiente tick, al aumentar su valor
-		//se aumente de forma correcta y se ponga a 0, dejando pasar a la carretera que se agrego primero.
+		//Al introducir una nueva carretera, se modifica el semaforo para que en el
+		//siguiente tick, al aumentar su valor se aumente de forma correcta y se ponga
+		//a 0, dejando pasar a la carretera que se agrego primero.
+		setTrafficLight(getJunctionDeque().size() - 1); 
 	}
 }

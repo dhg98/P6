@@ -18,7 +18,7 @@ import es.ucm.fdi.ini.Ini;
 import es.ucm.fdi.model.TrafficSimulator;
 import es.ucm.fdi.view.*;
 
-public class ExampleMain {
+public class Main {
 
 	private final static Integer _timeLimitDefaultValue = 10;
 	private static Integer _timeLimit = null;
@@ -81,7 +81,7 @@ public class ExampleMain {
 	private static void parseHelpOption(CommandLine line, Options cmdLineOptions) {
 		if (line.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp(ExampleMain.class.getCanonicalName(), cmdLineOptions, true);
+			formatter.printHelp(Main.class.getCanonicalName(), cmdLineOptions, true);
 			System.exit(0);
 		}
 	}
