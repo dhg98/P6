@@ -1,0 +1,7 @@
+- Se modifica la visibilidad de algunos atributos para evitar getters y setters en muchas partes del codigo.
+
+- Se limita la longitud de las lineas para favorecer la lectura.
+
+- Se modifican comentarios.
+
+- Se añade simetria en declaraciones similares.
