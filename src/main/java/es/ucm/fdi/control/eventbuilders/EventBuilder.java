@@ -19,13 +19,13 @@ public interface EventBuilder {
 	 * @param id
 	 * @return true if it is and false if it is not.
 	 */
-	public default boolean isValidId(String id){
-		for (int i = 0; i < id.length(); ++i) {
-			if (!Character.isLetterOrDigit(id.charAt(i)) && id.charAt(i) != '_') {
-				return false;
-			}
-		}
-		return true;
+	public default boolean isValidId(String id) {
+	    for (char c : id.toCharArray()) {
+	        if (!Character.isLetterOrDigit(c) && c != '_') {
+	            return false;
+	        }
+	    }
+	    return true;
 	}
 	
 	/**

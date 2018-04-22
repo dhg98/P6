@@ -42,11 +42,11 @@ public class NewRoadEvent extends Event implements Describable {
 	 * Executes a NewRoadEvent and adds the NewBike to the RoadMap
 	 */
 	@Override
-	public void execute(RoadMap roadMap) {
-		Junction start = roadMap.getJunction(src);
-		Junction end = roadMap.getJunction(dest);
+	public void execute(RoadMap rm) {
+		Junction start = rm.getJunction(src);
+		Junction end = rm.getJunction(dest);
 		Road road = new Road(id, length, maxSpeed, start, end);
-		roadMap.addRoad(road);
+		rm.addRoad(road);
 		start.getOutgoingRoadsList().add(road);
 		end.addIncomingRoad(road);
 	}

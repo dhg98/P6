@@ -18,9 +18,8 @@ public class NewJunctionEvent extends Event implements Describable {
 	 * Executes a NewJunctionEvent and adds the NewBike to the RoadMap
 	 */
 	@Override
-	public void execute(RoadMap r) {
-		Junction j = new Junction (id);
-		r.addJunction(j);
+	public void execute(RoadMap rm) {
+		rm.addJunction(new Junction (id));
 	}
 
 	@Override

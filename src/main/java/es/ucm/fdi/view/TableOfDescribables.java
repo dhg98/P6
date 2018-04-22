@@ -1,22 +1,16 @@
 package es.ucm.fdi.view;
 
 import java.awt.BorderLayout;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
 import es.ucm.fdi.model.Describable;
-import es.ucm.fdi.model.Junction;
 
 public class TableOfDescribables extends JPanel {
 	
@@ -69,7 +63,7 @@ public class TableOfDescribables extends JPanel {
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			Map out = new HashMap<String, String>();
+			Map <String,String> out = new HashMap<>();
 			elements.get(rowIndex).describe(out);
 			return out.get(fieldNames[columnIndex]);
 		}

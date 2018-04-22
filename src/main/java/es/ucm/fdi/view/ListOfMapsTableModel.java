@@ -1,6 +1,5 @@
 package es.ucm.fdi.view;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,7 @@ public class ListOfMapsTableModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Map out = new HashMap<String, String>();
+		Map <String, String> out = new HashMap<>();
 		elements.get(rowIndex).describe(out);
 		return out.get(fieldNames[columnIndex]);
 	}

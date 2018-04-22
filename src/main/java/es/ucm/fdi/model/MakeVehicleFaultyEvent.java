@@ -16,10 +16,10 @@ public class MakeVehicleFaultyEvent extends Event implements Describable {
 	 * Executes a NewMakeVehicleFaultyEvent faults a vehicle
 	 */
 	@Override
-	public void execute(RoadMap r) {
+	public void execute(RoadMap rm) {
 		try{
 			for (int i = 0; i < itCoches.size(); ++i) {
-				Vehicle v = r.getVehicle(itCoches.get(i));
+				Vehicle v = rm.getVehicle(itCoches.get(i));
 				v.setTiempoAveria(tiempoAveria);
 				v.setVelAct(0);
 			}

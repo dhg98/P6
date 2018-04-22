@@ -5,11 +5,8 @@ import java.io.OutputStream;
 import java.util.*;
 import java.util.Map.Entry;
 
-import javax.swing.SwingUtilities;
-
-import es.ucm.fdi.ini.Ini;
-import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.util.MultiTreeMap;
+import es.ucm.fdi.ini.*;
+import es.ucm.fdi.util.*;
 
 /**
  * Simulates the execution
@@ -114,16 +111,9 @@ public class TrafficSimulator {
 	 */
 	public void eventProcess() {
 		try {
-			List<Event> arrayEvent = events.get(timeCounter);
-			if(arrayEvent != null) {
-				int i = 0;
-				while (i < arrayEvent.size()) {
-					Event e = arrayEvent.get(i);
-					e.execute(rm);
-					++i;
-				}
-			}
-			
+		    for(Event e: events.get(timeCounter)) {
+		        e.execute(rm);
+		    }			
 		} catch (IllegalArgumentException e) {
 			notifyError("There was an error while processing the events");
 			throw new IllegalArgumentException("There was an error while processing the events", e);
