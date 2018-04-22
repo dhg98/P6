@@ -14,9 +14,17 @@ import es.ucm.fdi.model.*;
  */
 public class Controller {	
 	//Array for parsing the events
-	EventBuilder[] avaliableParsers = new EventBuilder[]{new NewDirtRoadEventBuilder(), new NewLanesRoadEventBuilder(), new NewRoadEventBuilder(),
-			new NewCarEventBuilder(), new NewBikeEventBuilder(), new NewVehicleEventBuilder(), new NewRoundRobinJunctionEventBuilder(),
-			new NewMostCrowdedJunctionEventBuilder(), new NewJunctionEventBuilder(), new MakeVehicleFaultyEventBuilder()};
+	EventBuilder[] avaliableParsers = new EventBuilder[]{
+	        new NewDirtRoadEventBuilder(),
+	        new NewLanesRoadEventBuilder(), 
+	        new NewRoadEventBuilder(),
+			new NewCarEventBuilder(), 
+			new NewBikeEventBuilder(), 
+			new NewVehicleEventBuilder(), 
+			new NewRoundRobinJunctionEventBuilder(),
+			new NewMostCrowdedJunctionEventBuilder(), 
+			new NewJunctionEventBuilder(), 
+			new MakeVehicleFaultyEventBuilder()};
 	
 	private TrafficSimulator simulator;
 	private int ticks;
@@ -48,8 +56,10 @@ public class Controller {
 	 * @throws IOException
 	 */
 	public void loadEvents() throws IOException {
-		getSimulator().getEvents().clear(); //Vaciamos el multiTreeMap por si hubiera elementos anteriormente.
-		//Esto sucede cuando se carga un fichero despues de haber cargado eventos por primera vez y se quiere volver a cargar eventos
+		//Vaciamos el multiTreeMap por si hubiera elementos anteriormente.
+		//Esto sucede cuando se carga un fichero despues de haber cargado
+	    //eventos por primera vez y se quiere volver a cargar eventos
+	    getSimulator().getEvents().clear(); 
 		Ini iniS = new Ini(in);
 		for (IniSection sec : iniS.getSections()) {
 			simulator.insertaEvento(parseSection(sec));
@@ -70,7 +80,8 @@ public class Controller {
 	}
 	
 	/**
-	 * Parse the IniSection and return the Event that matches with that IniSection if it does. If it does not, throws IllegalArgumentException
+	 * Parse the IniSection and return the Event that matches with that IniSection if it does. If it does not, 
+	 * throws IllegalArgumentException
 	 * @param sec
 	 * @return Event or Exception
 	 */
@@ -87,7 +98,8 @@ public class Controller {
 			}
 			return j;
 		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException("Could not parse section " + sec + " because it doesn't have the arguments we needed", e);
+			throw new IllegalArgumentException("Could not parse section " + sec + 
+			        " because it doesn't have the arguments we needed", e);
 		}
 	}
 }

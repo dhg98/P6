@@ -44,7 +44,8 @@ public interface EventBuilder {
 			throw new IllegalArgumentException("There was an error while parsing the key " + key , e);
 		}
 		if (res < def) {
-			throw new IllegalArgumentException("There was an error while parsing the key " + key + " because one of the numbers is less than " + def);
+			throw new IllegalArgumentException("There was an error while parsing the key " + key + 
+			        " because one of the numbers is less than " + def);
 		} else {
 			return res;
 		}
@@ -66,7 +67,8 @@ public interface EventBuilder {
 			throw new IllegalArgumentException("There was an error while parsing the key " + key , e);
 		}
 		if (res < def) {
-			throw new IllegalArgumentException("There was an error while parsing the key " + key + " because one of the numbers is less than " + def);
+			throw new IllegalArgumentException("There was an error while parsing the key " + key + 
+			        " because one of the numbers is less than " + def);
 		} else {
 			return res;
 		}
@@ -88,7 +90,8 @@ public interface EventBuilder {
 			throw new IllegalArgumentException("There was an error while parsing the key " + key , e);
 		}
 		if (res < def) {
-			throw new IllegalArgumentException("There was an error while parsing the key " + key + " because one of the numbers is less than " + def);
+			throw new IllegalArgumentException("There was an error while parsing the key " + key + 
+			        " because one of the numbers is less than " + def);
 		} else {
 			return res;
 		}

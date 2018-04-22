@@ -9,14 +9,14 @@ public class NewVehicleEventBuilder implements EventBuilder {
 
 	@Override
 	public Event parse(IniSection sec) {
-		if(!"new_vehicle".equals(sec.getTag())){
+		if(!"new_vehicle".equals(sec.getTag())) {
 			return null;
 		} else {
 			try {
-				int time = this.parseInt(sec, "time", 0);
+				int time = parseInt(sec, "time", 0);
 				int maxspeed = parseInt(sec, "max_speed", 1);
 				List<String> a = parseIdList(sec, "itinerary");
-				if (isValidId(sec.getValue("id"))){
+				if (isValidId(sec.getValue("id"))) {
 					return new NewVehicleEvent(time, sec.getValue("id"), maxspeed, a);
 				} else {
 					throw new IllegalArgumentException("One of the ids you´ve tried to parse contains invalid characters.");
