@@ -40,6 +40,14 @@ public class TrafficSimulator {
 		return timeCounter;
 	}
 
+	public void setRm(RoadMap rm) {
+		this.rm = rm;
+	}
+
+	public void setEvents(MultiTreeMap<Integer, Event> events) {
+		this.events = events;
+	}
+
 	/**
 	 * Insert the event in order to execute it if the time is previous than the Simulation Time.
 	 * @param e

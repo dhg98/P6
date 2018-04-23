@@ -25,7 +25,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
@@ -40,6 +39,7 @@ import es.ucm.fdi.ini.Ini;
 import es.ucm.fdi.model.Event;
 import es.ucm.fdi.model.RoadMap;
 import es.ucm.fdi.model.TrafficSimulator.Listener;
+import es.ucm.fdi.util.MultiTreeMap;
 
 /**
  * Esto es sólo para empezar a jugar con las interfaces
@@ -55,7 +55,6 @@ public class SimWindow extends JFrame implements Listener {
 	private final static String[] columnNameRoad = new String[] {"ID", "Source", "Target", "Lenght", "Max Speed", "Vehicles"};
 	private final static String[] columnNameJunction = new String[] {"ID", "Green", "Red"};
 	private final static String[] columnNameEvents = new String[] {"#", "Time", "Type"};
-	private static boolean loadedEvents = false;
 	
 	
 	private Controller ctrl;
@@ -81,9 +80,9 @@ public class SimWindow extends JFrame implements Listener {
 	private JPanel infPanel;
 	private JPanel infLeftPanel;
 	private JPanel rightInfPanel;
-	private JSpinner stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1)); //new SpinnerNumberModel(CurrentValue, min, max, steps)
+	private static JSpinner stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1)); //new SpinnerNumberModel(CurrentValue, min, max, steps)
 	private JTextField timeViewer = new JTextField("0");
-	private Map<Object, SimulatorAction> actions = new HashMap<>();
+	private Map<Command, SimulatorAction> actions = new HashMap<>();
 	
 	public SimWindow(Controller ctrl, String inFileName) {
 		super("Traffic Simulator");
@@ -99,15 +98,15 @@ public class SimWindow extends JFrame implements Listener {
 			}
 	    	textSection.textArea.setText(st);
 		} else {
-			disableActions(	actions.get(Command.Events), 
-							actions.get(Command.Clear), 
-							actions.get(Command.Save));
+			ableActions(false, 	actions.get(Command.Events), 
+								actions.get(Command.Clear), 
+								actions.get(Command.Save));
 		}
-		disableActions(	actions.get(Command.SaveReport), 
-						actions.get(Command.Play), 
-						actions.get(Command.Reset), 
-						actions.get(Command.Report), 
-						actions.get(Command.DeleteReport));
+		ableActions(false,	actions.get(Command.SaveReport), 
+							actions.get(Command.Play), 
+							actions.get(Command.Reset), 
+							actions.get(Command.Report), 
+							actions.get(Command.DeleteReport));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.ctrl = ctrl;
 		map = ctrl.getSimulator().getRm();
@@ -132,15 +131,14 @@ public class SimWindow extends JFrame implements Listener {
 		bottomSplit.setDividerLocation(.5);
 	}
 	
-	private void disableActions(SimulatorAction ... actions) {
+	private void ableActions(boolean state, SimulatorAction ... actions) {
 		for (SimulatorAction ac : actions) {
-			ac.setEnabled(false);
+			ac.setEnabled(state);
 		}
 	}
 	
 	private void createActions() {
 		// instantiate actions
-		
 		SimulatorAction exit = new SimulatorAction(
 				Command.Exit, "exit.png", "Exit the aplication",
 				KeyEvent.VK_C, "control shift C", 
@@ -149,21 +147,29 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction saveEvent = new SimulatorAction(
 				Command.Save, "save.png", "Save an Event",
 				KeyEvent.VK_S, "control S", 
-				()-> saveIni(textSection.textArea));
+				()-> {
+					saveIni(textSection.textArea);
+					enableOrDisableActions(actions, Command.Save);
+				});
 		
 		SimulatorAction play = new SimulatorAction(
 				Command.Play, "play.png", "Play the simulation",
 				KeyEvent.VK_P, "control P",
-				()->play());
+				()->{
+						play();
+						enableOrDisableActions(actions, Command.Play);
+					});
 		
 		SimulatorAction open = new SimulatorAction(
 				Command.Open, "open.png", "Load an ini file", 
 				KeyEvent.VK_L, "control L", 
 				()->{
-					readIni();
-					ctrl.getSimulator().setTimeCounter(0);
-					timeViewer.setText("0");
-					loadedEvents = false;
+					boolean couldOpen = readIni();
+					if (couldOpen) {
+						ctrl.getSimulator().setTimeCounter(0);
+						timeViewer.setText("0");
+						enableOrDisableActions(actions, Command.Open);
+					}
 				});
 		
 		SimulatorAction saveReport = new SimulatorAction(
@@ -174,18 +180,20 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction clear = new SimulatorAction(
 				Command.Clear, "clear.png", "Clear the text",
 				KeyEvent.VK_X, "control X",
-				()->clear());
+				()->{
+						clear();
+						enableOrDisableActions(actions, Command.Clear);
+					});
 		
 		SimulatorAction events = new SimulatorAction(
 				Command.Events, "events.png", "Add events to the simulation",
 				KeyEvent.VK_A, "control A",
 				()->{
 					try {
-						
 						readText();
 						reset(0, new RoadMap(), new ArrayList<Event>());
 						ctrl.loadEvents();
-						loadedEvents = true;
+						enableOrDisableActions(actions, Command.Events);
 					} catch (IOException e) {
 						ctrl.getSimulator().notifyError(e.getMessage());
 					}
@@ -194,17 +202,26 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction deleteReport = new SimulatorAction(
 				Command.DeleteReport, "delete_report.png", "Delete a report",
 				KeyEvent.VK_B, "control B",
-				()->clearReport());
+				()->{
+						clearReport();
+						enableOrDisableActions(actions, Command.DeleteReport);
+					});
 		
 		SimulatorAction report = new SimulatorAction(
 				Command.Report, "report.png", "Report the simulation",
 				KeyEvent.VK_M, "control M",
-				()-> showReport());
+				()-> {
+						showReport();
+						enableOrDisableActions(actions, Command.Report);
+					});
 		
 		SimulatorAction reset = new SimulatorAction(
 				Command.Reset, "reset.png", "Reset the simulation",
 				KeyEvent.VK_Z, "control Z",
-				()->ctrl.getSimulator().reset());
+				()->{
+						ctrl.getSimulator().reset();
+						enableOrDisableActions(actions, Command.Reset);
+					});
 		
 		actions.put(Command.Exit, exit);
 		actions.put(Command.Clear, clear);
@@ -218,7 +235,55 @@ public class SimWindow extends JFrame implements Listener {
 		actions.put(Command.Reset, reset);
 	}
 	
-	public void readIni() {
+	private void enableOrDisableActions(Map<Command, SimulatorAction> actions, Command command) {
+		switch(command) {
+		case Clear: {
+			actions.get(Command.Save).setEnabled(false);
+			actions.get(Command.Events).setEnabled(false);
+			actions.get(Command.Clear).setEnabled(true);
+		} break;
+		case Open: {
+			actions.get(Command.Clear).setEnabled(true);
+			actions.get(Command.Events).setEnabled(true);
+			actions.get(Command.Save).setEnabled(true);
+			actions.get(Command.Report).setEnabled(false);
+			actions.get(Command.SaveReport).setEnabled(false);
+			actions.get(Command.DeleteReport).setEnabled(false);
+			actions.get(Command.Play).setEnabled(false);
+			actions.get(Command.Reset).setEnabled(false);
+	
+		} break;
+		case Events: {
+			actions.get(Command.Play).setEnabled(true);
+			actions.get(Command.Reset).setEnabled(true);
+		} break;
+		case DeleteReport: {
+			actions.get(Command.Report).setEnabled(true);
+			actions.get(Command.SaveReport).setEnabled(false);
+		} break;
+		case Play: {
+			actions.get(Command.Events).setEnabled(false);
+			actions.get(Command.Report).setEnabled(true);
+		} break;
+		case Report: {
+			actions.get(Command.DeleteReport).setEnabled(true);
+			actions.get(Command.SaveReport).setEnabled(true);
+		} break;
+		case Reset: {
+			actions.get(Command.Report).setEnabled(false);
+			actions.get(Command.SaveReport).setEnabled(false);
+			actions.get(Command.DeleteReport).setEnabled(false);
+			actions.get(Command.Play).setEnabled(false);
+			actions.get(Command.Save).setEnabled(false);
+			actions.get(Command.Reset).setEnabled(false);
+			actions.get(Command.Events).setEnabled(true);
+		} break;
+		default:
+			break;
+		}
+	}
+	
+	public boolean readIni() {
 		JFileChooser chooser = new JFileChooser();
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
 	        "Ini files", "ini");
@@ -229,17 +294,19 @@ public class SimWindow extends JFrame implements Listener {
 	       System.out.println("You chose to open this file: " +
 	            currentInput.getName());
 	       try {
-	    	   
 	    	   String st = new String(Files.readAllBytes(currentInput.toPath()), "UTF-8");
 	    	   ctrl.setIn(new FileInputStream(currentInput));
 	    	   textSection.textArea.setText(st);
 	       } catch (IOException e) {
 	    	   textSection.textArea.setText("");
 	       }
-	    }		
+	       return true;
+	    } else {
+	    	return false;
+	    }
 	}
 	
-	public void saveIni(JTextArea text) {
+	public boolean saveIni(JTextArea text) {
 		JFileChooser chooser = new JFileChooser();
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
 	        "Ini files", "ini");
@@ -255,7 +322,10 @@ public class SimWindow extends JFrame implements Listener {
 	    		
 	    	} catch (IOException e) {
 	    		
-	    	}	   
+	    	}
+	    	return true;
+	    } else {
+	    	return false;
 	    }
 	}
 	
@@ -281,16 +351,14 @@ public class SimWindow extends JFrame implements Listener {
 	}
 	
 	private void play() {
-		if (loadedEvents) {
-			int time = (Integer)stepsSpinner.getValue();
-			ByteArrayOutputStream str = new ByteArrayOutputStream();
-			try {
-				ctrl.getSimulator().execute(str, time);
-				timeViewer.setText("" + ctrl.getSimulator().getTimeCounter());
-			} catch (IOException e) {
-				ctrl.getSimulator().notifyError("MAL");
-				e.printStackTrace();
-			}
+		int time = (Integer)stepsSpinner.getValue();
+		ByteArrayOutputStream str = new ByteArrayOutputStream();
+		try {
+			ctrl.getSimulator().execute(str, time);
+			timeViewer.setText("" + ctrl.getSimulator().getTimeCounter());
+		} catch (IOException e) {
+			ctrl.getSimulator().notifyError("MAL");
+			e.printStackTrace();
 		}
 	}
 	
@@ -313,7 +381,6 @@ public class SimWindow extends JFrame implements Listener {
 		bar.add(stepsLabel);
 		bar.add(stepsSpinner);
 		
-		//timeViewer.setSize(2, 2);
 		timeViewer.setMinimumSize(new Dimension(70, 1));
 		timeViewer.setEditable(false);
 		bar.add(timeLabel);
@@ -450,13 +517,23 @@ public class SimWindow extends JFrame implements Listener {
 	}
 	
 	private enum Command {
-		Exit("Exit"), Clear("Clear"), Save("Save"), Stop("Stop"), SaveReport("Save Report"), 
-		Events("Events"), DeleteReport("Delete report"), Play("Play"), Open("Open"), Report("Report"), Reset("Reset");
+		Exit("Exit", "You have exited the aplication."),
+		Clear("Clear", "The Events Editor Panel has been cleared."), 
+		Save("Save", "Events succesfully saved into an ini file."),
+		SaveReport("Save Report", "Report succesfully saved into an ini file."), 
+		Events("Events", "The events have been succesfully loaded into de Events Queue."), 
+		DeleteReport("Delete report", "The report has been succesfully deleted."), 
+		Play("Play", "Simulation played for " + stepsSpinner.getValue() + " ticks."), 
+		Open("Open", "The ini file has been succesfully loaded."), 
+		Report("Report", "The report has been succesfully generated"), 
+		Reset("Reset", "The reset has been succesfully done");
 		
 		private String text;
+		private String message;
 		
-		Command(String text) {
+		Command(String text, String message) {
 			this.text = text;
+			this.message = message;
 		}
 		
 		@Override
@@ -471,10 +548,12 @@ public class SimWindow extends JFrame implements Listener {
 
 	@Override
 	public void reset(int time, RoadMap map, List<Event> events) {
-		loadedEvents = false;
 		reportsArea.setText("");
 		timeViewer.setText("" + 0);
-		this.events = ctrl.getSimulator().getEvents().valuesList();
+		this.events = events;
+		this.map = map;
+		ctrl.getSimulator().setRm(map);
+		ctrl.getSimulator().setEvents(new MultiTreeMap<>());
 		
 		junctionTable.setElements(map.getJunctionsRO());
 		roadTable.setElements(map.getRoadsRO());

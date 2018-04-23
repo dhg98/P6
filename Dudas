@@ -1,14 +1,25 @@
-- ¿Como se limita el tamaño de JSpinner y JTextField?
-- ¿Como se muestra la informacion sobre los semaforos? ¿Alguna idea?
-- ¿Como se implementan las 4 tablas a partir de la interfaz Describable? ¿Hay que tener una clase ListOf...TableModel? ¿No deja meter atributos en esta clase?
-- ¿Como se rellena una tabla? ¿Y que tiene que hacer cada metodo de esa tabla con la implementacion de Listener?
-- ¿Como se hace para que si te modifican algo en el editor de Eventos, puedas cargar los eventos desde ahi y no desde el fichero? Entiendo que tiene que ser 
-en la accion events, pero no soy capaz de saber como, porque si se llama a loadEvents de Controller carga los eventos del fichero actual y no del modificado.
-¿Se puede crear un FileInputStream a partir del fichero modificado, o se puede crear de hecho un fichero .ini con las modificaciones? No sé cómo se haría.
+Cosas que faltan:
 
-- Creo que deberiamos meter algo para no dejar pulsar botones que no queramos durante la simulacion, que si se esta ejecutando el simulador y le damos a
-cargar eventos explota, y si se esta ejecutando, cargamos un nuevo fichero y cargamos los eventos explota tambien. No se muy bien cual debe ser el tratamiento
-que debemos seguir ahi. Quiza resetear el simulador y cargar despues sea la mejor. ¡¡Preguntar por si acaso!!
+- Aleatorio del grafo (Preguntar a Freire)
 
-COSAS QUE FALTAN
-- Tablas
+- Nombre fichero en EventsEditor
+
+- Excepciones controladas con JDialog
+
+- Modificaciones P4
+
+- Comentarios
+
+- JLabel abajo de la interfaz(añadir otro atributo al enumerado).
+
+- Diapositiva Java Swing numero 6 (Añadir otra JMenuBar a partir de acciones para introducir las plantillas).
+
+
+Preguntas: 
+
+- ¿Que significa la sección opcional que dice "Mostrar el contenido actual de los informes a un fichero de texto"?
+
+- Informes generados por el simulador, no entendemos que se supone que tienen que hacer.
+
+- ¿De donde sacamos los iconos para los vehiculos, roads y juncions? Sobre todo para las avanzadas, no creo que haya forma de distinguir las simples
+de las avanzadas, ¿verdad?
