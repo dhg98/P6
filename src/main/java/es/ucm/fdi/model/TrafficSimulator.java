@@ -31,6 +31,10 @@ public class TrafficSimulator {
 	public RoadMap getRm() {
 		return rm;
 	}
+	
+	public void setTimeCounter(int timeCounter) {
+		this.timeCounter = timeCounter;
+	}
 
 	public int getTimeCounter() {
 		return timeCounter;

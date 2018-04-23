@@ -66,13 +66,9 @@ public class SimWindow extends JFrame implements Listener {
 	private File currentInput;
 	
 	private TableOfDescribables vehiclesTable;
-	private ListOfMapsTableModel vehiclesTableModel;
 	private TableOfDescribables roadTable;
-	private ListOfMapsTableModel roadTableModel;
 	private TableOfDescribables junctionTable;
-	private ListOfMapsTableModel junctionTableModel;
 	private TableOfDescribables eventsTable;
-	private ListOfMapsTableModel eventsTableModel;
 	
 	private GraphLayout graph; 
 	private TextSection textSection;
@@ -91,6 +87,7 @@ public class SimWindow extends JFrame implements Listener {
 	
 	public SimWindow(Controller ctrl, String inFileName) {
 		super("Traffic Simulator");
+		createActions();
 		textSection = new TextSection("");
 		if (inFileName != null) {
 			currentInput = new File(inFileName);
@@ -101,12 +98,21 @@ public class SimWindow extends JFrame implements Listener {
 				
 			}
 	    	textSection.textArea.setText(st);
+		} else {
+			disableActions(	actions.get(Command.Events), 
+							actions.get(Command.Clear), 
+							actions.get(Command.Save));
 		}
+		disableActions(	actions.get(Command.SaveReport), 
+						actions.get(Command.Play), 
+						actions.get(Command.Reset), 
+						actions.get(Command.Report), 
+						actions.get(Command.DeleteReport));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.ctrl = ctrl;
 		map = ctrl.getSimulator().getRm();
-		createActions();
 		addToolBar();
+		addGraph();
 		addMenuBar();
 		addEventEditor();
 		addEventsView();
@@ -116,6 +122,7 @@ public class SimWindow extends JFrame implements Listener {
 		addRoadsTablePanel();
 		addJunctionsTablePanel();
 		addInfLeftPanel();
+		addInfRightPanel();
 		addInfPanel();
 		addBars();
 		ctrl.getSimulator().addSimulatorListener(this);
@@ -123,6 +130,92 @@ public class SimWindow extends JFrame implements Listener {
 		setVisible(true);
 		topSplit.setDividerLocation(.33);
 		bottomSplit.setDividerLocation(.5);
+	}
+	
+	private void disableActions(SimulatorAction ... actions) {
+		for (SimulatorAction ac : actions) {
+			ac.setEnabled(false);
+		}
+	}
+	
+	private void createActions() {
+		// instantiate actions
+		
+		SimulatorAction exit = new SimulatorAction(
+				Command.Exit, "exit.png", "Exit the aplication",
+				KeyEvent.VK_C, "control shift C", 
+				()-> System.exit(0));
+		
+		SimulatorAction saveEvent = new SimulatorAction(
+				Command.Save, "save.png", "Save an Event",
+				KeyEvent.VK_S, "control S", 
+				()-> saveIni(textSection.textArea));
+		
+		SimulatorAction play = new SimulatorAction(
+				Command.Play, "play.png", "Play the simulation",
+				KeyEvent.VK_P, "control P",
+				()->play());
+		
+		SimulatorAction open = new SimulatorAction(
+				Command.Open, "open.png", "Load an ini file", 
+				KeyEvent.VK_L, "control L", 
+				()->{
+					readIni();
+					ctrl.getSimulator().setTimeCounter(0);
+					timeViewer.setText("0");
+					loadedEvents = false;
+				});
+		
+		SimulatorAction saveReport = new SimulatorAction(
+				Command.SaveReport, "save_report.png", "Save a report", 
+				KeyEvent.VK_R, "control R", 
+				()-> saveIni(reportsArea));
+		
+		SimulatorAction clear = new SimulatorAction(
+				Command.Clear, "clear.png", "Clear the text",
+				KeyEvent.VK_X, "control X",
+				()->clear());
+		
+		SimulatorAction events = new SimulatorAction(
+				Command.Events, "events.png", "Add events to the simulation",
+				KeyEvent.VK_A, "control A",
+				()->{
+					try {
+						
+						readText();
+						reset(0, new RoadMap(), new ArrayList<Event>());
+						ctrl.loadEvents();
+						loadedEvents = true;
+					} catch (IOException e) {
+						ctrl.getSimulator().notifyError(e.getMessage());
+					}
+				});
+		
+		SimulatorAction deleteReport = new SimulatorAction(
+				Command.DeleteReport, "delete_report.png", "Delete a report",
+				KeyEvent.VK_B, "control B",
+				()->clearReport());
+		
+		SimulatorAction report = new SimulatorAction(
+				Command.Report, "report.png", "Report the simulation",
+				KeyEvent.VK_M, "control M",
+				()-> showReport());
+		
+		SimulatorAction reset = new SimulatorAction(
+				Command.Reset, "reset.png", "Reset the simulation",
+				KeyEvent.VK_Z, "control Z",
+				()->ctrl.getSimulator().reset());
+		
+		actions.put(Command.Exit, exit);
+		actions.put(Command.Clear, clear);
+		actions.put(Command.Open, open);
+		actions.put(Command.SaveReport, saveReport);
+		actions.put(Command.Save, saveEvent);
+		actions.put(Command.Events, events);
+		actions.put(Command.DeleteReport, deleteReport);
+		actions.put(Command.Play, play);
+		actions.put(Command.Report, report);
+		actions.put(Command.Reset, reset);
 	}
 	
 	public void readIni() {
@@ -136,6 +229,7 @@ public class SimWindow extends JFrame implements Listener {
 	       System.out.println("You chose to open this file: " +
 	            currentInput.getName());
 	       try {
+	    	   
 	    	   String st = new String(Files.readAllBytes(currentInput.toPath()), "UTF-8");
 	    	   ctrl.setIn(new FileInputStream(currentInput));
 	    	   textSection.textArea.setText(st);
@@ -170,8 +264,12 @@ public class SimWindow extends JFrame implements Listener {
 		ctrl.setIn(new ByteArrayInputStream(st.getBytes(StandardCharsets.UTF_8)));
 	}
 	
-	public void clearText() {
+	public void clear() {
 		textSection.textArea.setText("");
+	}
+	
+	public void clearReport() {
+		reportsArea.setText("");
 	}
 	
 	public void showReport() {
@@ -182,86 +280,18 @@ public class SimWindow extends JFrame implements Listener {
 		reportsArea.setText(ini.toString());
 	}
 	
-	private void createActions() {
-		// instantiate actions
-		
-		SimulatorAction exit = new SimulatorAction(
-				Command.Exit, "exit.png", "Exit the aplication",
-				KeyEvent.VK_C, "control shift C", 
-				()-> System.exit(0));
-		
-		SimulatorAction saveEvent = new SimulatorAction(
-				Command.Save, "save.png", "Save an Event",
-				KeyEvent.VK_S, "control S", 
-				()-> saveIni(textSection.textArea));
-		
-		SimulatorAction open = new SimulatorAction(
-				Command.Open, "open.png", "Load an ini file", 
-				KeyEvent.VK_L, "control L", 
-				()->{
-					readIni();
-					loadedEvents = false;
-				});
-		
-		SimulatorAction saveReport = new SimulatorAction(
-				Command.SaveReport, "save_report.png", "Save a report", 
-				KeyEvent.VK_R, "control R", 
-				()-> saveIni(reportsArea));
-		
-		SimulatorAction clear = new SimulatorAction(
-				Command.Clear, "clear.png", "Clear the text",
-				KeyEvent.VK_X, "control X",
-				()->clearText());
-		
-		SimulatorAction play = new SimulatorAction(
-				Command.Play, "play.png", "Play the simulation",
-				KeyEvent.VK_P, "control P",
-				()->play());
-		
-		SimulatorAction events = new SimulatorAction(
-				Command.Events, "events.png", "Add events to the simulation",
-				KeyEvent.VK_A, "control A",
-				()->{
-					try {
-						readText();
-						ctrl.loadEvents();
-						loadedEvents = true;
-					} catch (IOException e) {
-						ctrl.getSimulator().notifyError(e.getMessage());
-					}
-				});
-		
-		SimulatorAction deleteReport = new SimulatorAction(
-				Command.DeleteReport, "delete_report.png", "Delete a report",
-				KeyEvent.VK_B, "control B",
-				()->System.out.println(""));
-		
-		SimulatorAction stop = new SimulatorAction(
-				Command.Stop, "stop.png", "Stop the simulation",
-				KeyEvent.VK_K, "control K",
-				()->System.out.println(""));
-		
-		SimulatorAction report = new SimulatorAction(
-				Command.Report, "report.png", "Report the simulation",
-				KeyEvent.VK_M, "control M",
-				()-> showReport());
-		
-		SimulatorAction reset = new SimulatorAction(
-				Command.Reset, "reset.png", "Reset the simulation",
-				KeyEvent.VK_Z, "control Z",
-				()->ctrl.getSimulator().reset());
-		
-		actions.put(Command.Exit, exit);
-		actions.put(Command.Clear, clear);
-		actions.put(Command.Open, open);
-		actions.put(Command.SaveReport, saveReport);
-		actions.put(Command.Save, saveEvent);
-		actions.put(Command.Stop, stop);
-		actions.put(Command.Events, events);
-		actions.put(Command.DeleteReport, deleteReport);
-		actions.put(Command.Play, play);
-		actions.put(Command.Report, report);
-		actions.put(Command.Reset, reset);
+	private void play() {
+		if (loadedEvents) {
+			int time = (Integer)stepsSpinner.getValue();
+			ByteArrayOutputStream str = new ByteArrayOutputStream();
+			try {
+				ctrl.getSimulator().execute(str, time);
+				timeViewer.setText("" + ctrl.getSimulator().getTimeCounter());
+			} catch (IOException e) {
+				ctrl.getSimulator().notifyError("MAL");
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private void addToolBar() {
@@ -348,22 +378,7 @@ public class SimWindow extends JFrame implements Listener {
 		supPanel.add(eventsTable);
 		supPanel.add(reportsViewer);
 	}
-	
-	private void play() {
-		if (loadedEvents) {
-			int time = (Integer)stepsSpinner.getValue();
-			ByteArrayOutputStream str = new ByteArrayOutputStream();
-			try {
-				ctrl.getSimulator().execute(str, time);
-				timeViewer.setText("" + ctrl.getSimulator().getTimeCounter());
-			} catch (IOException e) {
-				ctrl.getSimulator().notifyError("MAL");
-				e.printStackTrace();
-			}
-			showReport();
-		}
-	}
-	
+		
 	private void addEventEditor() {
 		JScrollPane iniInput = new JScrollPane(textSection.textArea);
 		eventEditor = new JPanel(new BorderLayout());
@@ -373,7 +388,6 @@ public class SimWindow extends JFrame implements Listener {
 	
 	private void addEventsView() {
 		eventsTable = new TableOfDescribables(events, columnNameEvents);
-		eventsTableModel = new ListOfMapsTableModel();
 		eventsTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Queue "));
 	}
 	
@@ -388,20 +402,17 @@ public class SimWindow extends JFrame implements Listener {
 	
 	private void addVehiclesTablePanel() {
 		vehiclesTable = new TableOfDescribables(map.getVehiclesRO(), columnNameVehicle);
-		vehiclesTableModel = new ListOfMapsTableModel();
 		vehiclesTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Vehicles Table "));
 		
 	}
 	
 	private void addRoadsTablePanel() {
 		roadTable = new TableOfDescribables(map.getRoadsRO(), columnNameRoad);
-		roadTableModel = new ListOfMapsTableModel();
 		roadTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Road Table "));
 	}
 	
 	private void addJunctionsTablePanel() {
 		junctionTable = new TableOfDescribables(map.getJunctionsRO(), columnNameJunction);
-		junctionTableModel = new ListOfMapsTableModel();
 		junctionTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Junction Table "));
 	}
 	
@@ -413,17 +424,20 @@ public class SimWindow extends JFrame implements Listener {
 		infLeftPanel.add(junctionTable);	
 	}
 	
+	private void addInfRightPanel() {
+		rightInfPanel = new JPanel();
+		rightInfPanel.setLayout(new BorderLayout());
+		rightInfPanel.add(graph.get_graphComp());
+	}
+	
 	private void addGraph() {
-		
 		graph = new GraphLayout(map);
-		
-		
+		graph.generateGraph();
 	}
 	
 	private void addInfPanel() {
 		infPanel = new JPanel();
 		infPanel.setLayout(new BorderLayout());
-		rightInfPanel = new JPanel(new BorderLayout()); //Aqui iria el grafo
 		bottomSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, infLeftPanel, rightInfPanel);
 		bottomSplit.setResizeWeight(.5);
 		infPanel.add(bottomSplit);
@@ -453,10 +467,7 @@ public class SimWindow extends JFrame implements Listener {
 	}
 
 	@Override
-	public void registered(int time, RoadMap map, List<Event> events) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void registered(int time, RoadMap map, List<Event> events) {	}
 
 	@Override
 	public void reset(int time, RoadMap map, List<Event> events) {
@@ -474,6 +485,9 @@ public class SimWindow extends JFrame implements Listener {
 		
 		eventsTable.setElements(events);
 		eventsTable.update();
+		
+		graph.setRm(map);
+		graph.generateGraph();
 	}
 
 	@Override
@@ -491,6 +505,8 @@ public class SimWindow extends JFrame implements Listener {
 		junctionTable.update();
 		roadTable.update();
 		vehiclesTable.update();
+		
+		graph.setRm(map);
 		graph.generateGraph();
 	}
 

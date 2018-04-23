@@ -18,6 +18,16 @@ public class GraphLayout {
 		this.rm = rm;
 	}
 
+	public GraphComponent get_graphComp() {
+		return _graphComp;
+	}
+
+
+
+	public void setRm(RoadMap rm) {
+		this.rm = rm;
+	}
+
 	public void generateGraph() {
 		Graph g = new Graph();
 		Map<Junction, Node> js = new HashMap<>();
@@ -34,6 +44,7 @@ public class GraphLayout {
 			}
 			g.addEdge(e);
 		}
+		_graphComp.setGraph(g);
 	}
 	
 	

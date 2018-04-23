@@ -7,7 +7,7 @@ import java.awt.event.*;
 import java.util.Random;
 
 @SuppressWarnings("serial")
-public class GraphLayoutExample extends JFrame  {
+public class GraphLayoutExample extends JFrame {
 	
 	private GraphComponent _graphComp;
     Random _rand;
