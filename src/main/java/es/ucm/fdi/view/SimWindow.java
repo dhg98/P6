@@ -1,6 +1,8 @@
 package es.ucm.fdi.view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,6 +25,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
@@ -32,6 +35,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import es.ucm.fdi.control.Controller;
+import es.ucm.fdi.extra.graphlayout.GraphLayout;
 import es.ucm.fdi.ini.Ini;
 import es.ucm.fdi.model.Event;
 import es.ucm.fdi.model.RoadMap;
@@ -70,13 +74,17 @@ public class SimWindow extends JFrame implements Listener {
 	private TableOfDescribables eventsTable;
 	private ListOfMapsTableModel eventsTableModel;
 	
+	private GraphLayout graph; 
 	private TextSection textSection;
+	private JSplitPane bottomSplit; 
+	private JSplitPane topSplit; 
 	private JPanel eventEditor;
 	private JTextArea reportsArea = new JTextArea();
 	private JPanel reportsViewer;
 	private JPanel supPanel;
 	private JPanel infPanel;
 	private JPanel infLeftPanel;
+	private JPanel rightInfPanel;
 	private JSpinner stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1)); //new SpinnerNumberModel(CurrentValue, min, max, steps)
 	private JTextField timeViewer = new JTextField("0");
 	private Map<Object, SimulatorAction> actions = new HashMap<>();
@@ -113,6 +121,8 @@ public class SimWindow extends JFrame implements Listener {
 		ctrl.getSimulator().addSimulatorListener(this);
 		setSize(1000, 1000);		
 		setVisible(true);
+		topSplit.setDividerLocation(.33);
+		bottomSplit.setDividerLocation(.5);
 	}
 	
 	public void readIni() {
@@ -274,9 +284,12 @@ public class SimWindow extends JFrame implements Listener {
 		bar.add(stepsSpinner);
 		
 		//timeViewer.setSize(2, 2);
+		timeViewer.setMinimumSize(new Dimension(70, 1));
 		timeViewer.setEditable(false);
 		bar.add(timeLabel);
 		bar.add(timeViewer);
+		
+		bar.addSeparator();
 		
 		bar.add(actions.get(Command.Report));
 		bar.add(actions.get(Command.DeleteReport));
@@ -286,6 +299,9 @@ public class SimWindow extends JFrame implements Listener {
 		
 		bar.add(actions.get(Command.Exit));	
 		
+		JPanel jp = new JPanel();
+		jp.setPreferredSize(new Dimension(100000, 1));
+		bar.add(jp);
 		//Add bar to window
 		add(bar, BorderLayout.NORTH);
 	}
@@ -327,7 +343,7 @@ public class SimWindow extends JFrame implements Listener {
 	
 	private void addSupPanel() {
 		supPanel = new JPanel();
-		supPanel.setLayout(new BoxLayout(supPanel, BoxLayout.X_AXIS));
+		supPanel.setLayout(new GridLayout(1, 3));
 		supPanel.add(eventEditor);
 		supPanel.add(eventsTable);
 		supPanel.add(reportsViewer);
@@ -349,7 +365,7 @@ public class SimWindow extends JFrame implements Listener {
 	}
 	
 	private void addEventEditor() {
-		JScrollPane iniInput = new JScrollPane(textSection.textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane iniInput = new JScrollPane(textSection.textArea);
 		eventEditor = new JPanel(new BorderLayout());
 		eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor "));
 		eventEditor.add(iniInput);
@@ -363,7 +379,7 @@ public class SimWindow extends JFrame implements Listener {
 	
 	private void addReportsViewer() {
 		reportsArea.setEditable(false);
-		JScrollPane reportsAreaScroll = new JScrollPane(reportsArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane reportsAreaScroll = new JScrollPane(reportsArea);
 		reportsViewer = new JPanel(new BorderLayout());
 		reportsViewer.setBorder(javax.swing.BorderFactory.createTitledBorder(" Reports Area "));
 		reportsViewer.add(reportsAreaScroll);
@@ -397,22 +413,26 @@ public class SimWindow extends JFrame implements Listener {
 		infLeftPanel.add(junctionTable);	
 	}
 	
+	private void addGraph() {
+		
+		graph = new GraphLayout(map);
+		
+		
+	}
+	
 	private void addInfPanel() {
 		infPanel = new JPanel();
 		infPanel.setLayout(new BorderLayout());
-		JPanel rightInfPanel = new JPanel(new BorderLayout()); //Aqui iria el grafo
-		JSplitPane bottomSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, infLeftPanel, rightInfPanel);
-		infPanel.add(bottomSplit);
-		bottomSplit.setVisible(true);
+		rightInfPanel = new JPanel(new BorderLayout()); //Aqui iria el grafo
+		bottomSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, infLeftPanel, rightInfPanel);
 		bottomSplit.setResizeWeight(.5);
+		infPanel.add(bottomSplit);
 	}
 	
 	private void addBars() {
-		
-		JSplitPane topSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, supPanel, infPanel); //Division horizontal
-		add(topSplit);
-		topSplit.setVisible(true);
+		topSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, supPanel, infPanel); //Division horizontal
 		topSplit.setResizeWeight(.33);
+		add(topSplit);
 	}
 	
 	private enum Command {
@@ -470,7 +490,8 @@ public class SimWindow extends JFrame implements Listener {
 		vehiclesTable.setElements(map.getVehiclesRO());
 		junctionTable.update();
 		roadTable.update();
-		vehiclesTable.update();		
+		vehiclesTable.update();
+		graph.generateGraph();
 	}
 
 	@Override

@@ -111,9 +111,11 @@ public class TrafficSimulator {
 	 */
 	public void eventProcess() {
 		try {
-		    for(Event e: events.get(timeCounter)) {
-		        e.execute(rm);
-		    }			
+			if (events.get(timeCounter) != null) {
+			    for(Event e: events.get(timeCounter)) {
+			        e.execute(rm);
+			    }
+			}
 		} catch (IllegalArgumentException e) {
 			notifyError("There was an error while processing the events");
 			throw new IllegalArgumentException("There was an error while processing the events", e);

@@ -65,7 +65,11 @@ public class TableOfDescribables extends JPanel {
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			Map <String,String> out = new HashMap<>();
 			elements.get(rowIndex).describe(out);
-			return out.get(fieldNames[columnIndex]);
+			if ("#".equals(fieldNames[columnIndex])) {
+				return rowIndex;
+			} else {
+				return out.get(fieldNames[columnIndex]);
+			}
 		}
 	}
 	

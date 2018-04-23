@@ -47,7 +47,7 @@ public class JunctionWithTimeSlice extends Junction {
 			} else {
 				sb.append("red,[");
 			}
-			sb.append(junctionDeque.get(i).junctionToString(out));
+			sb.append(junctionDeque.get(i).junctionToString());
 			
 			if(i != junctionDeque.size() - 1) {
 				sb.append("]),");

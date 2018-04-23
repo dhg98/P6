@@ -84,7 +84,7 @@ public class Junction extends SimObject implements Describable {
 			}
 		}
 		
-		public String junctionToString(Map<String, String> out) {
+		public String junctionToString() {
 			StringBuilder sb = new StringBuilder();
 			
 			for(Iterator<Vehicle> itr = roadDeque.iterator(); itr.hasNext();){
@@ -109,7 +109,7 @@ public class Junction extends SimObject implements Describable {
 			} else {
 				sb.append("red,[");
 			}
-			sb.append(junctionDeque.get(i).junctionToString(out));
+			sb.append(junctionDeque.get(i).junctionToString());
 			
 			if(i != junctionDeque.size() - 1) {
 				sb.append("]),");
@@ -120,8 +120,20 @@ public class Junction extends SimObject implements Describable {
 		out.put("queues", sb.toString());
 	}
 	
-	public void getColorLights(String red, String green) {
-		
+	public void getColorLights(StringBuilder red, StringBuilder green) {
+		if (!junctionDeque.isEmpty()) {
+			IncomingRoads greenLight = junctionDeque.get(trafficLight);
+			for (IncomingRoads ir : junctionDeque) {
+				if (greenLight == ir) {
+					green.append("(" + ir.getRoad().getId() + ",green,[" + ir.junctionToString() + "])");
+				} else {
+					red.append("(" + ir.getRoad().getId() + ",red,[" + ir.junctionToString() + "]),");
+				}
+			}
+			if (red.length() != 0) {
+				red.deleteCharAt(red.length() - 1);
+			}
+		}
 	}
 	
 	protected String getReportHeader() {
@@ -153,7 +165,9 @@ public class Junction extends SimObject implements Describable {
 	@Override
 	public void describe(Map<String, String> out) {
 		out.put("ID", getId());
-		out.put("Green", "" + Math.random());
-		out.put("Red", "" + Math.random());
+		StringBuilder red = new StringBuilder(), green = new StringBuilder();
+		getColorLights(red, green);
+		out.put("Green", "[" + green.toString() + "]");
+		out.put("Red", "[" + red.toString() + "]");
 	}
 }
