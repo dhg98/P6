@@ -1,20 +1,13 @@
 Cosas que faltan:
 
-- Nombre fichero en EventsEditor
-
-- Excepciones controladas con JDialog
+- Excepciones
 
 - Modificaciones P4
 
 - Comentarios
-
-- Diapositiva Java Swing numero 6 (Añadir otra JMenuBar a partir de acciones para introducir las plantillas).
 
 Preguntas: 
 
 - ¿Que significa la sección opcional que dice "Mostrar el contenido actual de los informes a un fichero de texto"?
 
 - Informes generados por el simulador, no entendemos que se supone que tienen que hacer.
-
-- ¿De donde sacamos los iconos para los vehiculos, roads y juncions? Sobre todo para las avanzadas, no creo que haya forma de distinguir las simples
-de las avanzadas, ¿verdad?

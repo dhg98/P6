@@ -57,4 +57,9 @@ public abstract class SimObject {
 		out.put("time", Integer.toString(time));
 		fillReportDetails(out);
 	}
+	
+	@Override
+	public String toString() {
+		return getId();
+	}
 }

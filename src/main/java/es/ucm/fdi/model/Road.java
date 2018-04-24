@@ -105,10 +105,10 @@ public class Road extends SimObject implements Describable {
 	 * Reports a Road given the statement of the project
 	 */
 	protected void fillReportDetails(Map<String, String> out) {
-		out.put("state", toString());
+		out.put("state", toStringRoad());
 	}
 	
-	public String toString() {
+	public String toStringRoad() {
 		List <String> vehicleList = new ArrayList<>();
 		if(numVehicles > 0) {
 			for(Vehicle v: street.innerValues()) {

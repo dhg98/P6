@@ -34,6 +34,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import es.ucm.fdi.control.Controller;
+import es.ucm.fdi.extra.dialog.DialogWindowLayout;
 import es.ucm.fdi.extra.graphlayout.GraphLayout;
 import es.ucm.fdi.extra.popupmenu.PopUpMenu;
 import es.ucm.fdi.ini.Ini;
@@ -217,7 +218,13 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction report = new SimulatorAction(
 				Command.Report, "report.png", "Report the simulation",
 				KeyEvent.VK_M, "control M",
-				()-> {	showReport();
+				()-> {	
+						DialogWindowLayout selection = new DialogWindowLayout(map.getVehiclesRO(), 
+																			  map.getRoadsRO(), 
+																			  map.getJunctionsRO(), 
+																			  ctrl.getSimulator());
+						Ini in = selection.getIni();
+						reportsArea.setText(in.toString());
 						enableOrDisableActions(actionsCommand, Command.Report);
 						information.setText(Command.Report.message);
 					});
@@ -345,13 +352,13 @@ public class SimWindow extends JFrame implements Listener {
 		text.setText("");
 	}
 	
-	public void showReport() {
+	/*public void showReport() {
 		Ini ini = new Ini();
 		ctrl.getSimulator().fillReport(map.getJunctionsRO(), ini);
 		ctrl.getSimulator().fillReport(map.getRoadsRO(), ini);
 		ctrl.getSimulator().fillReport(map.getVehiclesRO(), ini);
 		reportsArea.setText(ini.toString());
-	}
+	}*/
 	
 	private void play() {
 		int time = (Integer)stepsSpinner.getValue();
