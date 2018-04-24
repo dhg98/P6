@@ -174,11 +174,12 @@ public class Main {
 		//Si _outFile es null mostramos por pantalla y si no guardamos los datos de la simulacion en un fichero.
 		InputStream in = new FileInputStream(_inFile);
 		Controller c = new Controller(t, _timeLimit, in, out);
-		try {
-			c.run();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			c.run();
+//		} catch (IllegalArgumentException e) {
+//			e.printStackTrace();
+//		}
+		c.run();
 	}
 	
 	private static void startGUIMode() throws IOException, InvocationTargetException, InterruptedException {

@@ -204,34 +204,6 @@ public class TrafficSimulator {
 		public void simulatorError(int time, RoadMap map, List<Event> events, String error);
 	}
 	
-	public enum EventType {
-		REGISTERED, RESET, NEW_EVENT, ADVANCED, ERROR;
-	}
-	
-	public class UpdateEvent {
-		private EventType eventType;
-		
-		public UpdateEvent(EventType eventType) {
-			this.eventType = eventType;
-		}
-
-		public EventType getEvent() {
-			return eventType;
-		}
-		
-		public RoadMap getRoadMap() {
-			return rm;
-		}
-		
-		public List<Event> getEventQueue() {
-			return events.valuesList();			
-		}
-		
-		public int getCurrentTime() {
-			return timeCounter;
-		}
-	}
-	
 	public void reset() {
 		timeCounter = 0;
 		rm = new RoadMap();

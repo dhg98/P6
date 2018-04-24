@@ -18,11 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -80,13 +82,15 @@ public class SimWindow extends JFrame implements Listener {
 	private JPanel infPanel;
 	private JPanel infLeftPanel;
 	private JPanel rightInfPanel;
+	private JLabel information;
 	private static JSpinner stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1)); //new SpinnerNumberModel(CurrentValue, min, max, steps)
 	private JTextField timeViewer = new JTextField("0");
-	private Map<Command, SimulatorAction> actions = new HashMap<>();
+	private Map<Command, SimulatorAction> actionsCommand = new HashMap<>();
+	private Map<Template, SimulatorAction> actionsTemplate = new HashMap<>();
 	
 	public SimWindow(Controller ctrl, String inFileName) {
 		super("Traffic Simulator");
-		createActions();
+		createActionsCommand();
 		textSection = new TextSection("");
 		if (inFileName != null) {
 			currentInput = new File(inFileName);
@@ -98,15 +102,15 @@ public class SimWindow extends JFrame implements Listener {
 			}
 	    	textSection.textArea.setText(st);
 		} else {
-			ableActions(false, 	actions.get(Command.Events), 
-								actions.get(Command.Clear), 
-								actions.get(Command.Save));
+			ableActions(false, 	actionsCommand.get(Command.Events), 
+								actionsCommand.get(Command.Clear), 
+								actionsCommand.get(Command.Save));
 		}
-		ableActions(false,	actions.get(Command.SaveReport), 
-							actions.get(Command.Play), 
-							actions.get(Command.Reset), 
-							actions.get(Command.Report), 
-							actions.get(Command.DeleteReport));
+		ableActions(false,	actionsCommand.get(Command.SaveReport), 
+							actionsCommand.get(Command.Play), 
+							actionsCommand.get(Command.Reset), 
+							actionsCommand.get(Command.Report), 
+							actionsCommand.get(Command.DeleteReport));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.ctrl = ctrl;
 		map = ctrl.getSimulator().getRm();
@@ -123,6 +127,7 @@ public class SimWindow extends JFrame implements Listener {
 		addInfLeftPanel();
 		addInfRightPanel();
 		addInfPanel();
+		addInformation();
 		addBars();
 		ctrl.getSimulator().addSimulatorListener(this);
 		setSize(1000, 1000);		
@@ -137,7 +142,7 @@ public class SimWindow extends JFrame implements Listener {
 		}
 	}
 	
-	private void createActions() {
+	private void createActionsCommand() {
 		// instantiate actions
 		SimulatorAction exit = new SimulatorAction(
 				Command.Exit, "exit.png", "Exit the aplication",
@@ -148,8 +153,11 @@ public class SimWindow extends JFrame implements Listener {
 				Command.Save, "save.png", "Save an Event",
 				KeyEvent.VK_S, "control S", 
 				()-> {
-					saveIni(textSection.textArea);
-					enableOrDisableActions(actions, Command.Save);
+					boolean couldSave = saveIni(textSection.textArea);
+					enableOrDisableActions(actionsCommand, Command.Save);
+					if(couldSave) {
+						information.setText(Command.Save.message);
+					}
 				});
 		
 		SimulatorAction play = new SimulatorAction(
@@ -157,7 +165,8 @@ public class SimWindow extends JFrame implements Listener {
 				KeyEvent.VK_P, "control P",
 				()->{
 						play();
-						enableOrDisableActions(actions, Command.Play);
+						enableOrDisableActions(actionsCommand, Command.Play);
+						information.setText(Command.Play.message);
 					});
 		
 		SimulatorAction open = new SimulatorAction(
@@ -168,21 +177,31 @@ public class SimWindow extends JFrame implements Listener {
 					if (couldOpen) {
 						ctrl.getSimulator().setTimeCounter(0);
 						timeViewer.setText("0");
-						enableOrDisableActions(actions, Command.Open);
+						enableOrDisableActions(actionsCommand, Command.Open);
+						information.setText(Command.Open.message);
+						eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor: " + currentInput.getName()));
+					} else {
+						eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor: " ));
 					}
 				});
 		
 		SimulatorAction saveReport = new SimulatorAction(
 				Command.SaveReport, "save_report.png", "Save a report", 
 				KeyEvent.VK_R, "control R", 
-				()-> saveIni(reportsArea));
+				()-> {	
+					boolean couldSave = saveIni(reportsArea);
+					if(couldSave) {
+						information.setText(Command.SaveReport.message);
+					}
+					});
 		
 		SimulatorAction clear = new SimulatorAction(
 				Command.Clear, "clear.png", "Clear the text",
 				KeyEvent.VK_X, "control X",
 				()->{
 						clear();
-						enableOrDisableActions(actions, Command.Clear);
+						enableOrDisableActions(actionsCommand, Command.Clear);
+						information.setText(Command.Clear.message);
 					});
 		
 		SimulatorAction events = new SimulatorAction(
@@ -193,7 +212,8 @@ public class SimWindow extends JFrame implements Listener {
 						readText();
 						reset(0, new RoadMap(), new ArrayList<Event>());
 						ctrl.loadEvents();
-						enableOrDisableActions(actions, Command.Events);
+						enableOrDisableActions(actionsCommand, Command.Events);
+						information.setText(Command.Events.message);
 					} catch (IOException e) {
 						ctrl.getSimulator().notifyError(e.getMessage());
 					}
@@ -204,7 +224,8 @@ public class SimWindow extends JFrame implements Listener {
 				KeyEvent.VK_B, "control B",
 				()->{
 						clearReport();
-						enableOrDisableActions(actions, Command.DeleteReport);
+						enableOrDisableActions(actionsCommand, Command.DeleteReport);
+						information.setText(Command.DeleteReport.message);
 					});
 		
 		SimulatorAction report = new SimulatorAction(
@@ -212,7 +233,8 @@ public class SimWindow extends JFrame implements Listener {
 				KeyEvent.VK_M, "control M",
 				()-> {
 						showReport();
-						enableOrDisableActions(actions, Command.Report);
+						enableOrDisableActions(actionsCommand, Command.Report);
+						information.setText(Command.Report.message);
 					});
 		
 		SimulatorAction reset = new SimulatorAction(
@@ -220,19 +242,103 @@ public class SimWindow extends JFrame implements Listener {
 				KeyEvent.VK_Z, "control Z",
 				()->{
 						ctrl.getSimulator().reset();
-						enableOrDisableActions(actions, Command.Reset);
+						enableOrDisableActions(actionsCommand, Command.Reset);
+						information.setText(Command.Reset.message);
 					});
 		
-		actions.put(Command.Exit, exit);
-		actions.put(Command.Clear, clear);
-		actions.put(Command.Open, open);
-		actions.put(Command.SaveReport, saveReport);
-		actions.put(Command.Save, saveEvent);
-		actions.put(Command.Events, events);
-		actions.put(Command.DeleteReport, deleteReport);
-		actions.put(Command.Play, play);
-		actions.put(Command.Report, report);
-		actions.put(Command.Reset, reset);
+		actionsCommand.put(Command.Exit, exit);
+		actionsCommand.put(Command.Clear, clear);
+		actionsCommand.put(Command.Open, open);
+		actionsCommand.put(Command.SaveReport, saveReport);
+		actionsCommand.put(Command.Save, saveEvent);
+		actionsCommand.put(Command.Events, events);
+		actionsCommand.put(Command.DeleteReport, deleteReport);
+		actionsCommand.put(Command.Play, play);
+		actionsCommand.put(Command.Report, report);
+		actionsCommand.put(Command.Reset, reset);
+	}
+	
+	private void createActionsTemplate() {
+		SimulatorAction newVehicle = new SimulatorAction(
+				Template.NewVehicle, "vehicle.png", "Add a Vehicle Template",
+				KeyEvent.VK_G, "control G",
+				()->{
+						
+					});
+		
+		SimulatorAction newBike = new SimulatorAction(
+				Template.NewBike, "bike.png", "Add a Bike Template",
+				KeyEvent.VK_Q, "control Q",
+				()->{
+						
+					});
+		
+		SimulatorAction newCar = new SimulatorAction(
+				Template.NewCar, "car.png", "Add a Car Template",
+				KeyEvent.VK_Y, "control Y",
+				()->{
+						
+					});
+		
+		SimulatorAction newRoad = new SimulatorAction(
+				Template.NewRoad, "road.png", "Add a Road Template",
+				KeyEvent.VK_F, "control F",
+				()->{
+						
+					});
+		
+		SimulatorAction newJunction = new SimulatorAction(
+				Template.NewJunction, "junction.png", "Add a Junction Template",
+				KeyEvent.VK_J, "control J",
+				()->{
+						
+					});
+		
+		SimulatorAction newMostCrowded = new SimulatorAction(
+				Template.NewMostCrowded, "junction.png", "Add a Most Crowded Junction Template",
+				KeyEvent.VK_I, "control I",
+				()->{
+						
+					});
+		
+		SimulatorAction newRoundRobin = new SimulatorAction(
+				Template.NewRoundRobin, "junction.png", "Add a Round Robin Junction Template",
+				KeyEvent.VK_K, "control K",
+				()->{
+						
+					});
+		
+		SimulatorAction newLanes = new SimulatorAction(
+				Template.NewLanes, "lanesRoad.png", "Add a Lanes Road Template",
+				KeyEvent.VK_H, "control H",
+				()->{
+						
+					});
+		
+		SimulatorAction newDirt = new SimulatorAction(
+				Template.NewDirt, "DirtRoad.png", "Add a Dirt Road Template",
+				KeyEvent.VK_U, "control U",
+				()->{
+						
+					});
+		
+		SimulatorAction makeFaulty = new SimulatorAction(
+				Template.MakeFaulty, "DirtRoad.png", "Add a Make Vehicle Faulty Event",
+				KeyEvent.VK_U, "control U",
+				()->{
+						
+					});
+		
+		actionsTemplate.put(Template.NewVehicle, newVehicle);
+		actionsTemplate.put(Template.NewCar, newCar);
+		actionsTemplate.put(Template.NewBike, newBike);
+		actionsTemplate.put(Template.NewRoad, newRoad);
+		actionsTemplate.put(Template.NewLanes, newLanes);
+		actionsTemplate.put(Template.NewDirt, newDirt);
+		actionsTemplate.put(Template.NewJunction, newJunction);
+		actionsTemplate.put(Template.NewRoundRobin, newRoundRobin);
+		actionsTemplate.put(Template.NewMostCrowded, newMostCrowded);
+		actionsTemplate.put(Template.MakeFaulty, makeFaulty);
 	}
 	
 	private void enableOrDisableActions(Map<Command, SimulatorAction> actions, Command command) {
@@ -366,15 +472,15 @@ public class SimWindow extends JFrame implements Listener {
 		// add actions to toolbar, 
 		
 		JToolBar bar = new JToolBar();
-		bar.add(actions.get(Command.Open));
-		bar.add(actions.get(Command.Save));
-		bar.add(actions.get(Command.Clear));
+		bar.add(actionsCommand.get(Command.Open));
+		bar.add(actionsCommand.get(Command.Save));
+		bar.add(actionsCommand.get(Command.Clear));
 		
 		bar.addSeparator();
 		
-		bar.add(actions.get(Command.Events));
-		bar.add(actions.get(Command.Play));
-		bar.add(actions.get(Command.Reset));
+		bar.add(actionsCommand.get(Command.Events));
+		bar.add(actionsCommand.get(Command.Play));
+		bar.add(actionsCommand.get(Command.Reset));
 		
 		//Steps y time...
 		JLabel stepsLabel = new JLabel(" Steps: "), timeLabel = new JLabel(" Time: ");
@@ -388,13 +494,13 @@ public class SimWindow extends JFrame implements Listener {
 		
 		bar.addSeparator();
 		
-		bar.add(actions.get(Command.Report));
-		bar.add(actions.get(Command.DeleteReport));
-		bar.add(actions.get(Command.SaveReport));
+		bar.add(actionsCommand.get(Command.Report));
+		bar.add(actionsCommand.get(Command.DeleteReport));
+		bar.add(actionsCommand.get(Command.SaveReport));
 		
 		bar.addSeparator();
 		
-		bar.add(actions.get(Command.Exit));	
+		bar.add(actionsCommand.get(Command.Exit));	
 		
 		JPanel jp = new JPanel();
 		jp.setPreferredSize(new Dimension(100000, 1));
@@ -408,27 +514,27 @@ public class SimWindow extends JFrame implements Listener {
 		
 		JMenu file = new JMenu("File");
 	
-		file.add(actions.get(Command.Open));
-		file.add(actions.get(Command.Save));
+		file.add(actionsCommand.get(Command.Open));
+		file.add(actionsCommand.get(Command.Save));
 		
 		file.addSeparator();
 		
-		file.add(actions.get(Command.SaveReport));
+		file.add(actionsCommand.get(Command.SaveReport));
 		
 		file.addSeparator();
 		
-		file.add(actions.get(Command.Exit));
+		file.add(actionsCommand.get(Command.Exit));
 		
 		JMenu simulator = new JMenu("Simulator");
 		
-		simulator.add(actions.get(Command.Play));
-		simulator.add(actions.get(Command.Reset));
+		simulator.add(actionsCommand.get(Command.Play));
+		simulator.add(actionsCommand.get(Command.Reset));
 		//Falta redirect Output
 		
 		JMenu reports = new JMenu("Reports");
 		
-		reports.add(actions.get(Command.Report));
-		reports.add(actions.get(Command.Clear));
+		reports.add(actionsCommand.get(Command.Report));
+		reports.add(actionsCommand.get(Command.Clear));
 		
 		menu.add(file);
 		menu.add(simulator);
@@ -449,7 +555,12 @@ public class SimWindow extends JFrame implements Listener {
 	private void addEventEditor() {
 		JScrollPane iniInput = new JScrollPane(textSection.textArea);
 		eventEditor = new JPanel(new BorderLayout());
-		eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor "));
+		if(currentInput != null) {
+			eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor: " + currentInput.getName()));
+		}
+		else {
+			eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor: " ));
+		}
 		eventEditor.add(iniInput);
 	}
 	
@@ -502,6 +613,11 @@ public class SimWindow extends JFrame implements Listener {
 		graph.generateGraph();
 	}
 	
+	private void addInformation() {
+		information = new JLabel("Welcome to the best Traffic Simulator ever! :)");
+		add(information, BorderLayout.AFTER_LAST_LINE);
+	}
+	
 	private void addInfPanel() {
 		infPanel = new JPanel();
 		infPanel.setLayout(new BorderLayout());
@@ -523,7 +639,7 @@ public class SimWindow extends JFrame implements Listener {
 		SaveReport("Save Report", "Report succesfully saved into an ini file."), 
 		Events("Events", "The events have been succesfully loaded into de Events Queue."), 
 		DeleteReport("Delete report", "The report has been succesfully deleted."), 
-		Play("Play", "Simulation played for " + stepsSpinner.getValue() + " ticks."), 
+		Play("Play", "Simulation played succesfully."), 
 		Open("Open", "The ini file has been succesfully loaded."), 
 		Report("Report", "The report has been succesfully generated"), 
 		Reset("Reset", "The reset has been succesfully done");
@@ -540,9 +656,33 @@ public class SimWindow extends JFrame implements Listener {
 		public String toString() {
 			return text;
 		}
-		
 	}
 
+	private enum Template {
+		NewVehicle("New Vehicle","[new_vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \n"),
+		NewBike("New Bike", "[new vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \ntype = \n"),
+		NewCar("New Car", "[new vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \ntype = \n"),
+		NewRoad("New Road", "[new_road]\ntime = \nid = \nsrc = \ndest = \nmax_speed = \nlength = \n"),
+		NewLanes("New Lanes", "[new_road]\ntime = \nid = \nsrc = \ndest = \nmax_speed = \nlength = \ntype =\nlanes = \n"),
+		NewDirt("New Dirt", "[new_road]\ntime = \nid = \nsrc = \ndest = \nmax_speed = \nlength = \ntype = \n"),
+		NewJunction("New Junction", "[new_junction]\nid = \ntime = \n"),
+		NewRoundRobin("New RR Junction", "[new_junction]\nid = \ntime = \ntype = \nmax_time_slice = \nmin_time_slice = \n"),
+		NewMostCrowded("New MC Junction", "[new_junction]\nid = \ntime = \ntype = \n"),
+		MakeFaulty("Make Vehicle Faulty", "[make_vehicle_faulty]\ntime = \nvehicles = \nduration = \n");
+		
+		private String text;
+		private String temp;
+		Template (String text, String temp) {
+			this.text = text;
+			this.temp = temp;
+		}
+		
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+	
 	@Override
 	public void registered(int time, RoadMap map, List<Event> events) {	}
 
@@ -574,6 +714,9 @@ public class SimWindow extends JFrame implements Listener {
 		this.events = events;
 		eventsTable.setElements(events);
 		eventsTable.update();
+		
+		graph.setRm(map);
+		graph.generateGraph();
 	}
 
 	@Override
@@ -591,7 +734,6 @@ public class SimWindow extends JFrame implements Listener {
 
 	@Override
 	public void simulatorError(int time, RoadMap map, List<Event> events, String error) {
-		
-		
+		JOptionPane.showMessageDialog(this, error);
 	}
 }
