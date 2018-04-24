@@ -98,6 +98,8 @@ public class Controller {
 			}
 			return j;
 		} catch (IllegalArgumentException e) {
+			simulator.notifyError("Could not parse section " + sec + 
+			        " because it doesn't have the arguments we needed");
 			throw new IllegalArgumentException("Could not parse section " + sec + 
 			        " because it doesn't have the arguments we needed", e);
 		}

@@ -4,18 +4,41 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import es.ucm.fdi.control.Controller;
 import es.ucm.fdi.extra.graphlayout.GraphLayout;
+import es.ucm.fdi.extra.popupmenu.PopUpMenu;
 import es.ucm.fdi.ini.Ini;
-import es.ucm.fdi.model.*;
+import es.ucm.fdi.model.Event;
+import es.ucm.fdi.model.RoadMap;
 import es.ucm.fdi.model.TrafficSimulator.Listener;
 import es.ucm.fdi.util.MultiTreeMap;
 
@@ -36,7 +59,7 @@ public class SimWindow extends JFrame implements Listener {
 	private TableOfDescribables eventsTable;
 	
 	private GraphLayout graph; 
-	private JTextArea textSection = new JTextArea();
+	private PopUpMenu textSection = new PopUpMenu();
 	private JTextArea reportsArea = new JTextArea();
 	private JSplitPane bottomSplit; 
 	private JSplitPane topSplit; 
@@ -52,12 +75,10 @@ public class SimWindow extends JFrame implements Listener {
 	private static JSpinner stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1)); 
 	private JTextField timeViewer = new JTextField("0");
 	private Map<Command, SimulatorAction> actionsCommand = new HashMap<>();
-	private Map<Template, SimulatorAction> actionsTemplate = new HashMap<>();
-	
+
 	public SimWindow(Controller ctrl, String inFileName) {
 		super("Traffic Simulator");
 		createActionsCommand();
-		createActionsTemplate();
 		if (inFileName != null) {
 			currentInput = new File(inFileName);
 			String st = "";
@@ -66,7 +87,7 @@ public class SimWindow extends JFrame implements Listener {
 			} catch (Exception e) {
 				ctrl.getSimulator().notifyError("There has been an error loading the file.");
 			}
-	    	textSection.setText(st);
+	    	textSection.get_editor().setText(st);
 		} else {
 			ableActions(false, 	actionsCommand.get(Command.Events), 
 								actionsCommand.get(Command.Clear), 
@@ -119,7 +140,7 @@ public class SimWindow extends JFrame implements Listener {
 				Command.Save, "save.png", "Save an Event",
 				KeyEvent.VK_S, "control S", 
 				()-> {
-					boolean couldSave = saveIni(textSection);
+					boolean couldSave = saveIni(textSection.get_editor());
 					enableOrDisableActions(actionsCommand, Command.Save);
 					if(couldSave) {
 						information.setText(Command.Save.message);
@@ -165,7 +186,7 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction clear = new SimulatorAction(
 				Command.Clear, "clear.png", "Clear the text",
 				KeyEvent.VK_X, "control X",
-				()->{	clear(textSection);
+				()->{	clear(textSection.get_editor());
 						enableOrDisableActions(actionsCommand, Command.Clear);
 						information.setText(Command.Clear.message);
 					});
@@ -219,89 +240,6 @@ public class SimWindow extends JFrame implements Listener {
 		actionsCommand.put(Command.Play, play);
 		actionsCommand.put(Command.Report, report);
 		actionsCommand.put(Command.Reset, reset);
-	}
-	
-	private void createActionsTemplate() {
-		SimulatorAction newVehicle = new SimulatorAction(
-				Template.NewVehicle, "vehicle.png", "Add a Vehicle Template",
-				KeyEvent.VK_G, "control G",
-				()->{
-						textSection.setText(textSection.getText() + Template.NewVehicle.temp); 
-					});
-		
-		SimulatorAction newBike = new SimulatorAction(
-				Template.NewBike, "bike.png", "Add a Bike Template",
-				KeyEvent.VK_Q, "control Q",
-				()->{
-						textSection.setText(textSection.getText() + Template.NewBike.temp); 
-					});
-		
-		SimulatorAction newCar = new SimulatorAction(
-				Template.NewCar, "car.png", "Add a Car Template",
-				KeyEvent.VK_Y, "control Y",
-				()->{
-						textSection.setText(textSection.getText() + Template.NewCar.temp); 
-					});
-		
-		SimulatorAction newRoad = new SimulatorAction(
-				Template.NewRoad, "road.png", "Add a Road Template",
-				KeyEvent.VK_F, "control F",
-				()->{
-						textSection.setText(textSection.getText() + Template.NewRoad.temp); 
-					});
-		
-		SimulatorAction newJunction = new SimulatorAction(
-				Template.NewJunction, "junction.png", "Add a Junction Template",
-				KeyEvent.VK_J, "control J",
-				()->{
-						textSection.setText(textSection.getText() + Template.NewJunction.temp); 
-					});
-		
-		SimulatorAction newMostCrowded = new SimulatorAction(
-				Template.NewMostCrowded, "junction.png", "Add a Most Crowded Junction Template",
-				KeyEvent.VK_I, "control I",
-				()->{
-						textSection.setText(textSection.getText() + Template.NewMostCrowded.temp); 
-					});
-		
-		SimulatorAction newRoundRobin = new SimulatorAction(
-				Template.NewRoundRobin, "junction.png", "Add a Round Robin Junction Template",
-				KeyEvent.VK_K, "control K",
-				()->{
-						textSection.setText(textSection.getText() + Template.NewRoundRobin.temp); 
-					});
-		
-		SimulatorAction newLanes = new SimulatorAction(
-				Template.NewLanes, "stop.png", "Add a Lanes Road Template",
-				KeyEvent.VK_H, "control H",
-				()->{
-						textSection.setText(textSection.getText() + Template.NewLanes.temp); 
-					});
-		
-		SimulatorAction newDirt = new SimulatorAction(
-				Template.NewDirt, "DirtRoad.png", "Add a Dirt Road Template",
-				KeyEvent.VK_U, "control U",
-				()->{
-						textSection.setText(textSection.getText() + Template.NewDirt.temp); 
-					});
-		
-		SimulatorAction makeFaulty = new SimulatorAction(
-				Template.MakeFaulty, "DirtRoad.png", "Add a Make Vehicle Faulty Event",
-				KeyEvent.VK_U, "control U",
-				()->{
-						textSection.setText(textSection.getText() + Template.MakeFaulty.temp); 
-					});
-		
-		actionsTemplate.put(Template.NewVehicle, newVehicle);
-		actionsTemplate.put(Template.NewCar, newCar);
-		actionsTemplate.put(Template.NewBike, newBike);
-		actionsTemplate.put(Template.NewRoad, newRoad);
-		actionsTemplate.put(Template.NewLanes, newLanes);
-		actionsTemplate.put(Template.NewDirt, newDirt);
-		actionsTemplate.put(Template.NewJunction, newJunction);
-		actionsTemplate.put(Template.NewRoundRobin, newRoundRobin);
-		actionsTemplate.put(Template.NewMostCrowded, newMostCrowded);
-		actionsTemplate.put(Template.MakeFaulty, makeFaulty);
 	}
 	
 	private void enableOrDisableActions(Map<Command, SimulatorAction> actions, Command command) {
@@ -365,9 +303,9 @@ public class SimWindow extends JFrame implements Listener {
 	       try {
 	    	   String st = new String(Files.readAllBytes(currentInput.toPath()), "UTF-8");
 	    	   ctrl.setIn(new FileInputStream(currentInput));
-	    	   textSection.setText(st);
+	    	   textSection.get_editor().setText(st);
 	       } catch (IOException e) {
-	    	   textSection.setText("");
+	    	   textSection.get_editor().setText("");
 	       }
 	       return true;
 	    } else {
@@ -399,7 +337,7 @@ public class SimWindow extends JFrame implements Listener {
 	}
 	
 	public void readText() {
-		String st = textSection.getText();
+		String st = textSection.get_editor().getText();
 		ctrl.setIn(new ByteArrayInputStream(st.getBytes(StandardCharsets.UTF_8)));
 	}
 	
@@ -507,7 +445,7 @@ public class SimWindow extends JFrame implements Listener {
 	}
 		
 	private void addEventEditor() {
-		JScrollPane iniInput = new JScrollPane(textSection);
+		JScrollPane iniInput = new JScrollPane(textSection.get_editor());
 		eventEditor = new JPanel(new BorderLayout());
 		if(currentInput != null) {
 			eventEditor.setBorder(javax.swing.BorderFactory.
@@ -640,5 +578,6 @@ public class SimWindow extends JFrame implements Listener {
 	@Override
 	public void simulatorError(int time, RoadMap map, List<Event> events, String error) {
 		JOptionPane.showMessageDialog(this, error);
+		ctrl.getSimulator().notifyReset();
 	}
 }

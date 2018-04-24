@@ -72,23 +72,23 @@ public class TrafficSimulator {
 		listeners.remove(l);
 	}
 		
-	private void notifyRegistered(Listener o) {
+	public void notifyRegistered(Listener o) {
 		o.registered(timeCounter, rm, events.valuesList());
 	}
 	
-	private void notifyReset() {
+	public void notifyReset() {
 		for (Listener l : listeners) {
 			l.reset(timeCounter, rm, events.valuesList());
 		}
 	}
 	
-	private void notifyEventAdded() {
+	public void notifyEventAdded() {
 		for (Listener l : listeners) {
 			l.eventAdded(timeCounter, rm, events.valuesList());
 		}
 	}
 	
-	private void notifyAdvanced() {
+	public void notifyAdvanced() {
 		for (Listener l : listeners) {
 			l.advanced(timeCounter, rm, events.valuesList());
 		}
