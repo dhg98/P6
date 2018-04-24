@@ -4,53 +4,20 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import javax.swing.BoxLayout;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import es.ucm.fdi.control.Controller;
 import es.ucm.fdi.extra.graphlayout.GraphLayout;
 import es.ucm.fdi.ini.Ini;
-import es.ucm.fdi.model.Event;
-import es.ucm.fdi.model.RoadMap;
+import es.ucm.fdi.model.*;
 import es.ucm.fdi.model.TrafficSimulator.Listener;
 import es.ucm.fdi.util.MultiTreeMap;
-
-/**
- * Esto es sólo para empezar a jugar con las interfaces
- * de la P5. 
- * 
- * El código <i>no</i> está bien organizado, y meter toda
- * la funcionalidad aquí sería un disparate desde un punto
- * de vista de mantenibilidad.
- */
 
 public class SimWindow extends JFrame implements Listener {
 	private final static String[] columnNameVehicle = new String[]  {"ID", "Road", "Location", "Speed", "Km", "Faulty Units", "Itinerary"};
@@ -58,12 +25,9 @@ public class SimWindow extends JFrame implements Listener {
 	private final static String[] columnNameJunction = new String[] {"ID", "Green", "Red"};
 	private final static String[] columnNameEvents = new String[] {"#", "Time", "Type"};
 	
-	
 	private Controller ctrl;
 	private RoadMap map = new RoadMap();
-	private int time;
 	private List<Event> events = new ArrayList<>();
-	private OutputStream reportsOutputStream;
 	private File currentInput;
 	
 	private TableOfDescribables vehiclesTable;
@@ -72,18 +36,20 @@ public class SimWindow extends JFrame implements Listener {
 	private TableOfDescribables eventsTable;
 	
 	private GraphLayout graph; 
-	private TextSection textSection;
+	private JTextArea textSection = new JTextArea();
+	private JTextArea reportsArea = new JTextArea();
 	private JSplitPane bottomSplit; 
 	private JSplitPane topSplit; 
 	private JPanel eventEditor;
-	private JTextArea reportsArea = new JTextArea();
 	private JPanel reportsViewer;
 	private JPanel supPanel;
 	private JPanel infPanel;
 	private JPanel infLeftPanel;
 	private JPanel rightInfPanel;
 	private JLabel information;
-	private static JSpinner stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1)); //new SpinnerNumberModel(CurrentValue, min, max, steps)
+	
+	//new SpinnerNumberModel(CurrentValue, min, max, steps)
+	private static JSpinner stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1)); 
 	private JTextField timeViewer = new JTextField("0");
 	private Map<Command, SimulatorAction> actionsCommand = new HashMap<>();
 	private Map<Template, SimulatorAction> actionsTemplate = new HashMap<>();
@@ -91,16 +57,16 @@ public class SimWindow extends JFrame implements Listener {
 	public SimWindow(Controller ctrl, String inFileName) {
 		super("Traffic Simulator");
 		createActionsCommand();
-		textSection = new TextSection("");
+		createActionsTemplate();
 		if (inFileName != null) {
 			currentInput = new File(inFileName);
 			String st = "";
 			try {
 				st = new String(Files.readAllBytes(currentInput.toPath()), "UTF-8");
 			} catch (Exception e) {
-				
+				ctrl.getSimulator().notifyError("There has been an error loading the file.");
 			}
-	    	textSection.textArea.setText(st);
+	    	textSection.setText(st);
 		} else {
 			ableActions(false, 	actionsCommand.get(Command.Events), 
 								actionsCommand.get(Command.Clear), 
@@ -153,7 +119,7 @@ public class SimWindow extends JFrame implements Listener {
 				Command.Save, "save.png", "Save an Event",
 				KeyEvent.VK_S, "control S", 
 				()-> {
-					boolean couldSave = saveIni(textSection.textArea);
+					boolean couldSave = saveIni(textSection);
 					enableOrDisableActions(actionsCommand, Command.Save);
 					if(couldSave) {
 						information.setText(Command.Save.message);
@@ -163,8 +129,7 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction play = new SimulatorAction(
 				Command.Play, "play.png", "Play the simulation",
 				KeyEvent.VK_P, "control P",
-				()->{
-						play();
+				()->{	play();
 						enableOrDisableActions(actionsCommand, Command.Play);
 						information.setText(Command.Play.message);
 					});
@@ -179,9 +144,11 @@ public class SimWindow extends JFrame implements Listener {
 						timeViewer.setText("0");
 						enableOrDisableActions(actionsCommand, Command.Open);
 						information.setText(Command.Open.message);
-						eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor: " + currentInput.getName()));
+						eventEditor.setBorder(javax.swing.BorderFactory.
+								createTitledBorder(" Events Editor: " + currentInput.getName()));
 					} else {
-						eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor: " ));
+						eventEditor.setBorder(javax.swing.BorderFactory.
+								createTitledBorder(" Events Editor: " ));
 					}
 				});
 		
@@ -198,8 +165,7 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction clear = new SimulatorAction(
 				Command.Clear, "clear.png", "Clear the text",
 				KeyEvent.VK_X, "control X",
-				()->{
-						clear();
+				()->{	clear(textSection);
 						enableOrDisableActions(actionsCommand, Command.Clear);
 						information.setText(Command.Clear.message);
 					});
@@ -222,8 +188,7 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction deleteReport = new SimulatorAction(
 				Command.DeleteReport, "delete_report.png", "Delete a report",
 				KeyEvent.VK_B, "control B",
-				()->{
-						clearReport();
+				()->{	clear(reportsArea);
 						enableOrDisableActions(actionsCommand, Command.DeleteReport);
 						information.setText(Command.DeleteReport.message);
 					});
@@ -231,8 +196,7 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction report = new SimulatorAction(
 				Command.Report, "report.png", "Report the simulation",
 				KeyEvent.VK_M, "control M",
-				()-> {
-						showReport();
+				()-> {	showReport();
 						enableOrDisableActions(actionsCommand, Command.Report);
 						information.setText(Command.Report.message);
 					});
@@ -240,8 +204,7 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction reset = new SimulatorAction(
 				Command.Reset, "reset.png", "Reset the simulation",
 				KeyEvent.VK_Z, "control Z",
-				()->{
-						ctrl.getSimulator().reset();
+				()->{	ctrl.getSimulator().reset();
 						enableOrDisableActions(actionsCommand, Command.Reset);
 						information.setText(Command.Reset.message);
 					});
@@ -263,70 +226,70 @@ public class SimWindow extends JFrame implements Listener {
 				Template.NewVehicle, "vehicle.png", "Add a Vehicle Template",
 				KeyEvent.VK_G, "control G",
 				()->{
-						
+						textSection.setText(textSection.getText() + Template.NewVehicle.temp); 
 					});
 		
 		SimulatorAction newBike = new SimulatorAction(
 				Template.NewBike, "bike.png", "Add a Bike Template",
 				KeyEvent.VK_Q, "control Q",
 				()->{
-						
+						textSection.setText(textSection.getText() + Template.NewBike.temp); 
 					});
 		
 		SimulatorAction newCar = new SimulatorAction(
 				Template.NewCar, "car.png", "Add a Car Template",
 				KeyEvent.VK_Y, "control Y",
 				()->{
-						
+						textSection.setText(textSection.getText() + Template.NewCar.temp); 
 					});
 		
 		SimulatorAction newRoad = new SimulatorAction(
 				Template.NewRoad, "road.png", "Add a Road Template",
 				KeyEvent.VK_F, "control F",
 				()->{
-						
+						textSection.setText(textSection.getText() + Template.NewRoad.temp); 
 					});
 		
 		SimulatorAction newJunction = new SimulatorAction(
 				Template.NewJunction, "junction.png", "Add a Junction Template",
 				KeyEvent.VK_J, "control J",
 				()->{
-						
+						textSection.setText(textSection.getText() + Template.NewJunction.temp); 
 					});
 		
 		SimulatorAction newMostCrowded = new SimulatorAction(
 				Template.NewMostCrowded, "junction.png", "Add a Most Crowded Junction Template",
 				KeyEvent.VK_I, "control I",
 				()->{
-						
+						textSection.setText(textSection.getText() + Template.NewMostCrowded.temp); 
 					});
 		
 		SimulatorAction newRoundRobin = new SimulatorAction(
 				Template.NewRoundRobin, "junction.png", "Add a Round Robin Junction Template",
 				KeyEvent.VK_K, "control K",
 				()->{
-						
+						textSection.setText(textSection.getText() + Template.NewRoundRobin.temp); 
 					});
 		
 		SimulatorAction newLanes = new SimulatorAction(
-				Template.NewLanes, "lanesRoad.png", "Add a Lanes Road Template",
+				Template.NewLanes, "stop.png", "Add a Lanes Road Template",
 				KeyEvent.VK_H, "control H",
 				()->{
-						
+						textSection.setText(textSection.getText() + Template.NewLanes.temp); 
 					});
 		
 		SimulatorAction newDirt = new SimulatorAction(
 				Template.NewDirt, "DirtRoad.png", "Add a Dirt Road Template",
 				KeyEvent.VK_U, "control U",
 				()->{
-						
+						textSection.setText(textSection.getText() + Template.NewDirt.temp); 
 					});
 		
 		SimulatorAction makeFaulty = new SimulatorAction(
 				Template.MakeFaulty, "DirtRoad.png", "Add a Make Vehicle Faulty Event",
 				KeyEvent.VK_U, "control U",
 				()->{
-						
+						textSection.setText(textSection.getText() + Template.MakeFaulty.temp); 
 					});
 		
 		actionsTemplate.put(Template.NewVehicle, newVehicle);
@@ -402,9 +365,9 @@ public class SimWindow extends JFrame implements Listener {
 	       try {
 	    	   String st = new String(Files.readAllBytes(currentInput.toPath()), "UTF-8");
 	    	   ctrl.setIn(new FileInputStream(currentInput));
-	    	   textSection.textArea.setText(st);
+	    	   textSection.setText(st);
 	       } catch (IOException e) {
-	    	   textSection.textArea.setText("");
+	    	   textSection.setText("");
 	       }
 	       return true;
 	    } else {
@@ -436,16 +399,12 @@ public class SimWindow extends JFrame implements Listener {
 	}
 	
 	public void readText() {
-		String st = textSection.textArea.getText();
+		String st = textSection.getText();
 		ctrl.setIn(new ByteArrayInputStream(st.getBytes(StandardCharsets.UTF_8)));
 	}
 	
-	public void clear() {
-		textSection.textArea.setText("");
-	}
-	
-	public void clearReport() {
-		reportsArea.setText("");
+	public void clear(JTextArea text) {
+		text.setText("");
 	}
 	
 	public void showReport() {
@@ -463,14 +422,13 @@ public class SimWindow extends JFrame implements Listener {
 			ctrl.getSimulator().execute(str, time);
 			timeViewer.setText("" + ctrl.getSimulator().getTimeCounter());
 		} catch (IOException e) {
-			ctrl.getSimulator().notifyError("MAL");
+			ctrl.getSimulator().notifyError("Something went wrong with the simulation.");
 			e.printStackTrace();
 		}
 	}
 	
 	private void addToolBar() {
 		// add actions to toolbar, 
-		
 		JToolBar bar = new JToolBar();
 		bar.add(actionsCommand.get(Command.Open));
 		bar.add(actionsCommand.get(Command.Save));
@@ -486,7 +444,6 @@ public class SimWindow extends JFrame implements Listener {
 		JLabel stepsLabel = new JLabel(" Steps: "), timeLabel = new JLabel(" Time: ");
 		bar.add(stepsLabel);
 		bar.add(stepsSpinner);
-		
 		timeViewer.setMinimumSize(new Dimension(70, 1));
 		timeViewer.setEditable(false);
 		bar.add(timeLabel);
@@ -505,13 +462,13 @@ public class SimWindow extends JFrame implements Listener {
 		JPanel jp = new JPanel();
 		jp.setPreferredSize(new Dimension(100000, 1));
 		bar.add(jp);
+		
 		//Add bar to window
 		add(bar, BorderLayout.NORTH);
 	}
 	
 	private void addMenuBar() {
 		JMenuBar menu = new JMenuBar();
-		
 		JMenu file = new JMenu("File");
 	
 		file.add(actionsCommand.get(Command.Open));
@@ -526,13 +483,10 @@ public class SimWindow extends JFrame implements Listener {
 		file.add(actionsCommand.get(Command.Exit));
 		
 		JMenu simulator = new JMenu("Simulator");
-		
 		simulator.add(actionsCommand.get(Command.Play));
 		simulator.add(actionsCommand.get(Command.Reset));
-		//Falta redirect Output
 		
 		JMenu reports = new JMenu("Reports");
-		
 		reports.add(actionsCommand.get(Command.Report));
 		reports.add(actionsCommand.get(Command.Clear));
 		
@@ -553,45 +507,49 @@ public class SimWindow extends JFrame implements Listener {
 	}
 		
 	private void addEventEditor() {
-		JScrollPane iniInput = new JScrollPane(textSection.textArea);
+		JScrollPane iniInput = new JScrollPane(textSection);
 		eventEditor = new JPanel(new BorderLayout());
 		if(currentInput != null) {
-			eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor: " + currentInput.getName()));
-		}
-		else {
-			eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor: " ));
+			eventEditor.setBorder(javax.swing.BorderFactory.
+					createTitledBorder(" Events Editor: " + currentInput.getName()));
+		} else {
+			eventEditor.setBorder(javax.swing.BorderFactory.
+					createTitledBorder(" Events Editor: " ));
 		}
 		eventEditor.add(iniInput);
 	}
 	
 	private void addEventsView() {
 		eventsTable = new TableOfDescribables(events, columnNameEvents);
-		eventsTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Queue "));
+		eventsTable.setBorder(javax.swing.BorderFactory.
+				createTitledBorder(" Events Queue "));
 	}
 	
 	private void addReportsViewer() {
 		reportsArea.setEditable(false);
 		JScrollPane reportsAreaScroll = new JScrollPane(reportsArea);
 		reportsViewer = new JPanel(new BorderLayout());
-		reportsViewer.setBorder(javax.swing.BorderFactory.createTitledBorder(" Reports Area "));
+		reportsViewer.setBorder(javax.swing.BorderFactory.
+				createTitledBorder(" Reports Area "));
 		reportsViewer.add(reportsAreaScroll);
-		
 	}
 	
 	private void addVehiclesTablePanel() {
 		vehiclesTable = new TableOfDescribables(map.getVehiclesRO(), columnNameVehicle);
-		vehiclesTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Vehicles Table "));
-		
+		vehiclesTable.setBorder(javax.swing.BorderFactory.
+				createTitledBorder(" Vehicles Table "));
 	}
 	
 	private void addRoadsTablePanel() {
 		roadTable = new TableOfDescribables(map.getRoadsRO(), columnNameRoad);
-		roadTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Road Table "));
+		roadTable.setBorder(javax.swing.BorderFactory.
+				createTitledBorder(" Road Table "));
 	}
 	
 	private void addJunctionsTablePanel() {
 		junctionTable = new TableOfDescribables(map.getJunctionsRO(), columnNameJunction);
-		junctionTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Junction Table "));
+		junctionTable.setBorder(javax.swing.BorderFactory.
+				createTitledBorder(" Junction Table "));
 	}
 	
 	private void addInfLeftPanel() {
@@ -627,60 +585,9 @@ public class SimWindow extends JFrame implements Listener {
 	}
 	
 	private void addBars() {
-		topSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, supPanel, infPanel); //Division horizontal
+		topSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, supPanel, infPanel);
 		topSplit.setResizeWeight(.33);
 		add(topSplit);
-	}
-	
-	private enum Command {
-		Exit("Exit", "You have exited the aplication."),
-		Clear("Clear", "The Events Editor Panel has been cleared."), 
-		Save("Save", "Events succesfully saved into an ini file."),
-		SaveReport("Save Report", "Report succesfully saved into an ini file."), 
-		Events("Events", "The events have been succesfully loaded into de Events Queue."), 
-		DeleteReport("Delete report", "The report has been succesfully deleted."), 
-		Play("Play", "Simulation played succesfully."), 
-		Open("Open", "The ini file has been succesfully loaded."), 
-		Report("Report", "The report has been succesfully generated"), 
-		Reset("Reset", "The reset has been succesfully done");
-		
-		private String text;
-		private String message;
-		
-		Command(String text, String message) {
-			this.text = text;
-			this.message = message;
-		}
-		
-		@Override
-		public String toString() {
-			return text;
-		}
-	}
-
-	private enum Template {
-		NewVehicle("New Vehicle","[new_vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \n"),
-		NewBike("New Bike", "[new vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \ntype = \n"),
-		NewCar("New Car", "[new vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \ntype = \n"),
-		NewRoad("New Road", "[new_road]\ntime = \nid = \nsrc = \ndest = \nmax_speed = \nlength = \n"),
-		NewLanes("New Lanes", "[new_road]\ntime = \nid = \nsrc = \ndest = \nmax_speed = \nlength = \ntype =\nlanes = \n"),
-		NewDirt("New Dirt", "[new_road]\ntime = \nid = \nsrc = \ndest = \nmax_speed = \nlength = \ntype = \n"),
-		NewJunction("New Junction", "[new_junction]\nid = \ntime = \n"),
-		NewRoundRobin("New RR Junction", "[new_junction]\nid = \ntime = \ntype = \nmax_time_slice = \nmin_time_slice = \n"),
-		NewMostCrowded("New MC Junction", "[new_junction]\nid = \ntime = \ntype = \n"),
-		MakeFaulty("Make Vehicle Faulty", "[make_vehicle_faulty]\ntime = \nvehicles = \nduration = \n");
-		
-		private String text;
-		private String temp;
-		Template (String text, String temp) {
-			this.text = text;
-			this.temp = temp;
-		}
-		
-		@Override
-		public String toString() {
-			return text;
-		}
 	}
 	
 	@Override
@@ -714,7 +621,6 @@ public class SimWindow extends JFrame implements Listener {
 		this.events = events;
 		eventsTable.setElements(events);
 		eventsTable.update();
-		
 		graph.setRm(map);
 		graph.generateGraph();
 	}
@@ -727,7 +633,6 @@ public class SimWindow extends JFrame implements Listener {
 		junctionTable.update();
 		roadTable.update();
 		vehiclesTable.update();
-		
 		graph.setRm(map);
 		graph.generateGraph();
 	}

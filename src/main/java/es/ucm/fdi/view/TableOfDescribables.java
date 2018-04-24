@@ -72,23 +72,4 @@ public class TableOfDescribables extends JPanel {
 			}
 		}
 	}
-	
-	/*public static void main(String ...args) {
-		SwingUtilities.invokeLater(() -> {
-			JFrame jf = new JFrame("test");
-			jf.setLayout(new BorderLayout());
-			TableOfDescribables tod = new TableOfDescribables(Arrays.asList(new Zuncho[]{
-					new Zuncho(),
-					new Zuncho(),
-					new Zuncho()
-			}), new String[] {"a", "b", "c", "d"});
-			jf.add(tod, BorderLayout.CENTER);
-			JButton jb = new JButton("repinta");
-			jb.addActionListener((ae) ->tod.update()); 
-			jf.add(jb, BorderLayout.SOUTH);
-			jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
-			jf.setSize(300, 300);
-			jf.setVisible(true);
-		});
-	}*/
 }
