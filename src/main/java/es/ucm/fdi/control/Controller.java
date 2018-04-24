@@ -5,6 +5,7 @@ import java.io.*;
 import es.ucm.fdi.control.eventbuilders.*;
 import es.ucm.fdi.ini.*;
 import es.ucm.fdi.model.*;
+import es.ucm.fdi.model.events.Event;
 
 
 /**

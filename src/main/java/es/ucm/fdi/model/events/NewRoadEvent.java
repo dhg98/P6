@@ -1,6 +1,11 @@
-package es.ucm.fdi.model;
+package es.ucm.fdi.model.events;
 
 import java.util.Map;
+
+import es.ucm.fdi.model.Describable;
+import es.ucm.fdi.model.Junction;
+import es.ucm.fdi.model.Road;
+import es.ucm.fdi.model.RoadMap;
 
 public class NewRoadEvent extends Event implements Describable {
 	private int maxSpeed;

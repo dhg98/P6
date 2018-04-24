@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import es.ucm.fdi.ini.IniSection;
 import es.ucm.fdi.model.*;
+import es.ucm.fdi.model.events.Event;
+import es.ucm.fdi.model.events.MakeVehicleFaultyEvent;
 
 public class MakeVehicleFaultyEventBuilder implements EventBuilder {
 

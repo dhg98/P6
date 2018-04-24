@@ -1,4 +1,8 @@
-package es.ucm.fdi.model;
+package es.ucm.fdi.model.events;
+
+import es.ucm.fdi.model.DirtRoad;
+import es.ucm.fdi.model.Junction;
+import es.ucm.fdi.model.RoadMap;
 
 public class NewDirtRoadEvent extends NewRoadEvent {
 

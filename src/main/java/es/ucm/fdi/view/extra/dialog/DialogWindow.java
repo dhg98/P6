@@ -1,4 +1,4 @@
-package es.ucm.fdi.extra.dialog;
+package es.ucm.fdi.view.extra.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -52,7 +52,7 @@ class DialogWindow extends JDialog {
 
 		_status = 0;
 
-		setTitle("Some Dialog");
+		setTitle("Generate Reports");
 		JPanel mainPanel = new JPanel(new BorderLayout());
 
 		JPanel contentPanel = new JPanel();
@@ -114,7 +114,7 @@ class DialogWindow extends JDialog {
 		});
 		buttonsPanel.add(cancelButton);
 
-		JButton okButton = new JButton("OK");
+		JButton okButton = new JButton("Generate");
 		okButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -131,7 +131,7 @@ class DialogWindow extends JDialog {
 		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 		mainPanel.add(infoPanel, BorderLayout.PAGE_START);
 
-		infoPanel.add(new JLabel("Select items for which you want to process."));
+		infoPanel.add(new JLabel("Select items for which you want to generate reports."));
 		infoPanel.add(new JLabel("Use '" + _clearSelectionKey + "' to deselect all."));
 		infoPanel.add(new JLabel("Use Ctrl+A to select all"));
 		infoPanel.add(new JLabel(" "));
@@ -171,7 +171,7 @@ class DialogWindow extends JDialog {
 	public List<Vehicle> getSelectedVehicles() {
 		int[] indices = _vehicleList.getSelectedIndices();
 		List<Vehicle> vehicle = new ArrayList<>();
-		for(int i=0; i<vehicle.size(); i++) {
+		for(int i = 0; i < indices.length; i++) {
 			vehicle.add(_vehicleListModel.getElementAt(indices[i]));
 		}
 		return vehicle;
@@ -180,16 +180,16 @@ class DialogWindow extends JDialog {
 	public List<Road> getSelectedRoads() {
 		int[] indices = _roadList.getSelectedIndices();
 		List<Road> road = new ArrayList<>();
-		for(int i=0; i<road.size(); i++) {
+		for(int i = 0; i < indices.length; i++) {
 			road.add(_roadListModel.getElementAt(indices[i]));
 		}
 		return road;
 	}
 	
 	public List<Junction> getSelectedJunctions() {
-		int[] indices = _vehicleList.getSelectedIndices();
+		int[] indices = _junctionList.getSelectedIndices();
 		List<Junction> junctions = new ArrayList<>();
-		for(int i=0; i<junctions.size(); i++) {
+		for(int i = 0; i < indices.length; i++) {
 			junctions.add(_junctionListModel.getElementAt(indices[i]));
 		}
 		return junctions;

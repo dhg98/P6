@@ -1,4 +1,4 @@
-package es.ucm.fdi.extra.popupmenu;
+package es.ucm.fdi.view.extra.popupmenu;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;

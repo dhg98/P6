@@ -1,4 +1,7 @@
-package es.ucm.fdi.model;
+package es.ucm.fdi.model.events;
+
+import es.ucm.fdi.model.RoadMap;
+import es.ucm.fdi.model.RoundRobinJunction;
 
 public class NewRoundRobinJunctionEvent extends NewJunctionEvent {
 

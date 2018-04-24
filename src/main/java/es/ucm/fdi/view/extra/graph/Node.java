@@ -1,4 +1,4 @@
-package es.ucm.fdi.extra.graphlayout;
+package es.ucm.fdi.view.extra.graph;
 
 public class Node {
 	private String _id;

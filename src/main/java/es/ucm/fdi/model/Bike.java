@@ -2,8 +2,6 @@ package es.ucm.fdi.model;
 
 import java.util.*;
 
-import es.ucm.fdi.model.Vehicle;
-
 /**
  * Represents a Bike given the statement of the project
  * @author Daniel Herranz

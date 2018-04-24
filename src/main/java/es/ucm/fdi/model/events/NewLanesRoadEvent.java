@@ -1,4 +1,8 @@
-package es.ucm.fdi.model;
+package es.ucm.fdi.model.events;
+
+import es.ucm.fdi.model.Junction;
+import es.ucm.fdi.model.LanesRoad;
+import es.ucm.fdi.model.RoadMap;
 
 public class NewLanesRoadEvent extends NewRoadEvent {
 	

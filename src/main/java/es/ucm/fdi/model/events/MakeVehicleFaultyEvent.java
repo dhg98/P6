@@ -1,6 +1,10 @@
-package es.ucm.fdi.model;
+package es.ucm.fdi.model.events;
 
 import java.util.*;
+
+import es.ucm.fdi.model.Describable;
+import es.ucm.fdi.model.RoadMap;
+import es.ucm.fdi.model.Vehicle;
 
 public class MakeVehicleFaultyEvent extends Event implements Describable {
 	private int tiempoAveria;

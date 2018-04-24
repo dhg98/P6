@@ -1,5 +1,7 @@
-package es.ucm.fdi.model;
+package es.ucm.fdi.model.events;
 
+import es.ucm.fdi.model.MostCrowdedJunction;
+import es.ucm.fdi.model.RoadMap;
 
 public class NewMostCrowdedJunctionEvent extends NewJunctionEvent {
 

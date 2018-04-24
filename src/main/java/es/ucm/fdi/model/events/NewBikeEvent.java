@@ -1,7 +1,12 @@
-package es.ucm.fdi.model;
+package es.ucm.fdi.model.events;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import es.ucm.fdi.model.Bike;
+import es.ucm.fdi.model.Junction;
+import es.ucm.fdi.model.Road;
+import es.ucm.fdi.model.RoadMap;
 
 public class NewBikeEvent extends NewVehicleEvent {
 

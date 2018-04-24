@@ -1,6 +1,12 @@
-package es.ucm.fdi.model;
+package es.ucm.fdi.model.events;
 
 import java.util.*;
+
+import es.ucm.fdi.model.Describable;
+import es.ucm.fdi.model.Junction;
+import es.ucm.fdi.model.Road;
+import es.ucm.fdi.model.RoadMap;
+import es.ucm.fdi.model.Vehicle;
 
 public class NewVehicleEvent extends Event implements Describable {
 

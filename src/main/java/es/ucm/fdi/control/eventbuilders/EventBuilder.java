@@ -3,7 +3,7 @@ package es.ucm.fdi.control.eventbuilders;
 import java.util.ArrayList;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.Event;
+import es.ucm.fdi.model.events.Event;
 
 public interface EventBuilder {
 	

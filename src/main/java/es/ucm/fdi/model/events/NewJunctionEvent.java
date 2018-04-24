@@ -1,6 +1,10 @@
-package es.ucm.fdi.model;
+package es.ucm.fdi.model.events;
 
 import java.util.Map;
+
+import es.ucm.fdi.model.Describable;
+import es.ucm.fdi.model.Junction;
+import es.ucm.fdi.model.RoadMap;
 
 public class NewJunctionEvent extends Event implements Describable {
 	private String id;

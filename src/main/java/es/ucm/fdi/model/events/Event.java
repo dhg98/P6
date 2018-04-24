@@ -1,4 +1,7 @@
-package es.ucm.fdi.model;
+package es.ucm.fdi.model.events;
+
+import es.ucm.fdi.model.Describable;
+import es.ucm.fdi.model.RoadMap;
 
 /**
  * Represents a Event of simulation

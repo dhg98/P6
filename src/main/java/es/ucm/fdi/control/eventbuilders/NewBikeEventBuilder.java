@@ -3,8 +3,8 @@ package es.ucm.fdi.control.eventbuilders;
 import java.util.List;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.Event;
-import es.ucm.fdi.model.NewBikeEvent;
+import es.ucm.fdi.model.events.Event;
+import es.ucm.fdi.model.events.NewBikeEvent;
 
 public class NewBikeEventBuilder implements EventBuilder {
 

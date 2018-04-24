@@ -2,6 +2,8 @@ package es.ucm.fdi.control.eventbuilders;
 
 import es.ucm.fdi.ini.IniSection;
 import es.ucm.fdi.model.*;
+import es.ucm.fdi.model.events.Event;
+import es.ucm.fdi.model.events.NewJunctionEvent;
 
 public class NewJunctionEventBuilder implements EventBuilder {
 

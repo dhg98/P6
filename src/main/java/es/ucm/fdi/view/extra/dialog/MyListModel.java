@@ -1,4 +1,4 @@
-package es.ucm.fdi.extra.dialog;
+package es.ucm.fdi.view.extra.dialog;
 
 import java.util.List;
 

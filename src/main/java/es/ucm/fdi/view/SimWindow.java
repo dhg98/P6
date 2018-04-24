@@ -34,14 +34,14 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import es.ucm.fdi.control.Controller;
-import es.ucm.fdi.extra.dialog.DialogWindowLayout;
-import es.ucm.fdi.extra.graphlayout.GraphLayout;
-import es.ucm.fdi.extra.popupmenu.PopUpMenu;
 import es.ucm.fdi.ini.Ini;
-import es.ucm.fdi.model.Event;
 import es.ucm.fdi.model.RoadMap;
 import es.ucm.fdi.model.TrafficSimulator.Listener;
+import es.ucm.fdi.model.events.Event;
 import es.ucm.fdi.util.MultiTreeMap;
+import es.ucm.fdi.view.extra.dialog.DialogWindowLayout;
+import es.ucm.fdi.view.extra.graph.GraphLayout;
+import es.ucm.fdi.view.extra.popupmenu.PopUpMenu;
 
 public class SimWindow extends JFrame implements Listener {
 	private final static String[] columnNameVehicle = new String[]  {"ID", "Road", "Location", "Speed", "Km", "Faulty Units", "Itinerary"};
@@ -225,8 +225,10 @@ public class SimWindow extends JFrame implements Listener {
 																			  ctrl.getSimulator());
 						Ini in = selection.getIni();
 						reportsArea.setText(in.toString());
-						enableOrDisableActions(actionsCommand, Command.Report);
-						information.setText(Command.Report.message);
+						if (selection.getStatus() != 0) {
+    						enableOrDisableActions(actionsCommand, Command.Report);
+    						information.setText(Command.Report.message);
+						}
 					});
 		
 		SimulatorAction reset = new SimulatorAction(

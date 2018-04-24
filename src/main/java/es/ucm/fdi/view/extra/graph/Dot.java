@@ -1,4 +1,4 @@
-package es.ucm.fdi.extra.graphlayout;
+package es.ucm.fdi.view.extra.graph;
 
 public class Dot {
 	private String _id;

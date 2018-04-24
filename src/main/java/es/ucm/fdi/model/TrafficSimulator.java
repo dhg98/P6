@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import es.ucm.fdi.ini.*;
+import es.ucm.fdi.model.events.Event;
 import es.ucm.fdi.util.*;
 
 /**
