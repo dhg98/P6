@@ -13,31 +13,30 @@ import javax.swing.table.AbstractTableModel;
 import es.ucm.fdi.model.Describable;
 
 public class TableOfDescribables extends JPanel {
-	
-	private JTable table;	
+
+	private JTable table;
 	private ListOfMapsTableModel model;
 
 	protected String[] fieldNames;
 	protected List<? extends Describable> elements;
-	
-	
+
 	public void setElements(List<? extends Describable> elements) {
 		this.elements = elements;
 	}
- 
+
 	public TableOfDescribables(List<? extends Describable> elements, String[] colNames) {
 		super(new BorderLayout());
 		this.elements = elements;
 		this.fieldNames = colNames;
 		model = new ListOfMapsTableModel();
 		table = new JTable(model);
-		add(new JScrollPane(table), BorderLayout.CENTER);		
+		add(new JScrollPane(table), BorderLayout.CENTER);
 	}
-	
+
 	public void update() {
 		model.update();
 	}
-	
+
 	private class ListOfMapsTableModel extends AbstractTableModel {
 
 		private static final long serialVersionUID = 2250745434019390850L;
@@ -46,11 +45,11 @@ public class TableOfDescribables extends JPanel {
 		public int getColumnCount() {
 			return fieldNames.length;
 		}
-		
+
 		private void update() {
 			fireTableDataChanged();
 		}
-		
+
 		@Override
 		public String getColumnName(int colIndex) {
 			return fieldNames[colIndex];
@@ -63,7 +62,7 @@ public class TableOfDescribables extends JPanel {
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			Map <String,String> out = new HashMap<>();
+			Map<String, String> out = new HashMap<>();
 			elements.get(rowIndex).describe(out);
 			if ("#".equals(fieldNames[columnIndex])) {
 				return rowIndex;

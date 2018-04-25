@@ -4,23 +4,24 @@ import java.util.*;
 
 /**
  * Represents a Vehicle in the Simulator
+ * 
  * @author Daniel Herranz
  *
  */
 public class Vehicle extends SimObject implements Describable {
 	public static final String REPORT_HEADER = "vehicle_report";
-	
+
 	private int velMax;
 	private int velAct;
 	private Road road;
 	private int location;
 	private int kilometrage = 0;
-	private List<Junction> itinerario; 
+	private List<Junction> itinerario;
 	private int contadorCruce;
 	private int tiempoAveria;
 	private boolean haLlegado;
-	
-	public Vehicle(String id, int velMaxima, Road road, List<Junction> itinerario){
+
+	public Vehicle(String id, int velMaxima, Road road, List<Junction> itinerario) {
 		super(id);
 		this.velMax = velMaxima;
 		velAct = 0;
@@ -31,12 +32,10 @@ public class Vehicle extends SimObject implements Describable {
 		this.road = road;
 		contadorCruce = 1;
 	}
-	
-	
+
 	public boolean getHaLlegado() {
 		return haLlegado;
 	}
-
 
 	public int getVelMax() {
 		return velMax;
@@ -61,7 +60,7 @@ public class Vehicle extends SimObject implements Describable {
 	public int getTiempoAveria() {
 		return tiempoAveria;
 	}
-	
+
 	public void setVelAct(int velAct) {
 		this.velAct = velAct;
 	}
@@ -73,7 +72,7 @@ public class Vehicle extends SimObject implements Describable {
 	public void setLocation(int location) {
 		this.location = location;
 	}
-	
+
 	/**
 	 * Report of a Vehicle given the statement of the project
 	 */
@@ -81,58 +80,61 @@ public class Vehicle extends SimObject implements Describable {
 		out.put("speed", Integer.toString(velAct));
 		out.put("kilometrage", Integer.toString(kilometrage));
 		out.put("faulty", Integer.toString(tiempoAveria));
-		if(haLlegado) {
+		if (haLlegado) {
 			out.put("location", "arrived");
 		} else {
 			out.put("location", "(" + road.getId() + "," + Integer.toString(location) + ")");
 		}
 	}
-	
+
 	public String toStringItinerary() {
-		List <String> itinerary = new ArrayList<>();
-		for(Junction j: itinerario) {
+		List<String> itinerary = new ArrayList<>();
+		for (Junction j : itinerario) {
 			itinerary.add(j.getId());
 		}
 		return "[" + String.join(",", itinerary) + "]";
 	}
-	
+
 	protected String getReportHeader() {
 		return REPORT_HEADER;
 	}
-	
+
 	/**
 	 * Adds n to the atribute tiempoAveria.
+	 * 
 	 * @param n
 	 */
-	public void setTiempoAveria(int n){
+	public void setTiempoAveria(int n) {
 		tiempoAveria += n;
 	}
 
 	/**
 	 * Modifies the speed of the car if it is less than the maxSpeed.
+	 * 
 	 * @param velA
 	 */
 	public void setVelocidadActual(int velA) {
-		if(velA >= velMax){
+		if (velA >= velMax) {
 			velAct = velMax;
 		} else {
 			velAct = velA;
 		}
 	}
-	
+
 	/**
 	 * Advance a vehicle given the statement of the project.
 	 */
 	public void avanza() {
-		if(tiempoAveria > 0) {
+		if (tiempoAveria > 0) {
 			tiempoAveria--;
 			velAct = 0;
 		} else {
 			int locationAux = location + velAct;
-			if(locationAux >= road.getSize()) {
+			if (locationAux >= road.getSize()) {
 				kilometrage += road.getSize() - location;
 				location = road.getSize();
-				road.getEnd().entraVehiculo(this); //El vehiculo se introduce en la cola del cruce del final de la carretera.
+				// El vehiculo se introduce en la cola del cruce del final de la carretera.
+				road.getEnd().entraVehiculo(this); 
 				velAct = 0;
 			} else {
 				location = locationAux;
@@ -140,31 +142,34 @@ public class Vehicle extends SimObject implements Describable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Move a vehicle to the next road given his itinerary.
 	 */
-	public void moverASiguienteCarretera(){
+	public void moverASiguienteCarretera() {
 		road.saleVehiculo(this);
 		velAct = 0;
-		if(contadorCruce + 1 == itinerario.size()) {
+		if (contadorCruce + 1 == itinerario.size()) {
 			haLlegado = true;
 		} else {
 			int i;
 			List<Road> out = itinerario.get(contadorCruce).getOutgoingRoadsList();
-			for(i = 0; i < out.size(); ++i) {
-				if(out.get(i).getEnd() == itinerario.get(contadorCruce + 1)) {
-					out.get(i).entraVehiculo(this); //Mete el this en la carretera siguiente de acuerdo a su itinerario
-					road = out.get(i); //Cambia el atributo road a la nueva carretera en la que se encuentra
-					location = 0; //Establece su posicion a cero
+			for (i = 0; i < out.size(); ++i) {
+				if (out.get(i).getEnd() == itinerario.get(contadorCruce + 1)) {
+					// Mete el this en la carretera siguiente de acuerdo a su itinerario
+					out.get(i).entraVehiculo(this); 
+					// Cambia el atributo road a la nueva carretera en la que se encuentra
+					road = out.get(i); 
+					// Establece su posicion a cero
+					location = 0; 
 					contadorCruce++;
 					break;
 				}
 			}
-			if(i == out.size()) {
-				throw new RuntimeException("The itinerary followed by the vehicle whose id is " + getId()
+			if (i == out.size()) {
+				throw new IllegalStateException("The itinerary followed by the vehicle whose id is " + getId()
 						+ " is incorrect after the junction " + itinerario.get(contadorCruce).getId());
-				}
+			}
 		}
 	}
 

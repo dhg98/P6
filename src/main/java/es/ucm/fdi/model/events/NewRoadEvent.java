@@ -13,8 +13,9 @@ public class NewRoadEvent extends Event implements Describable {
 	private String src;
 	private String id;
 	private String dest;
-	
-	public NewRoadEvent(int time, String id, String src, String dest, int maxSpeed, int length) {
+
+	public NewRoadEvent(int time, String id, String src, String dest,
+			int maxSpeed, int length) {
 		super(time);
 		this.maxSpeed = maxSpeed;
 		this.length = length;
@@ -22,7 +23,7 @@ public class NewRoadEvent extends Event implements Describable {
 		this.id = id;
 		this.dest = dest;
 	}
-	
+
 	public int getMaxSpeed() {
 		return maxSpeed;
 	}
@@ -65,5 +66,10 @@ public class NewRoadEvent extends Event implements Describable {
 	public void describe(Map<String, String> out) {
 		out.put("Time", "" + getTime());
 		out.put("Type", getType());
+	}
+	
+	@Override
+	public String toString() {
+		return this.getClass().toString();
 	}
 }

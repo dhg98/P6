@@ -7,10 +7,11 @@ import es.ucm.fdi.util.MultiTreeMap;
 
 /**
  * Represents a Dirt Road given the statement of the project
+ * 
  * @author Daniel Herranz
  *
  */
-public class LanesRoad extends Road{
+public class LanesRoad extends Road {
 
 	private int lanes;
 
@@ -28,9 +29,9 @@ public class LanesRoad extends Road{
 	 */
 	@Override
 	public int modificarVelBase() {
-		return Math.min(getMaxVel(), (getMaxVel() * lanes)/(Math.max(1, getNumVehicles())) + 1);
+		return Math.min(getMaxVel(), (getMaxVel() * lanes) / (Math.max(1, getNumVehicles())) + 1);
 	}
-	
+
 	/**
 	 * Reports a Lanes Road given the statement of the project
 	 */
@@ -38,17 +39,18 @@ public class LanesRoad extends Road{
 		out.put("type", "lanes");
 		super.fillReportDetails(out);
 	}
-	
+
 	/**
 	 * Advances a Lanes Road given the statement of the project
 	 */
 	@Override
 	public void avanza() {
 		modificarVelBase();
-		MultiTreeMap<Integer, Vehicle> actualizado = new MultiTreeMap<>(Comparator.comparing(Integer::intValue).reversed());
-		int  numCochesAveriados = 0;
+		MultiTreeMap<Integer, Vehicle> actualizado = new MultiTreeMap<>(
+				Comparator.comparing(Integer::intValue).reversed());
+		int numCochesAveriados = 0;
 		int velBase = modificarVelBase();
-		for(Vehicle v: getStreet().innerValues()){
+		for (Vehicle v : getStreet().innerValues()) {
 			if (v.getTiempoAveria() > 0) {
 				numCochesAveriados++;
 			} else {

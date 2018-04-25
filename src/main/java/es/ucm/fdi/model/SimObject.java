@@ -4,16 +4,17 @@ import java.util.Map;
 
 /**
  * Superclass of the Objects in the simulation
+ * 
  * @author Daniel Herranz
  *
  */
 public abstract class SimObject {
 	private String id;
-		
+
 	public SimObject(String id) {
 		this.id = id;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -42,12 +43,14 @@ public abstract class SimObject {
 			return false;
 		return true;
 	}
-	
+
 	protected abstract void fillReportDetails(Map<String, String> out);
+
 	protected abstract String getReportHeader();
-	
+
 	/**
 	 * Reports a SimObject given the statement of the project
+	 * 
 	 * @param time
 	 * @param out
 	 */
@@ -57,7 +60,7 @@ public abstract class SimObject {
 		out.put("time", Integer.toString(time));
 		fillReportDetails(out);
 	}
-	
+
 	@Override
 	public String toString() {
 		return getId();

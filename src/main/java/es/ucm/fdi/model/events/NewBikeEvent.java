@@ -10,16 +10,17 @@ import es.ucm.fdi.model.RoadMap;
 
 public class NewBikeEvent extends NewVehicleEvent {
 
-	public NewBikeEvent(int time, String id, int maxSpeed, List<String> itinerary) {
+	public NewBikeEvent(int time, String id, int maxSpeed,
+			List<String> itinerary) {
 		super(time, id, maxSpeed, itinerary);
 	}
-	
+
 	/**
 	 * Executes a NewBikeEvent and adds the NewBike to the RoadMap
 	 */
 	@Override
 	public void execute(RoadMap rm) {
-		List <Junction> its = new ArrayList<>();
+		List<Junction> its = new ArrayList<>();
 		for (String i : getItinerary()) {
 			its.add(rm.getJunction(i));
 		}
@@ -30,7 +31,7 @@ public class NewBikeEvent extends NewVehicleEvent {
 				ro.entraVehiculo(v);
 				break;
 			}
-		}	
+		}
 
 	}
 

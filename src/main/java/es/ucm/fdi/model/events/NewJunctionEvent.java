@@ -8,7 +8,7 @@ import es.ucm.fdi.model.RoadMap;
 
 public class NewJunctionEvent extends Event implements Describable {
 	private String id;
-	
+
 	public NewJunctionEvent(int time, String id) {
 		super(time);
 		this.id = id;
@@ -23,7 +23,7 @@ public class NewJunctionEvent extends Event implements Describable {
 	 */
 	@Override
 	public void execute(RoadMap rm) {
-		rm.addJunction(new Junction (id));
+		rm.addJunction(new Junction(id));
 	}
 
 	@Override
@@ -35,5 +35,10 @@ public class NewJunctionEvent extends Event implements Describable {
 	public void describe(Map<String, String> out) {
 		out.put("Time", "" + getTime());
 		out.put("Type", getType());
+	}
+	
+	@Override
+	public String toString() {
+		return this.getClass().toString();
 	}
 }

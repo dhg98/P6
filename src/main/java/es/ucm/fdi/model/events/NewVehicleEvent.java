@@ -13,14 +13,14 @@ public class NewVehicleEvent extends Event implements Describable {
 	private String id;
 	private int maxSpeed;
 	private List<String> itinerary;
-	
+
 	public NewVehicleEvent(int time, String id, int maxSpeed, List<String> itinerary) {
 		super(time);
 		this.id = id;
 		this.maxSpeed = maxSpeed;
 		this.itinerary = itinerary;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -38,7 +38,7 @@ public class NewVehicleEvent extends Event implements Describable {
 	 */
 	@Override
 	public void execute(RoadMap rm) {
-		List <Junction> its = new ArrayList<>();
+		List<Junction> its = new ArrayList<>();
 		for (String i : itinerary) {
 			its.add(rm.getJunction(i));
 		}
@@ -49,7 +49,7 @@ public class NewVehicleEvent extends Event implements Describable {
 				ro.entraVehiculo(v);
 				break;
 			}
-		}		
+		}
 	}
 
 	@Override
@@ -60,7 +60,12 @@ public class NewVehicleEvent extends Event implements Describable {
 	@Override
 	public void describe(Map<String, String> out) {
 		out.put("Time", "" + getTime());
-		out.put("Type" , getType());
+		out.put("Type", getType());
+	}
+	
+	@Override
+	public String toString() {
+		return this.getClass().toString();
 	}
 
 }

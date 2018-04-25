@@ -4,6 +4,7 @@ import java.util.*;
 
 /**
  * Represents a Car given the statement of the project
+ * 
  * @author Daniel Herranz
  *
  */
@@ -15,8 +16,10 @@ public class Car extends Vehicle {
 	private int maxFaultDuration;
 	private long seed;
 	private Random rand;
-	
-	public Car(String id, int velMaxima, Road road, List<Junction> itinerario, int resistanceKm, double faultProbability, int maxFaultDuration, long seed) {
+
+	public Car(String id, int velMaxima, Road road, List<Junction> itinerario, int resistanceKm,
+			double faultProbability, int maxFaultDuration, long seed) {
+
 		super(id, velMaxima, road, itinerario);
 		this.resistanceKm = resistanceKm;
 		this.faultProbability = faultProbability;
@@ -52,7 +55,7 @@ public class Car extends Vehicle {
 			kilometrageFaulty += (kilometrageA - kilometrageB);
 		}
 	}
-	
+
 	/**
 	 * Reports a car given the statement of the project
 	 */

@@ -10,7 +10,7 @@ public class NewBikeEventBuilder implements EventBuilder {
 
 	@Override
 	public Event parse(IniSection sec) {
-		if(!"new_vehicle".equals(sec.getTag()) || !"bike".equals(sec.getValue("type"))) {
+		if (!"new_vehicle".equals(sec.getTag()) || !"bike".equals(sec.getValue("type"))) {
 			return null;
 		} else {
 			try {
@@ -20,10 +20,12 @@ public class NewBikeEventBuilder implements EventBuilder {
 				if (isValidId(sec.getValue("id"))) {
 					return new NewBikeEvent(time, sec.getValue("id"), maxspeed, a);
 				} else {
-					throw new IllegalArgumentException("One of the ids you´ve tried to parse contains invalid characters.");
+					throw new IllegalArgumentException(
+							"The id " + sec.getValue("id") + " contains invalid characters in the IniSection "
+							+ sec);
 				}
 			} catch (IllegalArgumentException e) {
-				throw new IllegalArgumentException("There was an error parsing a bike event", e);
+				throw new IllegalArgumentException("Error while building a NewBikeEvent", e);
 			}
 		}
 	}

@@ -2,14 +2,14 @@ package es.ucm.fdi.view;
 
 public enum Template {
 	NewVehicle("New Vehicle","\n[new_vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \n"),
-	NewBike("New Bike", "\n[new vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \ntype = \n"),
-	NewCar("New Car", "\n[new vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \ntype = \n"),
+	NewBike("New Bike", "\n[new vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \ntype = bike\n"),
+	NewCar("New Car", "\n[new vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \ntype = car\n"),
 	NewRoad("New Road", "\n[new_road]\ntime = \nid = \nsrc = \ndest = \nmax_speed = \nlength = \n"),
-	NewLanes("New Lanes", "\n[new_road]\ntime = \nid = \nsrc = \ndest = \nmax_speed = \nlength = \ntype =\nlanes = \n"),
-	NewDirt("New Dirt", "\n[new_road]\ntime = \nid = \nsrc = \ndest = \nmax_speed = \nlength = \ntype = \n"),
+	NewLanes("New Lanes", "\n[new_road]\ntime = \nid = \nsrc = \ndest = \nmax_speed = \nlength = \ntype = lanes\nlanes = \n"),
+	NewDirt("New Dirt", "\n[new_road]\ntime = \nid = \nsrc = \ndest = \nmax_speed = \nlength = \ntype = dirt\n"),
 	NewJunction("New Junction", "\n[new_junction]\nid = \ntime = \n"),
-	NewRoundRobin("New RR Junction", "\n[new_junction]\nid = \ntime = \ntype = \nmax_time_slice = \nmin_time_slice = \n"),
-	NewMostCrowded("New MC Junction", "\n[new_junction]\nid = \ntime = \ntype = \n"),
+	NewRoundRobin("New RR Junction", "\n[new_junction]\nid = \ntime = \ntype = rr\nmax_time_slice = \nmin_time_slice = \n"),
+	NewMostCrowded("New MC Junction", "\n[new_junction]\nid = \ntime = \ntype = mc\n"),
 	MakeFaulty("Make Vehicle Faulty", "\n[make_vehicle_faulty]\ntime = \nvehicles = \nduration = \n");
 	
 	protected String text;

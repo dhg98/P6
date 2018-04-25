@@ -6,34 +6,38 @@ import es.ucm.fdi.ini.IniSection;
 import es.ucm.fdi.model.events.Event;
 
 public interface EventBuilder {
-	
+
 	/**
 	 * Parser given the statement of the project
+	 * 
 	 * @param sec
 	 * @return
 	 */
 	public Event parse(IniSection sec);
-	
+
 	/**
 	 * Determines if an id is valid given the statement of the project.
+	 * 
 	 * @param id
 	 * @return true if it is and false if it is not.
 	 */
 	public default boolean isValidId(String id) {
-	    for (char c : id.toCharArray()) {
-	        if (!Character.isLetterOrDigit(c) && c != '_') {
-	            return false;
-	        }
-	    }
-	    return true;
+		for (char c : id.toCharArray()) {
+			if (!Character.isLetterOrDigit(c) && c != '_') {
+				return false;
+			}
+		}
+		return true;
 	}
-	
+
 	/**
 	 * Parser of an Integer number given the lower bound
+	 * 
 	 * @param sec
 	 * @param key
 	 * @param def
-	 * @return The number that matches the key in the IniSection if it is greater or equal than def
+	 * @return The number that matches the key in the IniSection if it is greater or
+	 *         equal than def
 	 * @throws IllegalArgumentException
 	 */
 	public default int parseInt(IniSection sec, String key, int def) {
@@ -41,11 +45,12 @@ public interface EventBuilder {
 		try {
 			res = Integer.parseInt(sec.getValue(key));
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("There was an error while parsing the key " + key , e);
+			throw new IllegalArgumentException("There was an error while parsing the key " + key
+					+ " because the " + sec.getValue(key) + " is not a number", e);
 		}
 		if (res < def) {
-			throw new IllegalArgumentException("There was an error while parsing the key " + key + 
-			        " because one of the numbers is less than " + def);
+			throw new IllegalArgumentException("There was an error while parsing the key " + key
+					+ " because the number " + sec.getValue(key) + " is less than " + def);
 		} else {
 			return res;
 		}
@@ -53,10 +58,12 @@ public interface EventBuilder {
 
 	/**
 	 * Parser of a Dobule number given the lower bound
+	 * 
 	 * @param sec
 	 * @param key
 	 * @param def
-	 * @return The number that matches the key in the IniSection if it is greater or equal than def
+	 * @return The number that matches the key in the IniSection if it is greater or
+	 *         equal than def
 	 * @throws IllegalArgumentException
 	 */
 	public default double parseDouble(IniSection sec, String key, int def) {
@@ -64,11 +71,12 @@ public interface EventBuilder {
 		try {
 			res = Double.parseDouble(sec.getValue(key));
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("There was an error while parsing the key " + key , e);
+			throw new IllegalArgumentException("There was an error while parsing the key " + key
+					+ " because the " + sec.getValue(key) + " is not a double", e);
 		}
 		if (res < def) {
-			throw new IllegalArgumentException("There was an error while parsing the key " + key + 
-			        " because one of the numbers is less than " + def);
+			throw new IllegalArgumentException("There was an error while parsing the key " + key
+					+ " because the double " + sec.getValue(key) + " is less than " + def);
 		} else {
 			return res;
 		}
@@ -76,10 +84,12 @@ public interface EventBuilder {
 
 	/**
 	 * Parser of a Long number given the lower bound
+	 * 
 	 * @param sec
 	 * @param key
 	 * @param def
-	 * @return The number that matches the key in the IniSection if it is greater or equal than def
+	 * @return The number that matches the key in the IniSection if it is greater or
+	 *         equal than def
 	 * @throws IllegalArgumentException
 	 */
 	public default long parseLong(IniSection sec, String key, int def) throws IllegalArgumentException {
@@ -87,18 +97,21 @@ public interface EventBuilder {
 		try {
 			res = Long.parseLong(sec.getValue(key));
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("There was an error while parsing the key " + key , e);
+			throw new IllegalArgumentException("There was an error while parsing the key " + key
+					+ " because the " + sec.getValue(key) + " is not a long", e);
 		}
 		if (res < def) {
-			throw new IllegalArgumentException("There was an error while parsing the key " + key + 
-			        " because one of the numbers is less than " + def);
+			throw new IllegalArgumentException("There was an error while parsing the key " + key
+				+ " because the long " + sec.getValue(key) + " is less than " + def);
 		} else {
+			
 			return res;
 		}
 	}
-	
+
 	/**
 	 * Parser of a List
+	 * 
 	 * @param sec
 	 * @param key
 	 * @param def
@@ -110,7 +123,8 @@ public interface EventBuilder {
 		ArrayList<String> iti = new ArrayList<>();
 		for (int i = 0; i < it.length; ++i) {
 			if (!isValidId(it[i])) {
-				throw new IllegalArgumentException("The IdList is incorrect in the position number " + i);
+				throw new IllegalArgumentException("The IdList is incorrect in the position number " + i
+						+ " because " + it[i] + " contains invalid characters.");
 			} else {
 				iti.add(it[i]);
 			}
@@ -118,4 +132,3 @@ public interface EventBuilder {
 		return iti;
 	}
 }
-

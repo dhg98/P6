@@ -72,8 +72,8 @@ public class Main {
 		cmdLineOptions.addOption(Option.builder("t").longOpt("ticks").hasArg()
 				.desc("Ticks to execute the simulator's main loop (default value is " + _timeLimitDefaultValue + ").")
 				.build());
-		cmdLineOptions.addOption(Option.builder("m").longOpt("view").hasArg().desc(
-				"batch’ for batch mode and ’gui’ for GUI mode" + "(default value is ’batch’)").build());
+		cmdLineOptions.addOption(Option.builder("m").longOpt("view").hasArg()
+				.desc("batch’ for batch mode and ’gui’ for GUI mode" + "(default value is ’batch’)").build());
 
 		return cmdLineOptions;
 	}
@@ -96,12 +96,12 @@ public class Main {
 	private static void parseOutFileOption(CommandLine line) throws ParseException {
 		_outFile = line.getOptionValue("o");
 	}
-	
+
 	private static void parseViewOption(CommandLine line) throws ParseException {
 		if (line.hasOption("m")) {
 			String view = line.getOptionValue("m");
 			if ("gui".equals(view)) {
-				option = ViewOption.GUI; 
+				option = ViewOption.GUI;
 			} else if (!"batch".equals(view)) {
 				throw new ParseException("Invalid view mode for the simulation: " + view);
 			}
@@ -126,14 +126,14 @@ public class Main {
 	 * 
 	 * @throws IOException
 	 */
-	public static void test(String path) throws IOException { //A publica para poder llamarla desde el jUnit
+	public static void test(String path) throws IOException { // A publica para poder llamarla desde el jUnit
 
 		File dir = new File(path);
 
-		if ( !dir.exists() ) {
+		if (!dir.exists()) {
 			throw new FileNotFoundException(path);
 		}
-		
+
 		File[] files = dir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -142,7 +142,7 @@ public class Main {
 		});
 
 		for (File file : files) {
-			test(file.getAbsolutePath(), file.getAbsolutePath() + ".out", file.getAbsolutePath() + ".eout",10);
+			test(file.getAbsolutePath(), file.getAbsolutePath() + ".out", file.getAbsolutePath() + ".eout", 10);
 		}
 
 	}
@@ -170,18 +170,19 @@ public class Main {
 			_timeLimit = _timeLimitDefaultValue;
 		}
 		TrafficSimulator t = new TrafficSimulator();
+		// Si _outFile es null mostramos por pantalla y si no guardamos los datos de la
+		// simulacion en un fichero.
 		OutputStream out = _outFile != null ? new FileOutputStream(_outFile) : System.out;
-		//Si _outFile es null mostramos por pantalla y si no guardamos los datos de la simulacion en un fichero.
 		InputStream in = new FileInputStream(_inFile);
 		Controller c = new Controller(t, _timeLimit, in, out);
-//		try {
-//			c.run();
-//		} catch (IllegalArgumentException e) {
-//			e.printStackTrace();
-//		}
+		// try {
+		// c.run();
+		// } catch (IllegalArgumentException e) {
+		// e.printStackTrace();
+		// }
 		c.run();
 	}
-	
+
 	private static void startGUIMode() throws IOException, InvocationTargetException, InterruptedException {
 		TrafficSimulator t = new TrafficSimulator();
 		InputStream in;
@@ -200,13 +201,13 @@ public class Main {
 
 	private static void start(String[] args) throws IOException, InvocationTargetException, InterruptedException {
 		parseArgs(args);
-		switch(option) {
-			case BATCH: {
-				startBatchMode();
-			} break;
-			case GUI: {
-				startGUIMode();
-			} break;
+		switch (option) {
+		case BATCH: {
+			startBatchMode();
+		} break;
+		case GUI: {
+			startGUIMode();
+		} break;
 		}
 	}
 
@@ -232,5 +233,5 @@ public class Main {
 	private enum ViewOption {
 		GUI, BATCH;
 	}
-	
+
 }

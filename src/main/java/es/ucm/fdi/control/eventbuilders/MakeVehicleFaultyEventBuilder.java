@@ -11,7 +11,7 @@ public class MakeVehicleFaultyEventBuilder implements EventBuilder {
 
 	@Override
 	public Event parse(IniSection sec) {
-		if(!sec.getTag().equals("make_vehicle_faulty")){
+		if (!sec.getTag().equals("make_vehicle_faulty")) {
 			return null;
 		} else {
 			try {
@@ -19,9 +19,8 @@ public class MakeVehicleFaultyEventBuilder implements EventBuilder {
 				int duration = parseInt(sec, "duration", 0);
 				ArrayList<String> a = parseIdList(sec, "vehicles");
 				return new MakeVehicleFaultyEvent(time, a, duration);
-				
 			} catch (IllegalArgumentException e) {
-				throw new IllegalArgumentException("There was an error parsing a vehicle event", e);
+				throw new IllegalArgumentException("Error while building NewVehicleEvent", e);
 			}
 		}
 	}
