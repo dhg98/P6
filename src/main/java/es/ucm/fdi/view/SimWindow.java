@@ -129,14 +129,17 @@ public class SimWindow extends JFrame implements Listener {
 	private void createActionsCommand() {
 		// instantiate actions
 		SimulatorAction exit = new SimulatorAction(Command.Exit, "exit.png", "Exit the aplication", 
-				KeyEvent.VK_C, "control shift C", () -> System.exit(0));
+				KeyEvent.VK_X, "control X", () -> System.exit(0));
 
 		SimulatorAction saveEvent = new SimulatorAction(Command.Save, "save.png", "Save an Event", 
 				KeyEvent.VK_S, "control S", () -> {
+					information.setText("Opening dialog in order to save an ini file.");
 					boolean couldSave = saveIni(textSection.get_editor());
 					enableOrDisableActions(actionsCommand, Command.Save);
 					if (couldSave) {
 						information.setText(Command.Save.message);
+					} else {
+						information.setText("You have chosen to cancel the saving of an ini file.");
 					}
 				});
 
@@ -149,6 +152,7 @@ public class SimWindow extends JFrame implements Listener {
 
 		SimulatorAction open = new SimulatorAction(Command.Open, "open.png", "Load an ini file", 
 				KeyEvent.VK_L, "control L", () -> {
+					information.setText("Opening dialog in order to load an ini file.");
 					boolean couldOpen = readIni();
 					if (couldOpen) {
 						ctrl.getSimulator().setTimeCounter(0);
@@ -158,27 +162,31 @@ public class SimWindow extends JFrame implements Listener {
 						eventEditor.setBorder(javax.swing.BorderFactory
 								.createTitledBorder(" Events Editor: " + currentInput.getName()));
 					} else {
+						information.setText("You have chosen to cancel the loading of the report in an ini file.");
 						eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor: "));
 					}
 				});
 
 		SimulatorAction saveReport = new SimulatorAction(Command.SaveReport, "save_report.png", 
-				"Save a report", KeyEvent.VK_R, "control R", () -> {
+				"Save a report", KeyEvent.VK_G, "control G", () -> {
+					information.setText("Opening dialog in order to save the report in an ini file.");
 					boolean couldSave = saveIni(reportsArea);
 					if (couldSave) {
 						information.setText(Command.SaveReport.message);
+					} else {
+						information.setText("You have chosen to cancel the saving of the report in an ini file.");
 					}
 				});
 
 		SimulatorAction clear = new SimulatorAction(Command.Clear, "clear.png", "Clear the text", 
-				KeyEvent.VK_X, "control X", () -> {
+				KeyEvent.VK_C, "control C", () -> {
 					clear(textSection.get_editor());
 					enableOrDisableActions(actionsCommand, Command.Clear);
 					information.setText(Command.Clear.message);
 				});
 
 		SimulatorAction events = new SimulatorAction(Command.Events, "events.png", "Add events to the simulation",
-				KeyEvent.VK_A, "control A", () -> {
+				KeyEvent.VK_E, "control E", () -> {
 					try {
 						readText();
 						reset(0, new RoadMap(), new ArrayList<Event>());
@@ -191,14 +199,15 @@ public class SimWindow extends JFrame implements Listener {
 				});
 
 		SimulatorAction deleteReport = new SimulatorAction(Command.DeleteReport, "delete_report.png", 
-				"Delete a report", KeyEvent.VK_B, "control B", () -> {
+				"Delete a report", KeyEvent.VK_D, "control D", () -> {
 					clear(reportsArea);
 					enableOrDisableActions(actionsCommand, Command.DeleteReport);
 					information.setText(Command.DeleteReport.message);
 				});
 
-		SimulatorAction report = new SimulatorAction(Command.Report, "report.png", "Report the simulation",
-				KeyEvent.VK_M, "control M", () -> {
+		SimulatorAction report = new SimulatorAction(Command.Report, "report.png", "Generate a report  of the simulation",
+				KeyEvent.VK_I, "control I", () -> {
+					information.setText("Opening dialog in order to select the reports you want to show.");
 					DialogWindowLayout selection = new DialogWindowLayout(map.getVehiclesRO(), map.getRoadsRO(),
 							map.getJunctionsRO(), ctrl.getSimulator());
 					Ini in = selection.getIni();
@@ -207,10 +216,13 @@ public class SimWindow extends JFrame implements Listener {
 						enableOrDisableActions(actionsCommand, Command.Report);
 						information.setText(Command.Report.message);
 					}
+					else {
+						information.setText("You have chosen not to show the report of any object.");
+					}
 				});
 
 		SimulatorAction reset = new SimulatorAction(Command.Reset, "reset.png", "Reset the simulation", 
-				KeyEvent.VK_Z, "control Z", () -> {
+				KeyEvent.VK_R, "control R", () -> {
 					ctrl.getSimulator().reset();
 					enableOrDisableActions(actionsCommand, Command.Reset);
 					information.setText(Command.Reset.message);
@@ -307,6 +319,7 @@ public class SimWindow extends JFrame implements Listener {
 
 	public boolean saveIni(JTextArea text) {
 		JFileChooser chooser = new JFileChooser();
+		
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Ini files", "ini");
 		chooser.setFileFilter(filter);
 		int returnVal = chooser.showSaveDialog(chooser.getParent());
@@ -318,7 +331,7 @@ public class SimWindow extends JFrame implements Listener {
 				Files.write(f.toPath(), s.getBytes("UTF-8"));
 
 			} catch (IOException e) {
-
+				
 			}
 			return true;
 		} else {
