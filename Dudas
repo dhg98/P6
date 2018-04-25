@@ -2,6 +2,8 @@ Cosas que faltan:
 
 - Comentarios
 
+- JavaDocs
+
 Preguntas: 
 
 - ¿Que significa la sección opcional que dice "Mostrar el contenido actual de los informes a un fichero de texto"?
@@ -13,6 +15,8 @@ Preguntas:
 - Preguntas sobre la correccion de la P4
      
 	 - Builder de eventos extendiendose unos a otros.
+	 
+	 - Error al pasar las pruebas.
 
 - Si no se indica el comportamiento en algun caso, ¿lo podemos hacer como queramos? (EJEMPLO: Añadir eventos en mitad de la simulacion siempre que su tiempo
 de ejecucion sea superior al tiempo actual).

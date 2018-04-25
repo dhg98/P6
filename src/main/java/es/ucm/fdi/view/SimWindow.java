@@ -11,10 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
@@ -259,6 +256,7 @@ public class SimWindow extends JFrame implements Listener {
 		case DeleteReport: {
 			actions.get(Command.Report).setEnabled(true);
 			actions.get(Command.SaveReport).setEnabled(false);
+			actions.get(Command.DeleteReport).setEnabled(false);
 		}
 			break;
 		case Play: {
