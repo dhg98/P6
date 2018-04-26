@@ -42,7 +42,6 @@ public class DialogWindowLayout extends JFrame {
     private void initGUI() {
 		_dialog = new DialogWindow(this);
 		_dialog.setData(_vehicles, _roads, _junctions);
-//		this.setVisible(true);
 		status = _dialog.open();
         if (status != 0) {
             simulator.fillReport(_dialog.getSelectedVehicles(), ini);
@@ -50,7 +49,7 @@ public class DialogWindowLayout extends JFrame {
             simulator.fillReport(_dialog.getSelectedJunctions(), ini);
         }
 		
-//		this.pack();
+        //this.pack();
 		
 	}
 }
