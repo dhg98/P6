@@ -57,7 +57,7 @@ public class Road extends SimObject implements Describable {
 	}
 
 	/**
-	 * Puts a vehicle int the Road at the position number 0.
+	 * Puts a vehicle in the Road at the position number 0.
 	 * 
 	 * @param v
 	 */

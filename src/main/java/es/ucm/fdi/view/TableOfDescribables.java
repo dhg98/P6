@@ -1,9 +1,7 @@
 package es.ucm.fdi.view;
 
 import java.awt.BorderLayout;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -33,6 +31,9 @@ public class TableOfDescribables extends JPanel {
 		add(new JScrollPane(table), BorderLayout.CENTER);
 	}
 
+	/**
+	 * Updates a table by updating the model
+	 */
 	public void update() {
 		model.update();
 	}
@@ -46,6 +47,9 @@ public class TableOfDescribables extends JPanel {
 			return fieldNames.length;
 		}
 
+		/**
+		 * Updates a TableModel
+		 */
 		private void update() {
 			fireTableDataChanged();
 		}
@@ -64,6 +68,7 @@ public class TableOfDescribables extends JPanel {
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			Map<String, String> out = new HashMap<>();
 			elements.get(rowIndex).describe(out);
+			//Si la columna es #, mostramos el numero de la fila.
 			if ("#".equals(fieldNames[columnIndex])) {
 				return rowIndex;
 			} else {

@@ -3,8 +3,7 @@ package es.ucm.fdi.control.eventbuilders;
 import java.util.*;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.events.Event;
-import es.ucm.fdi.model.events.NewVehicleEvent;
+import es.ucm.fdi.model.events.*;
 
 public class NewVehicleEventBuilder implements EventBuilder {
 
@@ -21,13 +20,13 @@ public class NewVehicleEventBuilder implements EventBuilder {
 					return new NewVehicleEvent(time, sec.getValue("id"), maxspeed, a);
 				} else {
 					throw new IllegalArgumentException(
-							"The id " + sec.getValue("id") + " contains invalid characters in the IniSection "
-							+ sec);
+							"The id " + sec.getValue("id") + 
+							" contains invalid characters in the IniSection \n" + sec);
 				}
 			} catch (IllegalArgumentException e) {
-				throw new IllegalArgumentException("There was an error parsing a Vehicle Event", e);
+				throw new IllegalArgumentException("There was an error parsing a "
+						+ "Vehicle Event\n" + e.getMessage(), e);
 			}
 		}
 	}
-
 }

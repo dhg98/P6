@@ -13,9 +13,13 @@ public class RoundRobinJunction extends JunctionWithTimeSlice {
 		this.minTimeSlice = minTimeSlice;
 	}
 
+	/**
+	 * Advances the light of a RoundRobin Junction given the statement of the project.
+	 */
 	@Override
 	public void advanceLight() {
-		IncomingRoadWithTimeSlice irs = (IncomingRoadWithTimeSlice) getJunctionDeque().get(getTrafficLight());
+		IncomingRoadWithTimeSlice irs = (IncomingRoadWithTimeSlice) getJunctionDeque().
+				get(getTrafficLight());
 		if (irs.timeSlice == irs.usedTimeUnits) {
 			if (irs.fullyUsed) {
 				irs.timeSlice = Math.min(maxTimeSlice, irs.timeSlice + 1);

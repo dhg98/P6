@@ -105,7 +105,8 @@ public class RoadMap {
 	 */
 	public void addJunction(Junction j) {
 		if (simObjects.containsKey(j.getId())) {
-			throw new IllegalArgumentException("There is an object with this id " + j.getId());
+			throw new IllegalArgumentException("There is an object with this id "
+					+ j.getId());
 		} else {
 			simObjects.put(j.getId(), j);
 			junctions.add(j);
@@ -120,7 +121,8 @@ public class RoadMap {
 	 */
 	public void addRoad(Road r) {
 		if (simObjects.containsKey(r.getId())) {
-			throw new IllegalArgumentException("There is an object with this id " + r.getId());
+			throw new IllegalArgumentException("There is an object with this id " + 
+					r.getId());
 		} else {
 			simObjects.put(r.getId(), r);
 			roads.add(r);
@@ -135,7 +137,8 @@ public class RoadMap {
 	 */
 	public void addVehicle(Vehicle v) {
 		if (simObjects.containsKey(v.getId())) {
-			throw new IllegalArgumentException("There is an object with this id " + v.getId());
+			throw new IllegalArgumentException("There is an object with this id " +
+					v.getId());
 		} else {
 			simObjects.put(v.getId(), v);
 			vehicles.add(v);

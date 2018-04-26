@@ -3,7 +3,6 @@ package es.ucm.fdi.control.eventbuilders;
 import java.util.List;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.*;
 import es.ucm.fdi.model.events.Event;
 import es.ucm.fdi.model.events.NewCarEvent;
 
@@ -23,15 +22,17 @@ public class NewCarEventBuilder implements EventBuilder {
 				int maxFaultDuration = parseInt(sec, "max_fault_duration", 1);
 				long seed = parseLong(sec, "seed", 1);
 				if (isValidId(sec.getValue("id"))) {
-					return new NewCarEvent(time, sec.getValue("id"), maxspeed, a, resistanceKm, faultProbability,
+					return new NewCarEvent(time, sec.getValue("id"), maxspeed, a,
+							resistanceKm, faultProbability,
 							maxFaultDuration, seed);
 				} else {
 					throw new IllegalArgumentException(
-							"The id " + sec.getValue("id") + " contains invalid characters in the IniSection "
-							+ sec);
+							"The id " + sec.getValue("id") + " contains invalid"
+									+ "characters in the IniSection\n" + sec);
 				}
 			} catch (IllegalArgumentException e) {
-				throw new IllegalArgumentException("Error while parsing a NewCarEvent", e);
+				throw new IllegalArgumentException("Error while parsing a NewCarEvent\n"
+						+ e.getMessage(), e);
 			}
 		}
 	}

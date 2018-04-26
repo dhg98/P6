@@ -3,7 +3,6 @@ package es.ucm.fdi.control.eventbuilders;
 import java.util.ArrayList;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.*;
 import es.ucm.fdi.model.events.Event;
 import es.ucm.fdi.model.events.MakeVehicleFaultyEvent;
 
@@ -20,7 +19,8 @@ public class MakeVehicleFaultyEventBuilder implements EventBuilder {
 				ArrayList<String> a = parseIdList(sec, "vehicles");
 				return new MakeVehicleFaultyEvent(time, a, duration);
 			} catch (IllegalArgumentException e) {
-				throw new IllegalArgumentException("Error while building NewVehicleEvent", e);
+				throw new IllegalArgumentException("Error while building NewVehicleEvent\n"
+						+ e.getMessage(), e);
 			}
 		}
 	}

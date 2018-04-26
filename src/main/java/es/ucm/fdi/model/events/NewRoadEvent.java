@@ -45,7 +45,7 @@ public class NewRoadEvent extends Event implements Describable {
 	}
 
 	/**
-	 * Executes a NewRoadEvent and adds the NewBike to the RoadMap
+	 * Executes a NewRoadEvent and adds it to the RoadMap
 	 */
 	@Override
 	public void execute(RoadMap rm) {

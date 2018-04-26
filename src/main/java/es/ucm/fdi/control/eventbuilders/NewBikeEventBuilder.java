@@ -21,11 +21,12 @@ public class NewBikeEventBuilder implements EventBuilder {
 					return new NewBikeEvent(time, sec.getValue("id"), maxspeed, a);
 				} else {
 					throw new IllegalArgumentException(
-							"The id " + sec.getValue("id") + " contains invalid characters in the IniSection "
-							+ sec);
+							"The id " + sec.getValue("id") + " contains invalid"
+									+ "characters in the IniSection\n" + sec);
 				}
 			} catch (IllegalArgumentException e) {
-				throw new IllegalArgumentException("Error while building a NewBikeEvent", e);
+				throw new IllegalArgumentException("Error while building a NewBikeEvent\n"
+						+ e.getMessage(), e);
 			}
 		}
 	}

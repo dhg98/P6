@@ -8,10 +8,14 @@ public class MostCrowdedJunction extends JunctionWithTimeSlice {
 		super(id);
 	}
 
+	/**
+	 * Advances the light of a MostCrowded Junction given the statement of the project
+	 */
 	@Override
 	public void advanceLight() {
 
-		IncomingRoadWithTimeSlice irs = (IncomingRoadWithTimeSlice) getJunctionDeque().get(getTrafficLight());
+		IncomingRoadWithTimeSlice irs = (IncomingRoadWithTimeSlice) getJunctionDeque().
+				get(getTrafficLight());
 		if (irs.timeSlice == irs.usedTimeUnits) {
 			int maximo = -1, i = 0, posMax = 0;
 			for (IncomingRoads itrs : getJunctionDeque()) {

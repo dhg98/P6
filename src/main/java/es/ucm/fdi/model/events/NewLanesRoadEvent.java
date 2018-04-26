@@ -15,7 +15,7 @@ public class NewLanesRoadEvent extends NewRoadEvent {
 	}
 
 	/**
-	 * Executes a NewLanesRoadEvent and adds the NewBike to the RoadMap
+	 * Executes a NewLanesRoadEvent and adds it to the RoadMap
 	 */
 	@Override
 	public void execute(RoadMap rm) {

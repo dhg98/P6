@@ -32,7 +32,8 @@ public class Controller {
 	private InputStream in;
 	private OutputStream out;
 
-	public Controller(TrafficSimulator simulator, int ticks, InputStream in, OutputStream out) {
+	public Controller(TrafficSimulator simulator, int ticks, InputStream in,
+			OutputStream out) {
 		this.simulator = simulator;
 		this.ticks = ticks;
 		this.in = in;
@@ -51,16 +52,19 @@ public class Controller {
 	public TrafficSimulator getSimulator() {
 		return simulator;
 	}
+	
+	public void setOut(OutputStream out) {
+		this.out = out;
+	}
 
 	/**
 	 * Insert the events from an Ini File to the simulator.
-	 * 
-	 * @throws IOException
+	 * Notifies the simulator if something went wrong.
 	 */
-	public void loadEvents() throws IOException {
+	public void loadEvents() {
 		// Vaciamos el multiTreeMap por si hubiera elementos anteriormente.
 		// Esto sucede cuando se carga un fichero despues de haber cargado
-		// eventos por primera vez y se quiere volver a cargar eventos
+		// eventos anteriormente
 		getSimulator().getEvents().clear();
 		try {
 			Ini iniS = new Ini(in);
@@ -68,14 +72,16 @@ public class Controller {
 				simulator.insertaEvento(parseSection(sec));
 			}
 		} catch (IOException e) {	
-			throw new IOException("Error loading the ini section from the InputStream " + in, e);
+			simulator.notifyError("Error loading the ini section from the InputStream "
+					+ in + "\n" + e.getMessage());
 		} catch (IniError i) {
-			simulator.notifyError("There was an error parsing an Ini because of " + i);
+			simulator.notifyError("There was an error parsing an Ini because of "
+					+ i.getMessage());
 		}
 	}
 
 	/**
-	 * Runs the simulator by loading the events and simulating with that events
+	 * Runs the simulator by loading the events and simulating that events
 	 * 
 	 * @throws IOException
 	 */
@@ -84,16 +90,12 @@ public class Controller {
 		simulator.execute(out, ticks);
 	}
 
-	public void setOut(OutputStream out) {
-		this.out = out;
-	}
-
 	/**
 	 * Parse the IniSection and return the Event that matches with that IniSection
 	 * if it does. If it does not, throws IllegalArgumentException
 	 * 
 	 * @param sec
-	 * @return Event or Exception
+	 * @return Event or IllegalArgumentException
 	 */
 	public Event parseSection(IniSection sec) {
 		Event j = null;
@@ -104,12 +106,11 @@ public class Controller {
 				}
 			}
 			if (j == null) {
-				throw new IllegalArgumentException("Could not parse section " + sec);
+				simulator.notifyError("Could not parse section\n" + sec + 
+						"\nbecause it does not match any templates we have");
 			}
-			
 		} catch (IllegalArgumentException e) {
-			simulator.notifyError(e.getMessage() + "\nCould not parse section " + sec + 
-							" because it doesn't have the arguments we needed.");
+			simulator.notifyError(e.getMessage() + "\nCould not parse section\n" + sec);
 		}
 		return j;
 	}

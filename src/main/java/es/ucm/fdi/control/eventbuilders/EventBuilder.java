@@ -92,7 +92,7 @@ public interface EventBuilder {
 	 *         equal than def
 	 * @throws IllegalArgumentException
 	 */
-	public default long parseLong(IniSection sec, String key, int def) throws IllegalArgumentException {
+	public default long parseLong(IniSection sec, String key, int def) {
 		long res;
 		try {
 			res = Long.parseLong(sec.getValue(key));
@@ -127,8 +127,9 @@ public interface EventBuilder {
 			ArrayList<String> iti = new ArrayList<>();
 			for (int i = 0; i < it.length; ++i) {
 				if (!isValidId(it[i])) {
-					throw new IllegalArgumentException("The IdList is incorrect in the position number " + i
-							+ " because " + it[i] + " contains invalid characters.");
+					throw new IllegalArgumentException("The IdList is incorrect in"
+							+ "the position number " + i + " because " + it[i] +
+							" contains invalid characters.");
 				} else {
 					iti.add(it[i]);
 				}

@@ -88,6 +88,8 @@ public class Main {
 
 	private static void parseInFileOption(CommandLine line) throws ParseException {
 		_inFile = line.getOptionValue("i");
+		//Hace falta comprobar que el nombre del fichero no sea nulo y que
+		//la opcion con la que se esta ejecutando el simulador es BATCH.
 		if (_inFile == null && option.equals(ViewOption.BATCH)) {
 			throw new ParseException("An events file is missing");
 		}
@@ -97,7 +99,16 @@ public class Main {
 		_outFile = line.getOptionValue("o");
 	}
 
+	/**
+	 * Parser of the view option. Checks if there is a parameter with -m and
+	 * changes the option of the simulator accordingly.
+	 * 
+	 * @param line
+	 * @throws ParseException if the -m section is not GUI or BATCH
+	 */
 	private static void parseViewOption(CommandLine line) throws ParseException {
+		//Hace falta comprobar si hay opcion -m, y si la hay si es acorde a alguna
+		//de las dos predefinidas (BATCH y GUI). Si no es asi se lanza una excepcion
 		if (line.hasOption("m")) {
 			String view = line.getOptionValue("m");
 			if ("gui".equals(view)) {
@@ -163,9 +174,6 @@ public class Main {
 	 * @throws IOException
 	 */
 	private static void startBatchMode() throws IOException {
-		// TODO
-		// Add your code here. Note that the input argument where parsed and stored into
-		// corresponding fields.
 		if (_timeLimit == null) {
 			_timeLimit = _timeLimitDefaultValue;
 		}
@@ -183,15 +191,28 @@ public class Main {
 		c.run();
 	}
 
+	/**
+	 * Run the simulator in GUI mode
+	 * 
+	 * @throws IOException
+	 * @throws InvocationTargetException
+	 * @throws InterruptedException
+	 */
 	private static void startGUIMode() throws IOException, InvocationTargetException, InterruptedException {
 		TrafficSimulator t = new TrafficSimulator();
-		InputStream in;
-		if (_inFile != null) {
-			in = new FileInputStream(_inFile);
-		} else {
+		InputStream in = null;
+		try {
+			in = _inFile != null ? new FileInputStream(_inFile) : null;
+		} catch (IOException e) {
+			//Si el fichero de entrada es incorrecto, no lo mostramos.
 			in = null;
+			_inFile = null;
 		}
+		
+		//No estamos interesados ni en el tiempo ni en el output.
 		Controller c = new Controller(t, in);
+		
+		//Invocamos a la SimWindow
 		SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {
 				new SimWindow(c, _inFile);
@@ -201,6 +222,9 @@ public class Main {
 
 	private static void start(String[] args) throws IOException, InvocationTargetException, InterruptedException {
 		parseArgs(args);
+		
+		//Elegimos la opcion que se ha introducido. Si no hay, se toma BATCH
+		//por inicializacion.
 		switch (option) {
 		case BATCH: {
 			startBatchMode();
@@ -230,6 +254,8 @@ public class Main {
 
 	}
 
+	//Enumerado con las opciones de inicio de aplicacion.
+	//Podria haberse usado un enumerado, pero esto facilita la modularidad.
 	private enum ViewOption {
 		GUI, BATCH;
 	}

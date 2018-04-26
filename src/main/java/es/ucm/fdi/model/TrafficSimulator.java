@@ -1,7 +1,6 @@
 package es.ucm.fdi.model;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -108,6 +107,11 @@ public class TrafficSimulator {
 		for (Listener l : listeners) {
 			l.simulatorError(timeCounter, rm, events.valuesList(), error);
 		}
+		//Si hay listeners, estos deberan tratar la excepcion. Si no hay ninguno,
+		//el simulador la lanza
+		if (listeners.size() == 0) {
+			throw new IllegalArgumentException(error);
+		}
 	}
 
 	/**
@@ -143,7 +147,8 @@ public class TrafficSimulator {
 				try {
 					e.execute(rm);
 				} catch (IllegalArgumentException m) {
-					notifyError("There was an error while processing the event " + e.toString());
+					notifyError("There was an error while processing the event "
+							+ e.toString());
 				}
 			}
 		}
@@ -224,7 +229,6 @@ public class TrafficSimulator {
 		} catch (IOException e) {
 			throw new IOException("Error using the OutputStream" + out.toString());
 		}
-		
 	}
 
 	public interface Listener {
@@ -236,9 +240,14 @@ public class TrafficSimulator {
 
 		public void advanced(int time, RoadMap map, List<Event> events);
 
-		public void simulatorError(int time, RoadMap map, List<Event> events, String error);
+		public void simulatorError(int time, RoadMap map, List<Event> events,
+				String error);
 	}
 
+	/**
+	 * Method that resets the simulation to the start. It does not put the simulation
+	 * back to the start.
+	 */
 	public void reset() {
 		timeCounter = 0;
 		rm = new RoadMap();

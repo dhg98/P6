@@ -167,8 +167,9 @@ public class Vehicle extends SimObject implements Describable {
 				}
 			}
 			if (i == out.size()) {
-				throw new IllegalStateException("The itinerary followed by the vehicle whose id is " + getId()
-						+ " is incorrect after the junction " + itinerario.get(contadorCruce).getId());
+				throw new IllegalStateException("The itinerary followed by the vehicle"
+						+ "whose id is " + getId() + " is incorrect after the junction "
+						+ itinerario.get(contadorCruce).getId());
 			}
 		}
 	}

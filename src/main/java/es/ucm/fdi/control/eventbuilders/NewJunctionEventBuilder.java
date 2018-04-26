@@ -1,8 +1,7 @@
 package es.ucm.fdi.control.eventbuilders;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.events.Event;
-import es.ucm.fdi.model.events.NewJunctionEvent;
+import es.ucm.fdi.model.events.*;
 
 public class NewJunctionEventBuilder implements EventBuilder {
 
@@ -17,12 +16,12 @@ public class NewJunctionEventBuilder implements EventBuilder {
 					return new NewJunctionEvent(time, sec.getValue("id"));
 				} else {
 					throw new IllegalArgumentException(
-							"The id " + sec.getValue("id") + " contains invalid characters in the IniSection "
-							+ sec);
+							"The id " + sec.getValue("id") + " contains invalid"
+									+ "characters in the IniSection\n" + sec);
 				}
 			} catch (IllegalArgumentException e) {
 				throw new IllegalArgumentException(
-							"Error while building a NewJunctionEvent", e);
+							"Error while building a NewJunctionEvent\n", e);
 			}
 		}
 	}

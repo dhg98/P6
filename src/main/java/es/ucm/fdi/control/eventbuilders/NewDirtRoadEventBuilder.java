@@ -1,7 +1,6 @@
 package es.ucm.fdi.control.eventbuilders;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.*;
 import es.ucm.fdi.model.events.Event;
 import es.ucm.fdi.model.events.NewDirtRoadEvent;
 
@@ -19,25 +18,27 @@ public class NewDirtRoadEventBuilder implements EventBuilder {
 				if (isValidId(sec.getValue("id"))) {
 					if (isValidId(sec.getValue("src"))) {
 						if (isValidId(sec.getValue("dest"))) {
-							return new NewDirtRoadEvent(time, sec.getValue("id"), sec.getValue("src"),
-									sec.getValue("dest"), maxspeed, length);
+							return new NewDirtRoadEvent(time, sec.getValue("id"),
+									sec.getValue("src"), sec.getValue("dest"), 
+									maxspeed, length);
 						} else {
 							throw new IllegalArgumentException(
 								"The id " + sec.getValue("dest")
-								+ " contains invalid characters in the IniSection " + sec);
+								+ " contains invalid characters in the IniSection\n" + sec);
 						}
 					} else {
 						throw new IllegalArgumentException(
 								"The id " + sec.getValue("src")
-								+ " contains invalid characters in the IniSection " + sec);
+								+ " contains invalid characters in the IniSection\n" + sec);
 					}
 				} else {
 					throw new IllegalArgumentException(
 								"The id " + sec.getValue("id") 
-								+ " contains invalid characters in the IniSection " + sec);
+								+ " contains invalid characters in the IniSection\n" + sec);
 				}
 			} catch (IllegalArgumentException e) {
-				throw new IllegalArgumentException("Error while building a NewDirtRoadEvent", e);
+				throw new IllegalArgumentException("Error while building a NewDirtRoadEvent\n"
+						+ e.getMessage(), e);
 			}
 		}
 	}

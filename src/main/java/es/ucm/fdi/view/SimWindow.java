@@ -4,30 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
-import javax.swing.BoxLayout;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import es.ucm.fdi.control.Controller;
@@ -41,12 +23,14 @@ import es.ucm.fdi.view.extra.graph.GraphLayout;
 import es.ucm.fdi.view.extra.popupmenu.PopUpMenu;
 
 public class SimWindow extends JFrame implements Listener {
-	private final static String[] columnNameVehicle = new String[] { "ID", "Road", "Location", "Speed", "Km",
-			"Faulty Units", "Itinerary" };
-	private final static String[] columnNameRoad = new String[] { "ID", "Source", "Target", "Lenght", "Max Speed",
-			"Vehicles" };
-	private final static String[] columnNameJunction = new String[] { "ID", "Green", "Red" };
-	private final static String[] columnNameEvents = new String[] { "#", "Time", "Type" };
+	private final static String[] columnNameVehicle = new String[] {
+			"ID", "Road", "Location", "Speed", "Km", "Faulty Units", "Itinerary" };
+	private final static String[] columnNameRoad = new String[] {
+			"ID", "Source", "Target", "Lenght", "Max Speed", "Vehicles" };
+	private final static String[] columnNameJunction = new String[] {
+			"ID", "Green", "Red" };
+	private final static String[] columnNameEvents = new String[] {
+			"#", "Time", "Type" };
 
 	private Controller ctrl;
 	private RoadMap map = new RoadMap();
@@ -72,13 +56,15 @@ public class SimWindow extends JFrame implements Listener {
 	private JLabel information;
 
 	// new SpinnerNumberModel(CurrentValue, min, max, steps)
-	private static JSpinner stepsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
+	private static JSpinner stepsSpinner = new JSpinner(
+			new SpinnerNumberModel(1, 1, 1000, 1));
 	private JTextField timeViewer = new JTextField("0");
 	private Map<Command, SimulatorAction> actionsCommand = new HashMap<>();
 
 	public SimWindow(Controller ctrl, String inFileName) {
 		super("Traffic Simulator");
 		createActionsCommand();
+		//Si el inFile no es null, abrimos el fichero y lo mostramos.
 		if (inFileName != null) {
 			currentInput = new File(inFileName);
 			String st = "";
@@ -90,11 +76,13 @@ public class SimWindow extends JFrame implements Listener {
 			textSection.get_editor().setText(st);
 		} else {
 			ableActions(false, actionsCommand.get(Command.Clear),
-					actionsCommand.get(Command.Save));//actionsCommand.get(Command.Events),
+							   actionsCommand.get(Command.Save));
 		}
-		ableActions(false, actionsCommand.get(Command.SaveReport), actionsCommand.get(Command.Play),
-				actionsCommand.get(Command.Reset), actionsCommand.get(Command.Report),
-				actionsCommand.get(Command.DeleteReport));
+		ableActions(false, actionsCommand.get(Command.SaveReport), 
+						   actionsCommand.get(Command.Play),
+						   actionsCommand.get(Command.Reset), 
+						   actionsCommand.get(Command.Report),
+						   actionsCommand.get(Command.DeleteReport));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.ctrl = ctrl;
 		map = ctrl.getSimulator().getRm();
@@ -128,10 +116,12 @@ public class SimWindow extends JFrame implements Listener {
 
 	private void createActionsCommand() {
 		// instantiate actions
-		SimulatorAction exit = new SimulatorAction(Command.Exit, "exit.png", "Exit the aplication", 
+		SimulatorAction exit = new SimulatorAction(Command.Exit, "exit.png",
+				"Exit the aplication", 
 				KeyEvent.VK_X, "control X", () -> System.exit(0));
 
-		SimulatorAction saveEvent = new SimulatorAction(Command.Save, "save.png", "Save an Event", 
+		SimulatorAction saveEvent = new SimulatorAction(Command.Save, "save.png",
+				"Save an Event", 
 				KeyEvent.VK_S, "control S", () -> {
 					information.setText("Opening dialog in order to save an ini file.");
 					boolean couldSave = saveIni(textSection.get_editor());
@@ -139,18 +129,21 @@ public class SimWindow extends JFrame implements Listener {
 					if (couldSave) {
 						information.setText(Command.Save.message);
 					} else {
-						information.setText("You have chosen to cancel the saving of an ini file.");
+						information.setText("You have chosen to cancel the saving of"
+								+ " an ini file.");
 					}
 				});
 
-		SimulatorAction play = new SimulatorAction(Command.Play, "play.png", "Play the simulation", 
+		SimulatorAction play = new SimulatorAction(Command.Play, "play.png", 
+				"Play the simulation", 
 				KeyEvent.VK_P, "control P", () -> {
 					play();
 					enableOrDisableActions(actionsCommand, Command.Play);
 					information.setText(Command.Play.message);
 				});
 
-		SimulatorAction open = new SimulatorAction(Command.Open, "open.png", "Load an ini file", 
+		SimulatorAction open = new SimulatorAction(Command.Open, "open.png", 
+				"Load an ini file", 
 				KeyEvent.VK_L, "control L", () -> {
 					information.setText("Opening dialog in order to load an ini file.");
 					boolean couldOpen = readIni();
@@ -162,23 +155,29 @@ public class SimWindow extends JFrame implements Listener {
 						eventEditor.setBorder(javax.swing.BorderFactory
 								.createTitledBorder(" Events Editor: " + currentInput.getName()));
 					} else {
-						information.setText("You have chosen to cancel the loading of the report in an ini file.");
-						eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor: "));
+						information.setText("You have chosen to cancel the loading of "
+								+ "the report in an ini file.");
+						eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder
+								(" Events Editor: "));
 					}
 				});
 
 		SimulatorAction saveReport = new SimulatorAction(Command.SaveReport, "save_report.png", 
-				"Save a report", KeyEvent.VK_G, "control G", () -> {
-					information.setText("Opening dialog in order to save the report in an ini file.");
+				"Save a report", 
+				KeyEvent.VK_G, "control G", () -> {
+					information.setText("Opening dialog in order to save the report"
+							+ " in an ini file.");
 					boolean couldSave = saveIni(reportsArea);
 					if (couldSave) {
 						information.setText(Command.SaveReport.message);
 					} else {
-						information.setText("You have chosen to cancel the saving of the report in an ini file.");
+						information.setText("You have chosen to cancel the saving of "
+								+ "the report in an ini file.");
 					}
 				});
 
-		SimulatorAction clear = new SimulatorAction(Command.Clear, "clear.png", "Clear the text", 
+		SimulatorAction clear = new SimulatorAction(Command.Clear, "clear.png", 
+				"Clear the text", 
 				KeyEvent.VK_C, "control C", () -> {
 					clear(textSection.get_editor());
 					enableOrDisableActions(actionsCommand, Command.Clear);
@@ -187,17 +186,14 @@ public class SimWindow extends JFrame implements Listener {
 							.createTitledBorder(" Events Editor "));
 				});
 
-		SimulatorAction events = new SimulatorAction(Command.Events, "events.png", "Add events to the simulation",
+		SimulatorAction events = new SimulatorAction(Command.Events, "events.png", 
+				"Add events to the simulation",
 				KeyEvent.VK_E, "control E", () -> {
-					try {
-						readText();
-						reset(0, new RoadMap(), new ArrayList<Event>());
-						ctrl.loadEvents();
-						enableOrDisableActions(actionsCommand, Command.Events);
-						information.setText(Command.Events.message);
-					} catch (IOException e) {
-						ctrl.getSimulator().notifyError(e.getMessage());
-					}
+					readText();
+					reset(0, new RoadMap(), new ArrayList<Event>());
+					ctrl.loadEvents();
+					enableOrDisableActions(actionsCommand, Command.Events);
+					information.setText(Command.Events.message);
 				});
 
 		SimulatorAction deleteReport = new SimulatorAction(Command.DeleteReport, "delete_report.png", 
@@ -207,10 +203,13 @@ public class SimWindow extends JFrame implements Listener {
 					information.setText(Command.DeleteReport.message);
 				});
 
-		SimulatorAction report = new SimulatorAction(Command.Report, "report.png", "Generate a report  of the simulation",
+		SimulatorAction report = new SimulatorAction(Command.Report, "report.png", 
+				"Generate a report  of the simulation",
 				KeyEvent.VK_I, "control I", () -> {
-					information.setText("Opening dialog in order to select the reports you want to show.");
-					DialogWindowLayout selection = new DialogWindowLayout(map.getVehiclesRO(), map.getRoadsRO(),
+					information.setText("Opening dialog in order to select the reports "
+							+ "you want to show.");
+					DialogWindowLayout selection = new DialogWindowLayout(
+							map.getVehiclesRO(), map.getRoadsRO(),
 							map.getJunctionsRO(), ctrl.getSimulator());
 					Ini in = selection.getIni();
 					if (selection.getStatus() != 0) {
@@ -219,11 +218,13 @@ public class SimWindow extends JFrame implements Listener {
 						information.setText(Command.Report.message);
 					}
 					else {
-						information.setText("You have chosen not to show the report of any object.");
+						information.setText("You have chosen not to show the report "
+								+ "of any object.");
 					}
 				});
 
-		SimulatorAction reset = new SimulatorAction(Command.Reset, "reset.png", "Reset the simulation", 
+		SimulatorAction reset = new SimulatorAction(Command.Reset, "reset.png", 
+				"Reset the simulation", 
 				KeyEvent.VK_R, "control R", () -> {
 					ctrl.getSimulator().reset();
 					enableOrDisableActions(actionsCommand, Command.Reset);
@@ -242,14 +243,13 @@ public class SimWindow extends JFrame implements Listener {
 		actionsCommand.put(Command.Reset, reset);
 	}
 
-	private void enableOrDisableActions(Map<Command, SimulatorAction> actions, Command command) {
+	private void enableOrDisableActions(Map<Command, SimulatorAction> actions, 
+			Command command) {
 		switch (command) {
 		case Clear: {
 			actions.get(Command.Save).setEnabled(false);
-			//actions.get(Command.Events).setEnabled(false);
 			actions.get(Command.Clear).setEnabled(true);
-		}
-			break;
+		} break;
 		case Open: {
 			actions.get(Command.Clear).setEnabled(true);
 			actions.get(Command.Events).setEnabled(true);
@@ -259,29 +259,24 @@ public class SimWindow extends JFrame implements Listener {
 			actions.get(Command.DeleteReport).setEnabled(false);
 			actions.get(Command.Play).setEnabled(false);
 			actions.get(Command.Reset).setEnabled(false);
-		}
-			break;
+		} break;
 		case Events: {
 			actions.get(Command.Play).setEnabled(true);
 			actions.get(Command.Reset).setEnabled(true);
-		}
-			break;
+		} break;
 		case DeleteReport: {
 			actions.get(Command.Report).setEnabled(true);
 			actions.get(Command.SaveReport).setEnabled(false);
 			actions.get(Command.DeleteReport).setEnabled(false);
-		}
-			break;
+		} break;
 		case Play: {
 			actions.get(Command.Events).setEnabled(false);
 			actions.get(Command.Report).setEnabled(true);
-		}
-			break;
+		} break;
 		case Report: {
 			actions.get(Command.DeleteReport).setEnabled(true);
 			actions.get(Command.SaveReport).setEnabled(true);
-		}
-			break;
+		} break;
 		case Reset: {
 			actions.get(Command.Report).setEnabled(false);
 			actions.get(Command.SaveReport).setEnabled(false);
@@ -290,14 +285,13 @@ public class SimWindow extends JFrame implements Listener {
 			actions.get(Command.Save).setEnabled(false);
 			actions.get(Command.Reset).setEnabled(false);
 			actions.get(Command.Events).setEnabled(true);
-		}
-			break;
+		} break;
 		default:
 			break;
 		}
 	}
 
-	public boolean readIni() {
+	private boolean readIni() {
 		JFileChooser chooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Ini files", "ini");
 		chooser.setFileFilter(filter);
@@ -321,7 +315,7 @@ public class SimWindow extends JFrame implements Listener {
 		}
 	}
 
-	public boolean saveIni(JTextArea text) {
+	private boolean saveIni(JTextArea text) {
 		JFileChooser chooser = new JFileChooser();
 		
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Ini files", "ini");
@@ -335,8 +329,8 @@ public class SimWindow extends JFrame implements Listener {
 				Files.write(f.toPath(), s.getBytes("UTF-8"));
 
 			} catch (IOException e) {
-				ctrl.getSimulator().notifyError("There was an error while saving in the file " 
-						+ currentInput.getAbsolutePath());
+				ctrl.getSimulator().notifyError("There was an error while saving in the"
+						+ " file " + currentInput.getAbsolutePath());
 			}
 			return true;
 		} else {
@@ -344,23 +338,18 @@ public class SimWindow extends JFrame implements Listener {
 		}
 	}
 
-	public void readText() {
+	private void readText() {
 		String st = textSection.get_editor().getText();
 		ctrl.setIn(new ByteArrayInputStream(st.getBytes(StandardCharsets.UTF_8)));
 	}
 
-	public void clear(JTextArea text) {
+	private void clear(JTextArea text) {
 		text.setText("");
 	}
 
-	/*
-	 * public void showReport() { Ini ini = new Ini();
-	 * ctrl.getSimulator().fillReport(map.getJunctionsRO(), ini);
-	 * ctrl.getSimulator().fillReport(map.getRoadsRO(), ini);
-	 * ctrl.getSimulator().fillReport(map.getVehiclesRO(), ini);
-	 * reportsArea.setText(ini.toString()); }
+	/**
+	 * Plays the simulation
 	 */
-
 	private void play() {
 		int time = (Integer) stepsSpinner.getValue();
 		ByteArrayOutputStream str = new ByteArrayOutputStream();
@@ -369,10 +358,12 @@ public class SimWindow extends JFrame implements Listener {
 			timeViewer.setText("" + ctrl.getSimulator().getTimeCounter());
 		} catch (IOException e) {
 			ctrl.getSimulator().notifyError("Something went wrong with the simulation.");
-			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Adds the toolBar to the JFrame
+	 */
 	private void addToolBar() {
 		// add actions to toolbar,
 		JToolBar bar = new JToolBar();
@@ -413,6 +404,9 @@ public class SimWindow extends JFrame implements Listener {
 		add(bar, BorderLayout.NORTH);
 	}
 
+	/**
+	 * Adds the menu bar to the JFrame
+	 */
 	private void addMenuBar() {
 		JMenuBar menu = new JMenuBar();
 		JMenu file = new JMenu("File");
@@ -457,7 +451,8 @@ public class SimWindow extends JFrame implements Listener {
 		eventEditor = new JPanel(new BorderLayout());
 		if (currentInput != null) {
 			eventEditor.setBorder(
-					javax.swing.BorderFactory.createTitledBorder(" Events Editor: " + currentInput.getName()));
+					javax.swing.BorderFactory.createTitledBorder(" Events Editor: " +
+					currentInput.getName()));
 		} else {
 			eventEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Editor: "));
 		}
@@ -519,20 +514,18 @@ public class SimWindow extends JFrame implements Listener {
 	private void addInfPanel() {
 		infPanel = new JPanel();
 		infPanel.setLayout(new BorderLayout());
-		bottomSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, infLeftPanel, rightInfPanel);
-		bottomSplit.setResizeWeight(.5);
+		bottomSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
+				infLeftPanel, rightInfPanel);
 		infPanel.add(bottomSplit);
 	}
 
 	private void addBars() {
 		topSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, supPanel, infPanel);
-		topSplit.setResizeWeight(.33);
 		add(topSplit);
 	}
 
 	@Override
-	public void registered(int time, RoadMap map, List<Event> events) {
-	}
+	public void registered(int time, RoadMap map, List<Event> events) {}
 
 	@Override
 	public void reset(int time, RoadMap map, List<Event> events) {

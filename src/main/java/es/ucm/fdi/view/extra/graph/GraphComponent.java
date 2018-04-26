@@ -108,7 +108,7 @@ public class GraphComponent extends JComponent {
 			Point p1 = _nodesPisitions.get(e.getSource().getId());
 			Point p2 = _nodesPisitions.get(e.getTarget().getId());
 
-			// draw the edge
+			// draw the edge and the arrow depending on the traffic light
 			Color arrowColor = e.isGreen() ? Color.GREEN : Color.RED;
 			
 			drawArrowLine(g, p1.cX, p1.cY, p2.cX, p2.cY, 15, 5, Color.BLACK, arrowColor);

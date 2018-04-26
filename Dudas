@@ -29,4 +29,9 @@ Preguntas:
 - Si no se indica el comportamiento en algun caso, ¿lo podemos hacer como queramos? (EJEMPLO: Añadir eventos en mitad de la simulacion siempre que su tiempo
 de ejecucion sea superior al tiempo actual).
 
+- ¿Como se puede hacer para que el simulador lance excepciones en el batch en vez de
+noficar a sus Listeners? De momento he metido un if en simulador, pero debe haber otra 
+forma mejor de hacerlo. ¿Algo similar al main con un enumerado y lanzando las excepciones
+en caso de que el simulador este en modo Batch?
+
 

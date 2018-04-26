@@ -84,12 +84,19 @@ public class Junction extends SimObject implements Describable {
 			return roadDeque;
 		}
 
+		/**
+		 * Advances a vehicle if there is any.
+		 */
 		public void avanzaVeh() {
 			if (!roadDeque.isEmpty()) {
 				roadDeque.pollFirst().moverASiguienteCarretera();
 			}
 		}
 
+		/**
+		 * Shows the information of a Junction
+		 * @return
+		 */
 		public String junctionToString() {
 			StringBuilder sb = new StringBuilder();
 
@@ -131,9 +138,11 @@ public class Junction extends SimObject implements Describable {
 			IncomingRoads greenLight = junctionDeque.get(trafficLight);
 			for (IncomingRoads ir : junctionDeque) {
 				if (greenLight == ir) {
-					green.append("(" + ir.getRoad().getId() + ",green,[" + ir.junctionToString() + "])");
+					green.append("(" + ir.getRoad().getId() + ",green,[" +
+							ir.junctionToString() + "])");
 				} else {
-					red.append("(" + ir.getRoad().getId() + ",red,[" + ir.junctionToString() + "]),");
+					red.append("(" + ir.getRoad().getId() + ",red,[" +
+							ir.junctionToString() + "]),");
 				}
 			}
 			if (red.length() != 0) {

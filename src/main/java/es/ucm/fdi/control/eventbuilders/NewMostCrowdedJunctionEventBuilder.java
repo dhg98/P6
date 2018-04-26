@@ -1,7 +1,6 @@
 package es.ucm.fdi.control.eventbuilders;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.*;
 import es.ucm.fdi.model.events.Event;
 import es.ucm.fdi.model.events.NewMostCrowdedJunctionEvent;
 
@@ -18,12 +17,13 @@ public class NewMostCrowdedJunctionEventBuilder implements EventBuilder {
 					return new NewMostCrowdedJunctionEvent(time, sec.getValue("id"));
 				} else {
 					throw new IllegalArgumentException(
-							"The id " + sec.getValue("id") + " contains invalid characters in the IniSection "
-							+ sec);
+							"The id " + sec.getValue("id") + " contains invalid"
+									+ "characters in the IniSection\n" + sec);
 				}
 			} catch (IllegalArgumentException e) {
 				throw new IllegalArgumentException(
-							"Error while building a NewMostCrowdedJunctionEvent", e);
+							"Error while building a NewMostCrowdedJunctionEvent\n"
+						+ e.getMessage(), e);
 			}
 		}
 	}

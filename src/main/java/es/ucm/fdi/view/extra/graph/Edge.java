@@ -8,6 +8,7 @@ public class Edge {
 	private Node _source;
 	private Node _target;
 	private int _length;
+	//La arista debe saber a que color debe ponerse
 	private boolean green;
 	private List<Dot> _dots;
 	

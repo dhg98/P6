@@ -2,9 +2,7 @@ package es.ucm.fdi.model.events;
 
 import java.util.*;
 
-import es.ucm.fdi.model.Describable;
-import es.ucm.fdi.model.RoadMap;
-import es.ucm.fdi.model.Vehicle;
+import es.ucm.fdi.model.*;
 
 public class MakeVehicleFaultyEvent extends Event implements Describable {
 	private int tiempoAveria;
@@ -17,7 +15,7 @@ public class MakeVehicleFaultyEvent extends Event implements Describable {
 	}
 
 	/**
-	 * Executes a NewMakeVehicleFaultyEvent faults a vehicle
+	 * Executes a NewMakeVehicleFaultyEvent that faults a list of vehicles
 	 */
 	@Override
 	public void execute(RoadMap rm) {

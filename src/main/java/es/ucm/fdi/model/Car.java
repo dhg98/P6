@@ -17,8 +17,9 @@ public class Car extends Vehicle {
 	private long seed;
 	private Random rand;
 
-	public Car(String id, int velMaxima, Road road, List<Junction> itinerario, int resistanceKm,
-			double faultProbability, int maxFaultDuration, long seed) {
+	public Car(String id, int velMaxima, Road road, List<Junction> itinerario,
+			int resistanceKm, double faultProbability, int maxFaultDuration,
+			long seed) {
 
 		super(id, velMaxima, road, itinerario);
 		this.resistanceKm = resistanceKm;
@@ -44,7 +45,8 @@ public class Car extends Vehicle {
 		if (getTiempoAveria() > 0) {
 			kilometrageFaulty = 0;
 			super.avanza();
-		} else if (getTiempoAveria() == 0 && kilometrageFaulty > resistanceKm && rand.nextDouble() < faultProbability) {
+		} else if (getTiempoAveria() == 0 && kilometrageFaulty > resistanceKm &&
+				rand.nextDouble() < faultProbability) {
 			setTiempoAveria(rand.nextInt(maxFaultDuration) + 1);
 			kilometrageFaulty = 0;
 			super.avanza();

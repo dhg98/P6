@@ -1,5 +1,11 @@
 package es.ucm.fdi.view;
 
+/**
+ * Enum that has all the templates we need in this simulation.
+ * 
+ * @author Daniel Herranz
+ *
+ */
 public enum Template {
 	NewVehicle("New Vehicle","\n[new_vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \n"),
 	NewBike("New Bike", "\n[new vehicle]\ntime = \nid = \nmax_speed = \nitinerary = \ntype = bike\n"),
@@ -12,6 +18,8 @@ public enum Template {
 	NewMostCrowded("New MC Junction", "\n[new_junction]\nid = \ntime = \ntype = mc\n"),
 	MakeFaulty("Make Vehicle Faulty", "\n[make_vehicle_faulty]\ntime = \nvehicles = \nduration = \n");
 	
+	//Tenemos un texto para mostrar al pulsar "add template" y lo que de verdad
+	//se va a introducir en el texto.
 	protected String text;
 	protected String temp;
 	Template (String text, String temp) {

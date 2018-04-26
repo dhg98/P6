@@ -1,7 +1,6 @@
 package es.ucm.fdi.control.eventbuilders;
 
 import es.ucm.fdi.ini.IniSection;
-import es.ucm.fdi.model.*;
 import es.ucm.fdi.model.events.Event;
 import es.ucm.fdi.model.events.NewRoundRobinJunctionEvent;
 
@@ -17,16 +16,18 @@ public class NewRoundRobinJunctionEventBuilder implements EventBuilder {
 				int maxSlice = this.parseInt(sec, "max_time_slice", 1);
 				int minSlice = this.parseInt(sec, "min_time_slice", 1);
 				if (isValidId(sec.getValue("id"))) {
-					return new NewRoundRobinJunctionEvent(time, sec.getValue("id"), maxSlice, minSlice);
+					return new NewRoundRobinJunctionEvent(time, sec.getValue("id"), 
+							maxSlice, minSlice);
 				} else {
 					throw new IllegalArgumentException(
-							"The id " + sec.getValue("id") + " contains invalid characters in the IniSection "
-							+ sec);
+							"The id " + sec.getValue("id") + " contains invalid "
+									+ "characters in the IniSection \n" + sec);
 				}
 
 			} catch (IllegalArgumentException e) {
 				throw new IllegalArgumentException(
-							"Error while building a NewRoundRobinJunctionEvent", e);
+							"Error while building a NewRoundRobinJunctionEvent \n"
+						+ e.getMessage(), e);
 			}
 		}
 	}

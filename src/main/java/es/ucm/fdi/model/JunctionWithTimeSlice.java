@@ -11,6 +11,7 @@ public class JunctionWithTimeSlice extends Junction {
 	protected class IncomingRoadWithTimeSlice extends IncomingRoads {
 
 		protected int timeSlice;
+		//De no inicializarlo a -1, irian un ciclo por delante
 		protected int usedTimeUnits = -1;
 		protected boolean used = false;
 		protected boolean fullyUsed = true;
@@ -20,8 +21,13 @@ public class JunctionWithTimeSlice extends Junction {
 			this.timeSlice = timeSlice;
 		}
 
+		/**
+		 * Advances a vehicle if there is any.
+		 */
 		@Override
 		public void avanzaVeh() {
+			//Si no se ha completado el intervalo de tiempo, avanzamos el coche si lo 
+			//hay y modificamos los booleanos used y fullyUsed de acuerdo a esto.
 			if (usedTimeUnits < timeSlice) {
 				if (!roadDeque.isEmpty()) {
 					roadDeque.pollFirst().moverASiguienteCarretera();
@@ -40,7 +46,8 @@ public class JunctionWithTimeSlice extends Junction {
 	protected void fillReportDetails(Map<String, String> out) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < junctionDeque.size(); ++i) {
-			IncomingRoadWithTimeSlice irs = (IncomingRoadWithTimeSlice) getJunctionDeque().get(i);
+			IncomingRoadWithTimeSlice irs =
+					(IncomingRoadWithTimeSlice) getJunctionDeque().get(i);
 			sb.append("(" + irs.road.getId() + ",");
 			if (i == trafficLight) {
 				sb.append("green:" + (irs.timeSlice - irs.usedTimeUnits) + ",[");
