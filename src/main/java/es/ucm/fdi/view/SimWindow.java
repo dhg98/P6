@@ -575,6 +575,7 @@ public class SimWindow extends JFrame implements Listener {
 		graph.generateGraph();
 	}
 
+	
 	@Override
 	public void simulatorError(int time, RoadMap map, List<Event> events, String error) {
 		JOptionPane.showMessageDialog(this, error);
