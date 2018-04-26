@@ -119,16 +119,21 @@ public interface EventBuilder {
 	 * @throws IllegalArgumentException
 	 */
 	public default ArrayList<String> parseIdList(IniSection sec, String key) {
-		String[] it = sec.getValue(key).split(",");
-		ArrayList<String> iti = new ArrayList<>();
-		for (int i = 0; i < it.length; ++i) {
-			if (!isValidId(it[i])) {
-				throw new IllegalArgumentException("The IdList is incorrect in the position number " + i
-						+ " because " + it[i] + " contains invalid characters.");
-			} else {
-				iti.add(it[i]);
-			}
+		if (sec.getValue(key) == null) {
+			throw new IllegalArgumentException("There is not an id list");
 		}
-		return iti;
+		else {
+			String[] it = sec.getValue(key).split(",");
+			ArrayList<String> iti = new ArrayList<>();
+			for (int i = 0; i < it.length; ++i) {
+				if (!isValidId(it[i])) {
+					throw new IllegalArgumentException("The IdList is incorrect in the position number " + i
+							+ " because " + it[i] + " contains invalid characters.");
+				} else {
+					iti.add(it[i]);
+				}
+			}
+			return iti;
+		}
 	}
 }

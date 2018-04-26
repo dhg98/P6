@@ -58,12 +58,18 @@ public class TrafficSimulator {
 	 * @throws RuntimeException
 	 */
 	public void insertaEvento(Event e) {
-		if (e.getTime() < timeCounter) {
-			notifyError("The time you have given to the event (" + e.getTime() + ")" + e
-					+ " is previous than the current time (" + timeCounter + ")");
+		//Si el evento es nulo, es que ha habido un problema parseandolo,
+		//por lo tanto norificamos el error.
+		if (e == null) {
+			notifyError("Error while adding an event");
 		} else {
-			events.putValue(e.getTime(), e);
-			notifyEventAdded();
+			if (e.getTime() < timeCounter) {
+				notifyError("The time you have given to the event (" + e.getTime() + ")" + e
+						+ " is previous than the current time (" + timeCounter + ")");
+			} else {
+				events.putValue(e.getTime(), e);
+				notifyEventAdded();
+			}
 		}
 	}
 
@@ -137,7 +143,7 @@ public class TrafficSimulator {
 				try {
 					e.execute(rm);
 				} catch (IllegalArgumentException m) {
-					notifyError("There was an error while processing the event" + e.toString());
+					notifyError("There was an error while processing the event " + e.toString());
 				}
 			}
 		}
@@ -213,7 +219,12 @@ public class TrafficSimulator {
 		fillReport(rm.getJunctions(), file);
 		fillReport(rm.getRoads(), file);
 		fillReport(rm.getVehicles(), file);
-		file.store(out);
+		try {
+			file.store(out);
+		} catch (IOException e) {
+			throw new IOException("Error using the OutputStream" + out.toString());
+		}
+		
 	}
 
 	public interface Listener {
