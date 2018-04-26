@@ -211,8 +211,8 @@ public class SimWindow extends JFrame implements Listener {
 					DialogWindowLayout selection = new DialogWindowLayout(map.getVehiclesRO(), map.getRoadsRO(),
 							map.getJunctionsRO(), ctrl.getSimulator());
 					Ini in = selection.getIni();
-					reportsArea.setText(in.toString());
 					if (selection.getStatus() != 0) {
+						reportsArea.setText(in.toString());
 						enableOrDisableActions(actionsCommand, Command.Report);
 						information.setText(Command.Report.message);
 					}
