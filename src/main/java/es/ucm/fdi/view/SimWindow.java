@@ -183,6 +183,8 @@ public class SimWindow extends JFrame implements Listener {
 					clear(textSection.get_editor());
 					enableOrDisableActions(actionsCommand, Command.Clear);
 					information.setText(Command.Clear.message);
+					eventEditor.setBorder(javax.swing.BorderFactory
+							.createTitledBorder(" Events Editor "));
 				});
 
 		SimulatorAction events = new SimulatorAction(Command.Events, "events.png", "Add events to the simulation",
@@ -310,6 +312,7 @@ public class SimWindow extends JFrame implements Listener {
 				textSection.get_editor().setText(st);
 			} catch (IOException e) {
 				textSection.get_editor().setText("");
+				
 			}
 			return true;
 		} else {
