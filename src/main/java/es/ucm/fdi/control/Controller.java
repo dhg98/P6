@@ -67,9 +67,11 @@ public class Controller {
 			for (IniSection sec : iniS.getSections()) {
 				simulator.insertaEvento(parseSection(sec));
 			}
-		} catch (IOException e) {						
+		} catch (IOException e) {	
 			throw new IOException("Error loading the ini section from the InputStream " + in, e);
-		}		
+		} catch (IniError i) {
+			simulator.notifyError("There was an error parsing an Ini because of " + i);
+		}
 	}
 
 	/**
@@ -94,8 +96,8 @@ public class Controller {
 	 * @return Event or Exception
 	 */
 	public Event parseSection(IniSection sec) {
+		Event j = null;
 		try {
-			Event j = null;
 			for (EventBuilder e : avaliableParsers) {
 				if ((j = e.parse(sec)) != null) {
 					break;
@@ -104,12 +106,11 @@ public class Controller {
 			if (j == null) {
 				throw new IllegalArgumentException("Could not parse section " + sec);
 			}
-			return j;
+			
 		} catch (IllegalArgumentException e) {
-			simulator
-					.notifyError("Could not parse section " + sec + " because it doesn't have the arguments we needed");
-			throw new IllegalArgumentException(
-					"Could not parse section " + sec + " because it doesn't have the arguments we needed", e);
+			simulator.notifyError(e.getMessage() + "\nCould not parse section " + sec + 
+							" because it doesn't have the arguments we needed.");
 		}
+		return j;
 	}
 }

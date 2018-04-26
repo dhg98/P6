@@ -89,8 +89,8 @@ public class SimWindow extends JFrame implements Listener {
 			}
 			textSection.get_editor().setText(st);
 		} else {
-			ableActions(false, actionsCommand.get(Command.Events), actionsCommand.get(Command.Clear),
-					actionsCommand.get(Command.Save));
+			ableActions(false, actionsCommand.get(Command.Clear),
+					actionsCommand.get(Command.Save));//actionsCommand.get(Command.Events),
 		}
 		ableActions(false, actionsCommand.get(Command.SaveReport), actionsCommand.get(Command.Play),
 				actionsCommand.get(Command.Reset), actionsCommand.get(Command.Report),
@@ -246,7 +246,7 @@ public class SimWindow extends JFrame implements Listener {
 		switch (command) {
 		case Clear: {
 			actions.get(Command.Save).setEnabled(false);
-			actions.get(Command.Events).setEnabled(false);
+			//actions.get(Command.Events).setEnabled(false);
 			actions.get(Command.Clear).setEnabled(true);
 		}
 			break;
@@ -259,7 +259,6 @@ public class SimWindow extends JFrame implements Listener {
 			actions.get(Command.DeleteReport).setEnabled(false);
 			actions.get(Command.Play).setEnabled(false);
 			actions.get(Command.Reset).setEnabled(false);
-
 		}
 			break;
 		case Events: {
@@ -311,6 +310,8 @@ public class SimWindow extends JFrame implements Listener {
 				ctrl.setIn(new FileInputStream(currentInput));
 				textSection.get_editor().setText(st);
 			} catch (IOException e) {
+				ctrl.getSimulator().notifyError("There was an error while opening the file " 
+						+ currentInput.getAbsolutePath());
 				textSection.get_editor().setText("");
 				
 			}
@@ -334,7 +335,8 @@ public class SimWindow extends JFrame implements Listener {
 				Files.write(f.toPath(), s.getBytes("UTF-8"));
 
 			} catch (IOException e) {
-				
+				ctrl.getSimulator().notifyError("There was an error while saving in the file " 
+						+ currentInput.getAbsolutePath());
 			}
 			return true;
 		} else {
@@ -576,6 +578,7 @@ public class SimWindow extends JFrame implements Listener {
 		graph.generateGraph();
 	}
 
+	
 	@Override
 	public void simulatorError(int time, RoadMap map, List<Event> events, String error) {
 		JOptionPane.showMessageDialog(this, error);
