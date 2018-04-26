@@ -48,8 +48,6 @@ public class DialogWindowLayout extends JFrame {
             simulator.fillReport(_dialog.getSelectedRoads(), ini);
             simulator.fillReport(_dialog.getSelectedJunctions(), ini);
         }
-		
         //this.pack();
-		
 	}
 }

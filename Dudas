@@ -4,6 +4,14 @@ Cosas que faltan:
 
 - JavaDocs
 
+- Modificar enable para permitir ejecutar el simulador al añadir templates.
+
+- Notificar al Controlador para que muestren un error al abrir el fichero
+
+- Aplicar herencia para hacer los EventBuilder
+
+
+
 Preguntas: 
 
 - ¿Que significa la sección opcional que dice "Mostrar el contenido actual de los informes a un fichero de texto"?
