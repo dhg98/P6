@@ -39,6 +39,6 @@ public class NewJunctionEvent extends Event implements Describable {
 	
 	@Override
 	public String toString() {
-		return this.getClass().toString();
+		return "New Junction Event";
 	}
 }

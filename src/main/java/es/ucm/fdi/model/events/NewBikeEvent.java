@@ -32,7 +32,11 @@ public class NewBikeEvent extends NewVehicleEvent {
 				break;
 			}
 		}
-
+	}
+	
+	@Override
+	public String toString() {
+		return "New Bike Event";
 	}
 
 }

@@ -27,4 +27,9 @@ public class NewLanesRoadEvent extends NewRoadEvent {
 		start.getOutgoingRoadsList().add(road);
 		end.addIncomingRoad(road);
 	}
+	
+	@Override
+	public String toString() {
+		return "New Lanes Road Event";
+	}
 }

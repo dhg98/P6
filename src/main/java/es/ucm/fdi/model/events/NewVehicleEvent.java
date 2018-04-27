@@ -65,7 +65,7 @@ public class NewVehicleEvent extends Event implements Describable {
 	
 	@Override
 	public String toString() {
-		return this.getClass().toString();
+		return "New Vehicle Event";
 	}
 
 }

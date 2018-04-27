@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -56,7 +57,8 @@ class DialogWindow extends JDialog {
 		JPanel mainPanel = new JPanel(new BorderLayout());
 
 		JPanel contentPanel = new JPanel();
-		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
+		contentPanel.setLayout(new GridLayout(1,3));
+		//contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
 		mainPanel.add(contentPanel, BorderLayout.CENTER);
 
 		JPanel vehiclePanel = new JPanel(new BorderLayout());

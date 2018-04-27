@@ -47,6 +47,6 @@ public class MakeVehicleFaultyEvent extends Event implements Describable {
 	
 	@Override
 	public String toString() {
-		return this.getClass().toString();
+		return "Make Vehicle Faulty Event";
 	}
 }

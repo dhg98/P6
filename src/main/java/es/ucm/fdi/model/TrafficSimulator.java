@@ -58,7 +58,7 @@ public class TrafficSimulator {
 	 */
 	public void insertaEvento(Event e) {
 		//Si el evento es nulo, es que ha habido un problema parseandolo,
-		//por lo tanto norificamos el error.
+		//por lo tanto notificamos el error.
 		if (e == null) {
 			notifyError("Error while adding an event");
 		} else {
@@ -148,7 +148,7 @@ public class TrafficSimulator {
 					e.execute(rm);
 				} catch (IllegalArgumentException m) {
 					notifyError("There was an error while processing the event "
-							+ e.toString());
+							+ e.toString() + "\n" + m.getMessage());
 				}
 			}
 		}

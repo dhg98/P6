@@ -70,6 +70,6 @@ public class NewRoadEvent extends Event implements Describable {
 	
 	@Override
 	public String toString() {
-		return this.getClass().toString();
+		return "New Road Event";
 	}
 }

@@ -13,4 +13,9 @@ public class NewMostCrowdedJunctionEvent extends NewJunctionEvent {
 	public void execute(RoadMap rm) {
 		rm.addJunction(new MostCrowdedJunction(getId()));
 	}
+	
+	@Override
+	public String toString() {
+		return "New Most Crowded Event";
+	}
 }

@@ -20,4 +20,8 @@ public class NewRoundRobinJunctionEvent extends NewJunctionEvent {
 		r.addJunction(new RoundRobinJunction(getId(), maxTimeSlice, minTimeSlice));
 	}
 
+	@Override
+	public String toString() {
+		return "New Round Robin Event";
+	}
 }
