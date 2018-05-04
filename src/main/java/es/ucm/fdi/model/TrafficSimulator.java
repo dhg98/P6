@@ -107,11 +107,6 @@ public class TrafficSimulator {
 		for (Listener l : listeners) {
 			l.simulatorError(timeCounter, rm, events.valuesList(), error);
 		}
-		//Si hay listeners, estos deberan tratar la excepcion. Si no hay ninguno,
-		//el simulador la lanza
-		if (listeners.size() == 0) {
-			throw new IllegalArgumentException(error);
-		}
 	}
 
 	/**

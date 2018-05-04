@@ -183,6 +183,8 @@ public class Main {
 		OutputStream out = _outFile != null ? new FileOutputStream(_outFile) : System.out;
 		InputStream in = new FileInputStream(_inFile);
 		Controller c = new Controller(t, _timeLimit, in, out);
+		ErrorListener error = new ErrorListener();
+		t.addSimulatorListener(error);
 		// try {
 		// c.run();
 		// } catch (IllegalArgumentException e) {
