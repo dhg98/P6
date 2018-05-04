@@ -272,6 +272,7 @@ public class SimWindow extends JFrame implements Listener {
 		case Play: {
 			actions.get(Command.Events).setEnabled(false);
 			actions.get(Command.Report).setEnabled(true);
+			actions.get(Command.DeleteReport).setEnabled(true);
 		} break;
 		case Report: {
 			actions.get(Command.DeleteReport).setEnabled(true);
@@ -356,6 +357,12 @@ public class SimWindow extends JFrame implements Listener {
 		try {
 			ctrl.getSimulator().execute(str, time);
 			timeViewer.setText("" + ctrl.getSimulator().getTimeCounter());
+			//Llenamos el reportsArea, para lo cual llenamos un objeto Ini.
+			Ini ini = new Ini();
+			ctrl.getSimulator().fillReport(map.getJunctionsRO(), ini);
+			ctrl.getSimulator().fillReport(map.getRoadsRO(), ini);
+			ctrl.getSimulator().fillReport(map.getVehiclesRO(), ini);
+			reportsArea.setText(ini.toString());
 		} catch (IOException e) {
 			ctrl.getSimulator().notifyError("Something went wrong with the simulation.");
 		}
@@ -571,7 +578,6 @@ public class SimWindow extends JFrame implements Listener {
 		graph.generateGraph();
 	}
 
-	
 	@Override
 	public void simulatorError(int time, RoadMap map, List<Event> events, String error) {
 		JOptionPane.showMessageDialog(this, error);
