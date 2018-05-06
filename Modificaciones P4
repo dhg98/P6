@@ -33,4 +33,4 @@ ArrayList.
 atributos pertinentes.
 
 - Se eliminan parametros innecesarios de las constructoras de eventos de las Junction avanzadas (recibian dos parametros que siempre iban a estar
-inicializados de la misma manera, por lo que se inicializan en la declaracion.
+inicializados de la misma manera, por lo que se inicializan en la constructora.
