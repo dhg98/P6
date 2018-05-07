@@ -58,6 +58,10 @@ public class SimWindow extends JFrame implements Listener {
 	// new SpinnerNumberModel(CurrentValue, min, max, steps)
 	private static JSpinner stepsSpinner = new JSpinner(
 			new SpinnerNumberModel(1, 1, 1000, 1));
+	
+	private static JSpinner delaySpinner = new JSpinner(
+			new SpinnerNumberModel(0, 0, 1000, 1));
+	
 	private JTextField timeViewer = new JTextField("0");
 	private Map<Command, SimulatorAction> actionsCommand = new HashMap<>();
 
@@ -82,7 +86,8 @@ public class SimWindow extends JFrame implements Listener {
 						   actionsCommand.get(Command.Play),
 						   actionsCommand.get(Command.Reset), 
 						   actionsCommand.get(Command.Report),
-						   actionsCommand.get(Command.DeleteReport));
+						   actionsCommand.get(Command.DeleteReport),
+						   actionsCommand.get(Command.Stop));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.ctrl = ctrl;
 		map = ctrl.getSimulator().getRm();
@@ -230,6 +235,15 @@ public class SimWindow extends JFrame implements Listener {
 					enableOrDisableActions(actionsCommand, Command.Reset);
 					information.setText(Command.Reset.message);
 				});
+		
+		SimulatorAction stop = new SimulatorAction(Command.Stop, "stop.png",
+				"Stop the simulation",
+				KeyEvent.VK_S, "alt S", () -> {
+					
+					
+					enableOrDisableActions(actionsCommand, Command.Stop);
+					
+				});
 
 		actionsCommand.put(Command.Exit, exit);
 		actionsCommand.put(Command.Clear, clear);
@@ -241,6 +255,7 @@ public class SimWindow extends JFrame implements Listener {
 		actionsCommand.put(Command.Play, play);
 		actionsCommand.put(Command.Report, report);
 		actionsCommand.put(Command.Reset, reset);
+		actionsCommand.put(Command.Stop, stop);
 	}
 
 	private void enableOrDisableActions(Map<Command, SimulatorAction> actions, 
@@ -270,9 +285,17 @@ public class SimWindow extends JFrame implements Listener {
 			actions.get(Command.DeleteReport).setEnabled(false);
 		} break;
 		case Play: {
-			actions.get(Command.Events).setEnabled(false);
-			actions.get(Command.Report).setEnabled(true);
-			actions.get(Command.DeleteReport).setEnabled(true);
+			ableActions(false, actions.get(Command.SaveReport), 
+							   actions.get(Command.Play),
+							   actions.get(Command.Reset), 
+							   actions.get(Command.Report),
+							   actions.get(Command.DeleteReport),
+							   actions.get(Command.Clear),
+							   actions.get(Command.Save),
+							   actions.get(Command.Events),
+							   actions.get(Command.Open),
+							   actions.get(Command.Reset));
+			actions.get(Command.Stop).setEnabled(true);
 		} break;
 		case Report: {
 			actions.get(Command.DeleteReport).setEnabled(true);
@@ -286,6 +309,18 @@ public class SimWindow extends JFrame implements Listener {
 			actions.get(Command.Save).setEnabled(false);
 			actions.get(Command.Reset).setEnabled(false);
 			actions.get(Command.Events).setEnabled(true);
+		} break;
+		case Stop: {
+			ableActions(true, actions.get(Command.SaveReport), 
+					   		  actions.get(Command.Play),
+					   		  actions.get(Command.Reset), 
+					   		  actions.get(Command.Report),
+					   		  actions.get(Command.DeleteReport),
+					   		  actions.get(Command.Clear),
+					   		  actions.get(Command.Save),
+					   		  actions.get(Command.Events),
+					   		  actions.get(Command.Open),
+					   		  actions.get(Command.Reset));
 		} break;
 		default:
 			break;
@@ -308,7 +343,6 @@ public class SimWindow extends JFrame implements Listener {
 				ctrl.getSimulator().notifyError("There was an error while opening the file " 
 						+ currentInput.getAbsolutePath());
 				textSection.get_editor().setText("");
-				
 			}
 			return true;
 		} else {
@@ -382,10 +416,15 @@ public class SimWindow extends JFrame implements Listener {
 
 		bar.add(actionsCommand.get(Command.Events));
 		bar.add(actionsCommand.get(Command.Play));
+		bar.add(actionsCommand.get(Command.Stop));
 		bar.add(actionsCommand.get(Command.Reset));
 
 		// Steps y time...
-		JLabel stepsLabel = new JLabel(" Steps: "), timeLabel = new JLabel(" Time: ");
+		JLabel stepsLabel = new JLabel(" Steps: "),
+				timeLabel = new JLabel(" Time: "), 
+				delayLabel = new JLabel (" Delay: ");
+		bar.add(delayLabel);
+		bar.add(delaySpinner);
 		bar.add(stepsLabel);
 		bar.add(stepsSpinner);
 		timeViewer.setMinimumSize(new Dimension(70, 1));
@@ -431,6 +470,7 @@ public class SimWindow extends JFrame implements Listener {
 
 		JMenu simulator = new JMenu("Simulator");
 		simulator.add(actionsCommand.get(Command.Play));
+		simulator.add(actionsCommand.get(Command.Stop));
 		simulator.add(actionsCommand.get(Command.Reset));
 
 		JMenu reports = new JMenu("Reports");

@@ -16,7 +16,8 @@ public enum Command {
 	Play("Play", "Simulation played succesfully."), 
 	Open("Open", "The ini file has been succesfully loaded."), 
 	Report("Report", "The report has been succesfully generated"), 
-	Reset("Reset", "The reset has been succesfully done");
+	Reset("Reset", "The reset has been succesfully done"),
+	Stop("Stop", "The simulation has been stopped succesfully");
 	
 	//Tenemos un texto de titulo y un mensaje a mostrar cuando pulsan el boton
 	protected String text;
