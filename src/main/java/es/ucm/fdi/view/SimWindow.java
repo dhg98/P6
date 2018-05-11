@@ -54,13 +54,14 @@ public class SimWindow extends JFrame implements Listener {
 	private JPanel infLeftPanel;
 	private JPanel rightInfPanel;
 	private JLabel information;
+	private Thread auxiliarThread;
 
 	// new SpinnerNumberModel(CurrentValue, min, max, steps)
 	private static JSpinner stepsSpinner = new JSpinner(
 			new SpinnerNumberModel(1, 1, 1000, 1));
 	
 	private static JSpinner delaySpinner = new JSpinner(
-			new SpinnerNumberModel(0, 0, 1000, 1));
+			new SpinnerNumberModel(1000, 0, 1000000000, 1000));
 	
 	private JTextField timeViewer = new JTextField("0");
 	private Map<Command, SimulatorAction> actionsCommand = new HashMap<>();
@@ -239,8 +240,7 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction stop = new SimulatorAction(Command.Stop, "stop.png",
 				"Stop the simulation",
 				KeyEvent.VK_S, "alt S", () -> {
-					
-					
+					auxiliarThread.interrupt();
 					enableOrDisableActions(actionsCommand, Command.Stop);
 					
 				});
@@ -321,6 +321,7 @@ public class SimWindow extends JFrame implements Listener {
 					   		  actions.get(Command.Events),
 					   		  actions.get(Command.Open),
 					   		  actions.get(Command.Reset));
+			actions.get(Command.Stop).setEnabled(false);
 		} break;
 		default:
 			break;
@@ -387,19 +388,39 @@ public class SimWindow extends JFrame implements Listener {
 	 */
 	private void play() {
 		int time = (Integer) stepsSpinner.getValue();
+		int delay = (Integer) delaySpinner.getValue();
 		ByteArrayOutputStream str = new ByteArrayOutputStream();
-		try {
-			ctrl.getSimulator().execute(str, time);
-			timeViewer.setText("" + ctrl.getSimulator().getTimeCounter());
-			//Llenamos el reportsArea, para lo cual llenamos un objeto Ini.
-			Ini ini = new Ini();
-			ctrl.getSimulator().fillReport(map.getJunctionsRO(), ini);
-			ctrl.getSimulator().fillReport(map.getRoadsRO(), ini);
-			ctrl.getSimulator().fillReport(map.getVehiclesRO(), ini);
-			reportsArea.setText(ini.toString());
-		} catch (IOException e) {
-			ctrl.getSimulator().notifyError("Something went wrong with the simulation.");
-		}
+		Runnable before = new Runnable () {
+			public void run() {
+				enableOrDisableActions(actionsCommand, Command.Play);
+			}
+		};
+		Runnable during = new Runnable () {
+			public void run() {
+				try {
+					ctrl.getSimulator().execute(str, 1);
+					timeViewer.setText("" + ctrl.getSimulator().getTimeCounter());
+					//Llenamos el reportsArea, para lo cual llenamos un objeto Ini.
+					Ini ini = new Ini();
+					ctrl.getSimulator().fillReport(map.getJunctionsRO(), ini);
+					ctrl.getSimulator().fillReport(map.getRoadsRO(), ini);
+					ctrl.getSimulator().fillReport(map.getVehiclesRO(), ini);
+					reportsArea.setText(ini.toString());
+				} catch (IOException e) {
+					ctrl.getSimulator().notifyError("Something went wrong with"
+							+ " the simulation.");
+				}
+			}
+		};
+		Runnable after = new Runnable () {
+			public void run() {
+				enableOrDisableActions(actionsCommand, Command.Stop);
+			}
+		};
+		
+		Stepper stepper = new Stepper(before, during, after);
+		auxiliarThread = stepper.start(time, delay);
+		//ctrl.getSimulator().execute(str, time);
 	}
 
 	/**
