@@ -65,7 +65,6 @@ public class SimWindow extends JFrame implements Listener {
 	
 	private JTextField timeViewer = new JTextField("0");
 	private Map<Command, SimulatorAction> actionsCommand = new HashMap<>();
-
 	public SimWindow(Controller ctrl, String inFileName) {
 		super("Traffic Simulator");
 		createActionsCommand();
