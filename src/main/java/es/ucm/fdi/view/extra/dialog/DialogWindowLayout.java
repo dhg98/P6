@@ -44,9 +44,9 @@ public class DialogWindowLayout extends JFrame {
 		_dialog.setData(_vehicles, _roads, _junctions);
 		status = _dialog.open();
         if (status != 0) {
-            simulator.fillReport(_dialog.getSelectedVehicles(), ini);
+        	simulator.fillReport(_dialog.getSelectedJunctions(), ini);
             simulator.fillReport(_dialog.getSelectedRoads(), ini);
-            simulator.fillReport(_dialog.getSelectedJunctions(), ini);
+            simulator.fillReport(_dialog.getSelectedVehicles(), ini);
         }
         //this.pack();
 	}

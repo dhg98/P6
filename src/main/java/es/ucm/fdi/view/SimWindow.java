@@ -317,7 +317,6 @@ public class SimWindow extends JFrame implements Listener {
 					   		  actions.get(Command.DeleteReport),
 					   		  actions.get(Command.Clear),
 					   		  actions.get(Command.Save),
-					   		  actions.get(Command.Events),
 					   		  actions.get(Command.Open),
 					   		  actions.get(Command.Reset));
 			actions.get(Command.Stop).setEnabled(false);
