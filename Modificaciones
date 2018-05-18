@@ -1,0 +1,13 @@
+Modificaciones de la P5 a la P6
+
+- Mejoramos el sistema de templates, introduciendo saltos de línea donde son necesarios. Los templates de los objetos avanzados
+tienen como texto el texto del objeto que extienden y se le añade la informacion adicional de cada objeto avanzado.
+
+- Creamos el array de Templates en el PopUpMenu llamando al metodo values() del enumerado Template.
+
+- Añadimos comentarios en las clases restantes.
+
+
+Adiciones en la P6
+
+- 
