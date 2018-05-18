@@ -10,4 +10,6 @@ tienen como texto el texto del objeto que extienden y se le añade la informacio
 
 Adiciones en la P6
 
-- 
+- Añadimos la clase Stepper
+
+- Modificamos el SimWindow para introducir el JLabel de Stop, la accion de Stop y la llamada a la clase Stepper.
