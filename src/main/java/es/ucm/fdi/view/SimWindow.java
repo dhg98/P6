@@ -26,7 +26,6 @@ import es.ucm.fdi.view.extra.popupmenu.PopUpMenu;
  * Makes up the graphic interface.
  * 
  * @author Javier Galiana
- * 
  */
 
 public class SimWindow extends JFrame implements Listener {
