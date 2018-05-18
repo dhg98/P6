@@ -58,16 +58,8 @@ public class PopUpMenu {
 
 		JMenu subMenu = new JMenu("Add Template");
 
-		Template[] templates = {Template.NewVehicle,
-								Template.NewBike,
-								Template.NewCar,
-								Template.NewRoad,
-								Template.NewLanes,
-								Template.NewDirt,
-								Template.NewJunction,
-								Template.NewRoundRobin,
-								Template.NewMostCrowded,
-								Template.MakeFaulty };
+		Template[] templates = Template.values();
+		
 		for (Template t : templates) {
 			JMenuItem menuItem = new JMenuItem(t.toString());
 			menuItem.addActionListener(new ActionListener() {

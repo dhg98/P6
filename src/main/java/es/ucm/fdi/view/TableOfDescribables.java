@@ -10,6 +10,11 @@ import javax.swing.table.AbstractTableModel;
 
 import es.ucm.fdi.model.Describable;
 
+/**
+ * Make up the tables for the interface.
+ * 
+ * @author Javier Galiana
+ */
 public class TableOfDescribables extends JPanel {
 
 	private JTable table;
