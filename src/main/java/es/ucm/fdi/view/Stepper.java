@@ -1,5 +1,10 @@
 package es.ucm.fdi.view;
 
+/**
+ * Launches the threads of the simulation.
+ * 
+ * @author Javier Galiana
+ */
 public class Stepper {
     private Runnable before;
     private Runnable during;

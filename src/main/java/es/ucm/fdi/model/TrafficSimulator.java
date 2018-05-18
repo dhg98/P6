@@ -226,6 +226,11 @@ public class TrafficSimulator {
 		}
 	}
 
+	/**
+	 * Listener of the simulator.
+	 * 
+	 * @author Javier Galiana
+	 */
 	public interface Listener {
 		public void registered(int time, RoadMap map, List<Event> events);
 
