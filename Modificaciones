@@ -13,9 +13,9 @@ desde fuera de la clase (solamente en el metodo execute).
 - Añadimos modificador private al metodo createIniSection de TrafficSimulator, ya que es un metodo auxiliar que solo se invoca
 desde dentro de la clase, a la hora de generar los reports.
 
-- Se eliminan contracciones del ingles en las excepciones de RoadMap.
+- Eliminamos contracciones del ingles en las excepciones de RoadMap.
 
-- Modificaciones en los Describe de los Events. Dado que la clase Event tenia un metodo abstracto que decia el tipo de evento que
+- Modificamos los Describe de los Events. Dado que la clase Event tenia un metodo abstracto que decia el tipo de evento que
 estabamos intentando describir y la informacion de dicho evento, se introduce en la superclase el metodo describe, que llama
 a los dos metodos citados anteriormente y se proporciona la informacion de los objetos que heredan de Event. Asi, se evita
 copiar y pegar cada uno de los describes en las clases que implementaban dichos metodos.
@@ -26,3 +26,5 @@ Adiciones en la P6
 - Añadimos la clase Stepper
 
 - Modificamos el SimWindow para introducir el JLabel y JSpinner de steps, la accion de Stop y la llamada a la clase Stepper.
+
+- Modificamos el metodo Play de SimWindow para usar un objeto de la clase Stepper.
