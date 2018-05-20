@@ -257,6 +257,7 @@ public class SimWindow extends JFrame implements Listener {
 		SimulatorAction stop = new SimulatorAction(Command.Stop, "stop.png",
 				"Stop the simulation",
 				KeyEvent.VK_S, "alt S", () -> {
+				    //We interrupt the Thread.
 					auxiliarThread.interrupt();
 					enableOrDisableActions(actionsCommand, Command.Stop);
 					
@@ -422,6 +423,11 @@ public class SimWindow extends JFrame implements Listener {
 		int time = (Integer) stepsSpinner.getValue();
 		int delay = (Integer) delaySpinner.getValue();
 		ByteArrayOutputStream str = new ByteArrayOutputStream();
+		//We create the Runnables to launch the simulation with the Stepper.
+		//The before Runnable disables the buttons, the during Runnable executes
+		//the TrafficSimulator for a number of steps with a the delay given and
+		//reports the simulation.
+		//The after Runnable enables the buttons.
 		Runnable before = new Runnable () {
 			public void run() {
 				enableOrDisableActions(actionsCommand, Command.Play);
@@ -430,6 +436,8 @@ public class SimWindow extends JFrame implements Listener {
 		Runnable during = new Runnable () {
 			public void run() {
 				try {
+				    //The simulator is going to be executed Steps times, but
+				    //the Runnable executes the simulation with 1 tick.
 					ctrl.getSimulator().execute(str, 1);
 					timeViewer.setText("" + ctrl.getSimulator().getTimeCounter());
 					//Llenamos el reportsArea, para lo cual llenamos un objeto Ini.
@@ -449,10 +457,10 @@ public class SimWindow extends JFrame implements Listener {
 				enableOrDisableActions(actionsCommand, Command.Stop);
 			}
 		};
-		
+		//We create the Stepper and start the Thread of the simulation, with returns
+		//the Thread, in order to be able to Stop the simulation when asked to.
 		Stepper stepper = new Stepper(before, during, after);
 		auxiliarThread = stepper.start(time, delay);
-		//ctrl.getSimulator().execute(str, time);
 	}
 
 	/**

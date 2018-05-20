@@ -19,11 +19,12 @@ public class Stepper {
     }
     
     /**
-	 * 
+	 * Executes the number of steps and sleeps the during Runnable for delay time.
 	 */
     public Thread start (int steps, int delay) {
         this.steps = steps;
-        
+        //Creamos un nuevo hilo donde se va a ejecutar el simulador y la activacion y 
+        //desactivacion de botones.
         Thread t = new Thread(()->{
             boolean stopRequested = false;
             try {
@@ -40,7 +41,7 @@ public class Stepper {
             } catch(Exception e) {
                 //log.warn("Exception while stepping, "
                     //    + this.steps + " remaining: "+ e, e);
-            }finally {
+            } finally {
                 after.run();
             }
         });
