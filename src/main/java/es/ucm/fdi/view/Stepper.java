@@ -18,6 +18,9 @@ public class Stepper {
         this.after = after;
     }
     
+    /**
+	 * 
+	 */
     public Thread start (int steps, int delay) {
         this.steps = steps;
         

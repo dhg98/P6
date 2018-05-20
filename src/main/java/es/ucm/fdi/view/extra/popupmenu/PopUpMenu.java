@@ -108,6 +108,5 @@ public class PopUpMenu {
 			public void mouseClicked(MouseEvent e) {
 			}
 		});
-
 	}
 }

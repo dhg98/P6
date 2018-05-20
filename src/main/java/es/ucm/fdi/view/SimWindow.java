@@ -75,6 +75,7 @@ public class SimWindow extends JFrame implements Listener {
 	
 	private JTextField timeViewer = new JTextField("0");
 	private Map<Command, SimulatorAction> actionsCommand = new HashMap<>();
+	
 	public SimWindow(Controller ctrl, String inFileName) {
 		super("Traffic Simulator");
 		createActionsCommand();
@@ -123,15 +124,19 @@ public class SimWindow extends JFrame implements Listener {
 		topSplit.setDividerLocation(.33);
 		bottomSplit.setDividerLocation(.5);
 	}
-
-	//Metodo para activar o desactivar las acciones recibidas. Es llamado desde
-	//cada una de las acciones creadas.
+	
+	/**
+	 * Enable or disable the Simulator Actions.
+	 */
 	private void ableActions(boolean state, SimulatorAction... actions) {
 		for (SimulatorAction ac : actions) {
 			ac.setEnabled(state);
 		}
 	}
 
+	/**
+	 * Create the ctions.
+	 */
 	private void createActionsCommand() {
 		// instantiate actions
 		SimulatorAction exit = new SimulatorAction(Command.Exit, "exit.png",
@@ -269,7 +274,11 @@ public class SimWindow extends JFrame implements Listener {
 		actionsCommand.put(Command.Reset, reset);
 		actionsCommand.put(Command.Stop, stop);
 	}
-
+	
+	/**
+	 * Enable or disable the actions in the simulator
+	 * depending on the last one.
+	 */
 	private void enableOrDisableActions(Map<Command, SimulatorAction> actions, 
 			Command command) {
 		switch (command) {
@@ -338,7 +347,10 @@ public class SimWindow extends JFrame implements Listener {
 			break;
 		}
 	}
-
+	
+	/**
+	 * Load the text from an ini file to the textSection.
+	 */
 	private boolean readIni() {
 		JFileChooser chooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Ini files", "ini");
@@ -362,6 +374,9 @@ public class SimWindow extends JFrame implements Listener {
 		}
 	}
 
+	/**
+	 * Save the text from a JTextArea in a ini file.
+	 */
 	private boolean saveIni(JTextArea text) {
 		JFileChooser chooser = new JFileChooser();
 		
@@ -384,12 +399,18 @@ public class SimWindow extends JFrame implements Listener {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Read the text in the textSection.
+	 */
 	private void readText() {
 		String st = textSection.get_editor().getText();
 		ctrl.setIn(new ByteArrayInputStream(st.getBytes(StandardCharsets.UTF_8)));
 	}
-
+	
+	/**
+	 * Clear the text in a JTextArea
+	 */
 	private void clear(JTextArea text) {
 		text.setText("");
 	}
@@ -516,7 +537,10 @@ public class SimWindow extends JFrame implements Listener {
 		// Add menu to window
 		setJMenuBar(menu);
 	}
-
+	
+	/**
+	 * Adds the upper panel to the JFrame
+	 */
 	private void addSupPanel() {
 		supPanel = new JPanel();
 		supPanel.setLayout(new GridLayout(1, 3));
@@ -524,7 +548,10 @@ public class SimWindow extends JFrame implements Listener {
 		supPanel.add(eventsTable);
 		supPanel.add(reportsViewer);
 	}
-
+	
+	/**
+	 * Create the EventsEditor panel.
+	 */
 	private void addEventEditor() {
 		JScrollPane iniInput = new JScrollPane(textSection.get_editor());
 		eventEditor = new JPanel(new BorderLayout());
@@ -537,12 +564,18 @@ public class SimWindow extends JFrame implements Listener {
 		}
 		eventEditor.add(iniInput);
 	}
-
+	
+	/**
+	 * Create the Events table.
+	 */
 	private void addEventsView() {
 		eventsTable = new TableOfDescribables(events, columnNameEvents);
 		eventsTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Events Queue "));
 	}
 
+	/**
+	 * Create the ReportsViewer.
+	 */
 	private void addReportsViewer() {
 		reportsArea.setEditable(false);
 		JScrollPane reportsAreaScroll = new JScrollPane(reportsArea);
@@ -550,22 +583,34 @@ public class SimWindow extends JFrame implements Listener {
 		reportsViewer.setBorder(javax.swing.BorderFactory.createTitledBorder(" Reports Area "));
 		reportsViewer.add(reportsAreaScroll);
 	}
-
+	
+	/**
+	 * Create the Vehicles table.
+	 */
 	private void addVehiclesTablePanel() {
 		vehiclesTable = new TableOfDescribables(map.getVehiclesRO(), columnNameVehicle);
 		vehiclesTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Vehicles Table "));
 	}
-
+	
+	/**
+	 * Create the Roads table.
+	 */
 	private void addRoadsTablePanel() {
 		roadTable = new TableOfDescribables(map.getRoadsRO(), columnNameRoad);
 		roadTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Road Table "));
 	}
 
+	/**
+	 * Create the Junctions table.
+	 */
 	private void addJunctionsTablePanel() {
 		junctionTable = new TableOfDescribables(map.getJunctionsRO(), columnNameJunction);
 		junctionTable.setBorder(javax.swing.BorderFactory.createTitledBorder(" Junction Table "));
 	}
 
+	/**
+	 * Create the lower left panel.
+	 */
 	private void addInfLeftPanel() {
 		infLeftPanel = new JPanel();
 		infLeftPanel.setLayout(new BoxLayout(infLeftPanel, BoxLayout.Y_AXIS));
@@ -573,23 +618,35 @@ public class SimWindow extends JFrame implements Listener {
 		infLeftPanel.add(roadTable);
 		infLeftPanel.add(junctionTable);
 	}
-
+	
+	/**
+	 * Create the lower right panel.
+	 */
 	private void addInfRightPanel() {
 		rightInfPanel = new JPanel();
 		rightInfPanel.setLayout(new BorderLayout());
 		rightInfPanel.add(graph.get_graphComp());
 	}
 
+	/**
+	 * Create the graph.
+	 */
 	private void addGraph() {
 		graph = new GraphLayout(map);
 		graph.generateGraph();
 	}
-
+	
+	/**
+	 * Adds the JLabel in the bottom of the JFrame.
+	 */
 	private void addInformation() {
 		information = new JLabel("Welcome to the best Traffic Simulator ever! :)");
 		add(information, BorderLayout.AFTER_LAST_LINE);
 	}
 
+	/**
+	 * Adds the lower panel to the JFrame.
+	 */
 	private void addInfPanel() {
 		infPanel = new JPanel();
 		infPanel.setLayout(new BorderLayout());
@@ -598,6 +655,9 @@ public class SimWindow extends JFrame implements Listener {
 		infPanel.add(bottomSplit);
 	}
 
+	/**
+	 * Adds the vertical JSplitPane to the JFrame.
+	 */
 	private void addBars() {
 		topSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, supPanel, infPanel);
 		add(topSplit);
