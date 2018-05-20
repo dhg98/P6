@@ -252,7 +252,7 @@ public class SimWindow extends JFrame implements Listener {
 					ctrl.getSimulator().reset();
 					enableOrDisableActions(actionsCommand, Command.Reset);
 					information.setText(Command.Reset.message);
-				});
+				}); 
 		
 		SimulatorAction stop = new SimulatorAction(Command.Stop, "stop.png",
 				"Stop the simulation",
