@@ -176,13 +176,18 @@ public class Junction extends SimObject implements Describable {
 		junctionDeque.add(ir);
 		junctionMap.put(r, ir);
 		
-		// al introducir una nueva carretera, se modifica el semaforo para que
+		// Al introducir una nueva carretera, se modifica el semaforo para que
 		// en el siguiente tick, al aumentar su valor se aumente de forma correcta 
 		// y se ponga a 0, dejando pasar a la carretera que se agrego primero.
 		
 		trafficLight = junctionDeque.size() - 1; 
 	}
 
+	/**
+	 * To describe a Junction, we have to put in the map the Id and the roads that
+	 * lead to this junction with their traffic lights and the cars they have inside
+	 * their queues.
+	 */
 	@Override
 	public void describe(Map<String, String> out) {
 		out.put("ID", getId());

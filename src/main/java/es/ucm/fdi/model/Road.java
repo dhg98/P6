@@ -142,6 +142,10 @@ public class Road extends SimObject implements Describable {
 		return Math.min(maxVel, (maxVel / Math.max(numVehicles, 1)) + 1);
 	}
 
+	/**
+	 * To describe a road, we have to put inside the map the id, source, target,
+	 * length, max speed and the vehicles that are inside him.
+	 */
 	@Override
 	public void describe(Map<String, String> out) {
 		out.put("ID", getId());

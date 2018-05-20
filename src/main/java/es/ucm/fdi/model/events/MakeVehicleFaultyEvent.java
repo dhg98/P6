@@ -4,7 +4,7 @@ import java.util.*;
 
 import es.ucm.fdi.model.*;
 
-public class MakeVehicleFaultyEvent extends Event implements Describable {
+public class MakeVehicleFaultyEvent extends Event {
 	private int tiempoAveria;
 	private List<String> itCoches;
 
@@ -37,12 +37,6 @@ public class MakeVehicleFaultyEvent extends Event implements Describable {
 			idsList.add(id);
 		}
 		return "Break Vehicles [" + String.join(",", idsList) + "]";
-	}
-
-	@Override
-	public void describe(Map<String, String> out) {
-		out.put("Time", "" + getTime());
-		out.put("Type", getType());
 	}
 	
 	@Override

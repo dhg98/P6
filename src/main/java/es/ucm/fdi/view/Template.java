@@ -7,6 +7,10 @@ package es.ucm.fdi.view;
  *
  */
 public enum Template {
+    //Todos los objetos avanzados tienen una plantilla que depende del objeto
+    //que heredan. Por tanto, la plantilla de dichos objetos sera la plantilla del
+    //objeto del que heredan mas la informacion adicional que es necesaria introducir
+    //para que dichos objetos sean avanzados.
 	NewVehicle("New Vehicle",
 		"\n[new_vehicle]\n"
 	    + "time = \n" 
@@ -64,8 +68,8 @@ public enum Template {
 		+ "duration = \n"
 	);
 	
-	//Tenemos un texto para mostrar al pulsar "add template" y lo que de verdad
-	//se va a introducir en el texto.
+	//Tenemos un titulo para mostrar al pulsar "add template" y lo que de verdad
+	//se va a introducir en el editor de texto.
 	protected String text;
 	protected String temp;
 	Template (String text, String temp) {

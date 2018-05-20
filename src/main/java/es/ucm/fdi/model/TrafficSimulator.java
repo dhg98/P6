@@ -72,6 +72,8 @@ public class TrafficSimulator {
 		}
 	}
 
+	//Insertamos o borramos un Listener del array de Listeners. En caso de registrarlo,
+	//le mandamos tambien el estado de la simulacion a dicho listener (y no a todos).
 	public void addSimulatorListener(Listener l) {
 		listeners.add(l);
 		notifyRegistered(l);
@@ -81,6 +83,9 @@ public class TrafficSimulator {
 		listeners.remove(l);
 	}
 
+	//En todos los notify excepto el de Registered, se avisa a
+	//todos los listeners de que se ha modificado el simulador, y
+	//dependiendo del error se llama a un metodo distinto de la interfaz.
 	public void notifyRegistered(Listener o) {
 		o.registered(timeCounter, rm, events.valuesList());
 	}
@@ -126,7 +131,7 @@ public class TrafficSimulator {
 			try {
 				writeReport(out);
 			} catch (IOException e) {
-				notifyError(e.getMessage());
+				notifyError("Error using the OutputStream" + out.toString());
 			}
 		}
 	}
@@ -136,7 +141,7 @@ public class TrafficSimulator {
 	 * 
 	 * @throws IllegalArgumentException
 	 */
-	public void eventProcess() {
+	private void eventProcess() {
 		if (events.get(timeCounter) != null) {
 			for (Event e : events.get(timeCounter)) {
 				try {
@@ -177,7 +182,8 @@ public class TrafficSimulator {
 				try {
 					r.avanza();
 				} catch (IllegalArgumentException e) {
-					notifyError("There was an error while advancing the road" + r.getId());
+					notifyError("There was an error while advancing the road" + r.getId()
+					+ "/n" + e.getMessage());
 				}
 			}
 		}
@@ -185,7 +191,8 @@ public class TrafficSimulator {
 			try {
 				j.avanza();
 			} catch (IllegalArgumentException e) {
-				notifyError("There was an error while advancing the junction" + j.getId());
+				notifyError("There was an error while advancing the junction" + j.getId()
+				+ "/n" + e.getMessage());
 			}
 		}
 
@@ -197,7 +204,7 @@ public class TrafficSimulator {
 	 * @param report
 	 * @return
 	 */
-	IniSection createIniSection(Map<String, String> report) {
+	private IniSection createIniSection(Map<String, String> report) {
 		IniSection ini = new IniSection(report.get(""));
 		report.remove("");
 		for (Entry<String, String> e : report.entrySet()) {
@@ -222,7 +229,7 @@ public class TrafficSimulator {
 		try {
 			file.store(out);
 		} catch (IOException e) {
-			throw new IOException("Error using the OutputStream" + out.toString());
+			notifyError("Error using the OutputStream" + out.toString());
 		}
 	}
 
@@ -232,14 +239,45 @@ public class TrafficSimulator {
 	 * @author Javier Galiana
 	 */
 	public interface Listener {
+	    /**
+	     * Invoked when a registration occurs.
+	     * @param time
+	     * @param map
+	     * @param events
+	     */
 		public void registered(int time, RoadMap map, List<Event> events);
 
+		/**
+		 * Invoked when resetting the application.
+		 * @param time
+		 * @param map
+		 * @param events
+		 */
 		public void reset(int time, RoadMap map, List<Event> events);
 
+		/**
+		 * Invoked when adding a new Event to the simulation
+		 * @param time
+		 * @param map
+		 * @param events
+		 */
 		public void eventAdded(int time, RoadMap map, List<Event> events);
 
+		/**
+		 * Invoked when advancing the SimulatorObjects.
+		 * @param time
+		 * @param map
+		 * @param events
+		 */
 		public void advanced(int time, RoadMap map, List<Event> events);
 
+		/**
+		 * Invoked when there is an error in the simulation, and the cause.
+		 * @param time
+		 * @param map
+		 * @param events
+		 * @param error
+		 */
 		public void simulatorError(int time, RoadMap map, List<Event> events,
 				String error);
 	}

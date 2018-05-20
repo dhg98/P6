@@ -47,7 +47,7 @@ public class MostCrowdedJunction extends JunctionWithTimeSlice {
 		getJunctionDeque().add(ir);
 		getJunctionMap().put(r, ir);
 
-		// al introducir una nueva carretera, se modifica el semaforo para que
+		// Al introducir una nueva carretera, se modifica el semaforo para que
 		// en el siguiente tick, al aumentar su valor se aumente de forma correcta
 		// y se ponga a 0, dejando pasar a la carretera que se agregó primero.
 		

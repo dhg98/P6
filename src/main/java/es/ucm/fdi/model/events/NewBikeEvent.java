@@ -38,5 +38,4 @@ public class NewBikeEvent extends NewVehicleEvent {
 	public String toString() {
 		return "New Bike Event";
 	}
-
 }

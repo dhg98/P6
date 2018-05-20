@@ -38,6 +38,7 @@ public class SimWindow extends JFrame implements Listener {
 	private final static String[] columnNameEvents = new String[] {
 			"#", "Time", "Type" };
 
+	//La vista usa el controlador
 	private Controller ctrl;
 	private RoadMap map = new RoadMap();
 	private List<Event> events = new ArrayList<>();
@@ -60,6 +61,9 @@ public class SimWindow extends JFrame implements Listener {
 	private JPanel infLeftPanel;
 	private JPanel rightInfPanel;
 	private JLabel information;
+	
+	//Hilo de la simulacion. Necesario tenerlo para poder interrumpir
+	//en caso de pulsar el boton Stop.
 	private Thread auxiliarThread;
 
 	// new SpinnerNumberModel(CurrentValue, min, max, steps)
@@ -80,8 +84,9 @@ public class SimWindow extends JFrame implements Listener {
 			String st = "";
 			try {
 				st = new String(Files.readAllBytes(currentInput.toPath()), "UTF-8");
-			} catch (Exception e) {
-				ctrl.getSimulator().notifyError("There has been an error loading the file.");
+			} catch (IOException e) {
+				ctrl.getSimulator().notifyError("There has been an error loading the file"
+				        + currentInput.getAbsolutePath());
 			}
 			textSection.get_editor().setText(st);
 		} else {
@@ -119,6 +124,8 @@ public class SimWindow extends JFrame implements Listener {
 		bottomSplit.setDividerLocation(.5);
 	}
 
+	//Metodo para activar o desactivar las acciones recibidas. Es llamado desde
+	//cada una de las acciones creadas.
 	private void ableActions(boolean state, SimulatorAction... actions) {
 		for (SimulatorAction ac : actions) {
 			ac.setEnabled(state);
@@ -370,7 +377,7 @@ public class SimWindow extends JFrame implements Listener {
 
 			} catch (IOException e) {
 				ctrl.getSimulator().notifyError("There was an error while saving in the"
-						+ " file " + currentInput.getAbsolutePath());
+						+ " file " + f.getAbsolutePath());
 			}
 			return true;
 		} else {

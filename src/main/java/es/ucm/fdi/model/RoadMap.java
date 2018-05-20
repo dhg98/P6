@@ -35,7 +35,7 @@ public class RoadMap {
 			return (Vehicle) o;
 		} else {
 			throw new IllegalArgumentException("The vehicle whose id is " + id 
-					+ " doesn´t exist");
+					+ " does not exist");
 		}
 	}
 
@@ -52,7 +52,7 @@ public class RoadMap {
 			return (Junction) o;
 		} else {
 			throw new IllegalArgumentException("The junction whose id is " + id 
-					+ " doesn´t exist");
+					+ " does not exist");
 		}
 	}
 
@@ -69,7 +69,7 @@ public class RoadMap {
 			return (Road) o;
 		} else {
 			throw new IllegalArgumentException("The road whose id is " + id 
-					+ " doesn´t exist");
+					+ " does not exist");
 		}
 	}
 

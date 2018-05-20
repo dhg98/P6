@@ -63,6 +63,6 @@ public abstract class SimObject {
 
 	@Override
 	public String toString() {
-		return getId();
+		return id;
 	}
 }

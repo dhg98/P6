@@ -100,7 +100,7 @@ public class Vehicle extends SimObject implements Describable {
 	}
 
 	/**
-	 * Adds n to the atribute tiempoAveria.
+	 * Adds n steps to the atribute tiempoAveria.
 	 * 
 	 * @param n
 	 */
@@ -174,6 +174,12 @@ public class Vehicle extends SimObject implements Describable {
 		}
 	}
 
+	/**
+	 * To describe a vehicle, we have to put inside the map the id,
+	 * the road this vehicle is in, the location in the road,
+	 * the speed in the road, the total kilometrage, the faulty units
+	 * (if there are any) and the itinerary the vehicle is following.
+	 */
 	@Override
 	public void describe(Map<String, String> out) {
 		out.put("ID", getId());
